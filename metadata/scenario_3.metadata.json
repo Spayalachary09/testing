@@ -1,0 +1,912 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Member Demographics and MCI Search",
+      "description": "On this screen, you will enter the member's demographic and domain-related information to begin the intake process. Please provide accurate details such as name, date of birth, gender, and contact information. Once all required fields are filled, use the 'Search MCI' button to check if the member already exists in the Master Client Index (MCI). Instructions and field-level guidance are provided to help you complete each section. If a match is found, you will be able to use the existing record; otherwise, you will proceed to create a new one.",
+      "details": [
+        {
+          "label": "Member Demographic Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": false,
+              "error_message": "SSN must be in valid format.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number must be valid.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email must be a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": false,
+              "error_message": "Address must be valid.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique if provided.",
+        "Phone number must be in valid format.",
+        "Email address must be in valid format.",
+        "First Name and Last Name are required.",
+        "If Date of Birth indicates age under 18, guardian information will be required in subsequent steps."
+      ],
+      "buttons": [
+        {
+          "label": "Search MCI",
+          "actor": "Intake Specialist",
+          "description": "Initiates a search in the Master Client Index using the entered demographic information.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        },
+        {
+          "label": "Clear",
+          "actor": "Intake Specialist",
+          "description": "Clears all entered information on the screen.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Trigger MCI Search",
+          "implementation": "Validates all required demographic fields: First Name, Last Name, Date of Birth (not in future), Gender, and, if provided, SSN (must be unique and valid format), Phone Number (valid format), Email Address (valid format), Address (valid format). If Date of Birth indicates age under 18, guardian information is required and validated before proceeding. If all validations pass, initiates a search in the Master Client Index using the entered information and transitions to STEP_2. If validation fails, displays field-level error messages and prevents transition.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Search MCI' button AND all required fields are valid AND (if age < 18, guardian info is valid).",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ],
+          "errorHandling": "If validation fails, display field-level error messages and remain on STEP_1."
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Clear Member Information",
+          "implementation": "Clears all entered demographic and domain-related information on the screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Clear' button.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_16",
+          "name": "Collect Guardian Information if Member is Under 18",
+          "implementation": "If Date of Birth indicates member is under 18, prompt Intake Specialist to enter guardian information before proceeding. Guardian information fields are required and validated before allowing transition to next step.",
+          "trigger": "Rule",
+          "triggerCondition": "Date of Birth entered AND calculated age < 18.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1_GUARDIAN"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search MCI Record",
+      "description": "When the 'Search MCI' button is triggered by the Intake Specialist, the system uses the entered demographic data to query the Master Client Index (MCI) for existing member records. The system returns the match status and any matching record details.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "Upon 'Search MCI' button click, use the provided demographic data to query the MCI. If the query executes successfully, return match status and record details. If an error occurs (e.g., Neo4j error), return the error status and message."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_3",
+          "name": "Navigate to Record Match Decision",
+          "implementation": "After MCI search completes, if successful, transitions to STEP_3 for match decision logic. If error occurs (system, network, data validation), displays error message and provides options to retry or return to STEP_1.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search completes (success, error, network failure, or data validation error).",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ],
+          "errorHandling": "If error occurs, display error message and provide options to retry or return to STEP_1."
+        },
+        {
+          "id": "ACTION_19",
+          "name": "Retry MCI Search",
+          "implementation": "Allows Intake Specialist to retry the MCI search after an error. Re-initiates the search using the current demographic data.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after error.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_20",
+          "name": "Return to Member Information Entry",
+          "implementation": "Allows Intake Specialist to return to STEP_1 to re-enter or correct member information.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Return' button.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_19"
+          ]
+        },
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_20"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "MCI Record Match Decision",
+      "description": "After querying the MCI, determine if a matching record exists for the member based on the returned status and message. If a match is found, proceed to use the existing record; otherwise, initiate creation of a new MCI record.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Evaluate MCI Match",
+            "logic": "If status indicates a successful match and no error message is present, proceed to use the existing MCI record. If status indicates an error or no match (e.g., error message present), proceed to create a new MCI record."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_4",
+          "name": "Proceed to Use Existing MCI Record",
+          "implementation": "If a matching MCI record is found (status indicates match and no error message), transitions to STEP_4 to link and pre-populate member data. If both match and error are present, display error message and provide options to retry or return to STEP_1.",
+          "trigger": "Rule",
+          "triggerCondition": "status indicates match found AND no error message.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ],
+          "errorHandling": "If linking fails or both match and error are present, display error message and provide options to retry or return to STEP_1."
+        },
+        {
+          "id": "ACTION_5",
+          "name": "Proceed to Create New MCI Record",
+          "implementation": "If no match is found or error occurs (status indicates error or error message present), transitions to STEP_5 to create a new MCI record. If creation fails, displays error message and allows retry or return to STEP_1.",
+          "trigger": "Rule",
+          "triggerCondition": "status indicates error OR no match (error message present).",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ],
+          "errorHandling": "If creation fails, display error message and provide options to retry or return to STEP_1."
+        },
+        {
+          "id": "ACTION_21",
+          "name": "Return to Member Information Entry",
+          "implementation": "Allows Intake Specialist to return to STEP_1 to re-enter or correct member information.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Return' button.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_21"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Use Existing MCI Record",
+      "description": "If a matching MCI record is found, the system links the intake to the existing MCI record and pre-populates available member data for the Intake Specialist to review.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Link and Pre-populate Existing MCI",
+            "logic": "If status is not 'error' and message does not indicate an error, link the intake to the found MCI record and pre-populate the intake form with available member data from the MCI."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_6",
+          "name": "Mark Intake Linked to Existing MCI",
+          "implementation": "Links intake to the found MCI record, pre-populates available data, and marks workflow as ready for review. If linking or pre-population fails, displays error message, logs the error for audit, and provides options to retry or return to STEP_1.",
+          "trigger": "Rule",
+          "triggerCondition": "status is not 'error' AND message does not indicate error.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ],
+          "errorHandling": "If linking or pre-population fails, display error message, log error for audit, and provide options to retry or return to STEP_1."
+        },
+        {
+          "id": "ACTION_22",
+          "name": "Return to Member Information Entry",
+          "implementation": "Allows Intake Specialist to return to STEP_1 to re-enter or correct member information from STEP_4.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Return' button.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_23",
+          "name": "Retry Linking to Existing MCI",
+          "implementation": "Allows Intake Specialist to retry linking to the existing MCI record after a failure.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after linking failure.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_22"
+          ]
+        },
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_23"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Create New MCI Record",
+      "description": "If no matching MCI record is found or an error occurs during the search, the system creates a new MCI record using the entered demographic data and links it to the intake.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create and Link New MCI",
+            "logic": "If status is 'error' or message indicates an error (e.g., Neo4j error), create a new MCI record using the entered demographic data and link it to the intake."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_7",
+          "name": "Create and Link New MCI Record",
+          "implementation": "Creates a new MCI record using entered demographic data and links it to the intake. If creation or linking fails, displays error message, logs the error for audit, and provides options to retry or return to STEP_1.",
+          "trigger": "Rule",
+          "triggerCondition": "status is 'error' OR message indicates error.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ],
+          "errorHandling": "If creation or linking fails, display error message, log error for audit, and provide options to retry or return to STEP_1."
+        },
+        {
+          "id": "ACTION_8",
+          "name": "Return to Member Information Entry",
+          "implementation": "Allows Intake Specialist to return to STEP_1 to re-enter or correct member information from STEP_5.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Return' button.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_24",
+          "name": "Retry MCI Record Creation",
+          "implementation": "Allows Intake Specialist to retry creation of new MCI record after a failure.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after creation failure.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_8"
+          ]
+        },
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Review and Finalize Member Intake",
+      "description": "This screen allows you to review all the information collected for the member intake before final submission. Carefully verify each section for accuracy and completeness. You may return to previous steps to make corrections if needed. Once you confirm that all details are correct, submit the intake to complete the process. A summary of the entered data is displayed for your confirmation. Please acknowledge that the information is accurate before proceeding.",
+      "details": [
+        {
+          "label": "Member Intake Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": false,
+              "error_message": "SSN must be in valid format.",
+              "readOnly": true
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number must be valid.",
+              "readOnly": true
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email must be a valid email address.",
+              "readOnly": true
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": false,
+              "error_message": "Address must be valid.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Acknowledgment",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "I confirm that the above information is accurate and complete.",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "You must confirm the accuracy of the information before submitting.",
+              "options": [
+                "Confirmed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required fields must be reviewed and confirmed.",
+        "Cannot submit without acknowledgment checkbox selected.",
+        "If any information is incorrect, user must return to previous steps to correct before submission."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Intake",
+          "actor": "Intake Specialist",
+          "description": "Finalizes and submits the member intake for processing.",
+          "action_ids": [
+            "ACTION_9"
+          ]
+        },
+        {
+          "label": "Back",
+          "actor": "Intake Specialist",
+          "description": "Returns to the previous screen to make corrections.",
+          "action_ids": [
+            "ACTION_10A",
+            "ACTION_10B"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Submit Member Intake",
+          "implementation": "Validates all intake data: required fields, acknowledgment checkbox, and all field-level rules (e.g., SSN uniqueness, valid formats, completeness). If validation passes, saves the information, marks intake as complete, and triggers notification scheduling. If validation fails, displays error messages and prevents transition. If save fails, displays error message, logs error for audit, and provides options to retry or return to previous step. If notification scheduling fails after intake submission, display error message, log error for audit, retry up to 3 times, and alert system administrator if all retries fail. Provides manual override for Intake Specialist to trigger notification scheduling if automated retries fail.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Submit Intake' button AND acknowledgment checkbox is selected AND all required fields are valid.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_7"
+          ],
+          "errorHandling": "If validation fails, display error messages and remain on STEP_6. If save fails, display error message, log error for audit, and provide options to retry or return to previous step. If notification scheduling fails, display error message, log error for audit, retry up to 3 times, and alert system administrator if all retries fail. Manual override available."
+        },
+        {
+          "id": "ACTION_10A",
+          "name": "Navigate Back to STEP_4 (Existing MCI)",
+          "implementation": "Returns to STEP_4 for corrections if intake is linked to existing MCI.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Back' button AND intake is linked to existing MCI.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_10B",
+          "name": "Navigate Back to STEP_5 (New MCI)",
+          "implementation": "Returns to STEP_5 for corrections if new MCI was created.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Back' button AND intake is linked to new MCI.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_25",
+          "name": "Return to Member Information Entry",
+          "implementation": "Allows Intake Specialist to return to STEP_1 directly for major corrections from STEP_6.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Return to Member Information' button.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_26",
+          "name": "Manual Notification Scheduling Override",
+          "implementation": "Allows Intake Specialist to manually trigger notification scheduling if automated scheduling fails after intake submission.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Manual Notification Override' button after notification scheduling failure.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Rule",
+      "label": "Submit Member Intake",
+      "description": "When the Intake Specialist clicks 'Submit Intake', the system validates all collected intake data, saves the information, marks the intake as complete, and triggers automated notification scheduling. If an error is encountered, the system returns the error status and message.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Validate and Submit Intake",
+            "logic": "On 'Submit Intake' button click, validate all intake data. If validation passes and no error is present in status or message, save the intake, mark as complete, and trigger notification scheduling. If status is 'error' or message indicates an error, do not complete submission and return the error."
+          }
+        ]
+      },
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_11",
+          "name": "Trigger Automated Notification Scheduling",
+          "implementation": "Upon successful intake submission (intake marked as complete and notification scheduling enabled), triggers the system to schedule daily client notifications at 2am. If scheduling fails, displays error message, logs error for audit, retries up to 3 times before alerting system administrator. Provides manual override for Intake Specialist to trigger notification scheduling if automated retries fail.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake marked as complete AND notification scheduling enabled AND no error in status or message.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ],
+          "errorHandling": "If notification scheduling fails, display error message, log error for audit, retry up to 3 times, and alert system administrator if all retries fail. Manual override available."
+        },
+        {
+          "id": "ACTION_27",
+          "name": "Manual Notification Scheduling Override",
+          "implementation": "Allows Intake Specialist to manually trigger notification scheduling if automated scheduling fails.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Manual Notification Override' button after notification scheduling failure.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Manual Notification Override",
+          "action_ids": [
+            "ACTION_27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "type": "Notice",
+      "label": "Automated Client Notification Scheduling",
+      "description": "System schedules a daily notification to the client at 2am, ensuring timely communication and engagement. The notification is set up as a recurring job and leverages the designated template for scheduled client messaging.",
+      "element_id": "notice_STEP_8",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "metadata": {
+        "notice_type": "Email",
+        "template_id": 1,
+        "template_fields_mapping": {
+          "status": "status",
+          "message": "message"
+        },
+        "trigger_event": "Member Intake Submission",
+        "trigger_condition": "Intake marked as complete and notification scheduling enabled",
+        "trigger_timing": "Scheduled",
+        "trigger_dependencies": [
+          "Intake Completion"
+        ],
+        "recipient_role": "Client",
+        "delivery_mode": [
+          "Email",
+          "SMS"
+        ],
+        "third_party_service": "S3:govern/notice",
+        "business_logic": "Upon successful completion of member intake, the system schedules a recurring job to send notifications to the client every day at 2am using the 'Send scheduled notification' template. The job checks for errors and tracks delivery status.",
+        "status_tracking": "Sent, Delivered, Failed",
+        "audit_required": "true"
+      },
+      "step_number": 8,
+      "step": 8,
+      "node_id": "STEP_8",
+      "actions": [
+        {
+          "id": "ACTION_13",
+          "name": "Track Notification Delivery Status",
+          "implementation": "Monitors delivery status of scheduled notifications (Sent, Delivered, Failed). If delivery fails, logs error for audit, retries delivery up to 3 times, and alerts system administrator if all retries fail. If notification job is never triggered (e.g., system downtime), escalates to system administrator and provides manual override for Intake Specialist to trigger notification.",
+          "trigger": "Rule",
+          "triggerCondition": "Notification job executes at scheduled time OR fails to execute due to system downtime.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ],
+          "errorHandling": "If delivery fails or job is not triggered, log error for audit, retry up to 3 times, alert system administrator, and provide manual override."
+        },
+        {
+          "id": "ACTION_14",
+          "name": "Audit Notification Events",
+          "implementation": "Logs all notification scheduling, delivery, and error events for audit purposes. Ensures audit trail is complete and accessible for compliance review.",
+          "trigger": "Rule",
+          "triggerCondition": "Any notification scheduling, delivery, or error event occurs.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ],
+          "auditRequired": true
+        },
+        {
+          "id": "ACTION_15",
+          "name": "Handle Notification Scheduling Errors",
+          "implementation": "If notification scheduling or delivery fails, displays error message to Intake Specialist (if relevant), logs error for audit, retries up to 3 times, and alerts system administrator if all retries fail. Provides manual override for Intake Specialist to trigger notification.",
+          "trigger": "Rule",
+          "triggerCondition": "Notification scheduling or delivery fails.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ],
+          "errorHandling": "Display error message to Intake Specialist (if relevant), log error for audit, retry up to 3 times, alert system administrator, and provide manual override."
+        },
+        {
+          "id": "ACTION_28",
+          "name": "Manual Notification Scheduling Override",
+          "implementation": "Allows Intake Specialist to manually trigger notification scheduling if automated scheduling fails or job is not triggered.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Manual Notification Override' button after notification scheduling failure or job not triggered.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Manual Notification Override",
+          "action_ids": [
+            "ACTION_28"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Member Demographic Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Member Intake Summary",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Intake Summary",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Acknowledgment",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Acknowledgment",
+      "endNode": "I confirm that the above information is accurate and complete.",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

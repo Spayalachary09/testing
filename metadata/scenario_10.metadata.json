@@ -1,0 +1,137 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Staff Caseload Overview",
+      "description": "On this screen, you will see a comprehensive list of all staff members and their current caseloads. Each staff member's workload is displayed, including the number of cases assigned and key workload details. This allows you to review how cases are distributed among your team and identify any imbalances. You can initiate a redistribution of cases by clicking the 'Rebalance Caseloads' button. Use this screen to monitor staff workloads and ensure fair and effective case management.",
+      "details": [
+        {
+          "label": "Staff Caseload List",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Staff Member Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Staff member name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Staff Role",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Staff role is required.",
+              "options": [
+                "Case Worker",
+                "Senior Case Worker",
+                "Team Lead",
+                "Supervisor"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Number of Cases Assigned",
+              "type": "number/currency",
+              "required": true,
+              "error_message": "Number of cases is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Workload Details",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Workload details are required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot assign more cases than staff capacity allows.",
+        "Staff role must be valid and selected from the list.",
+        "Number of cases must be a non-negative integer.",
+        "Workload details must accurately reflect assigned cases."
+      ],
+      "buttons": [
+        {
+          "label": "Rebalance Caseloads",
+          "actor": "Supervisor",
+          "description": "Initiate the process to redistribute cases among staff members for balanced workloads.",
+          "actions": [
+            "Trigger Rebalance Caseloads"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Rebalance Caseloads",
+      "description": "When the Supervisor clicks the \"Rebalance Caseloads\" button on the View Caseloads Screen, the system initiates the rebalancing process. The system analyzes the current caseloads for each staff member, including the number of cases and workload details. It then redistributes cases to ensure all staff members have a similar number of cases and balanced workload. The updated caseload assignments are saved in the system. If an error occurs during this process, such as inability to retrieve routing information, the system must handle the error and notify the Supervisor.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger Rebalance",
+            "logic": "If the Supervisor clicks the 'Rebalance Caseloads' button, initiate the rebalancing process."
+          },
+          {
+            "label": "Analyze Caseloads",
+            "logic": "System analyzes current caseloads for each staff member, including number of cases and workload details."
+          },
+          {
+            "label": "Redistribute Cases",
+            "logic": "System redistributes cases to ensure all staff members have a similar number of cases and balanced workload."
+          },
+          {
+            "label": "Save Updated Assignments",
+            "logic": "System saves the updated caseload assignments."
+          },
+          {
+            "label": "Error Handling",
+            "logic": "If status is 'error' and message is present, system must handle the error and notify the Supervisor (e.g., 'Unable to retrieve routing information')."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Staff Caseload List",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Staff Caseload List",
+      "endNode": "Staff Member Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Staff Caseload List",
+      "endNode": "Staff Role",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Staff Caseload List",
+      "endNode": "Number of Cases Assigned",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Staff Caseload List",
+      "endNode": "Workload Details",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
