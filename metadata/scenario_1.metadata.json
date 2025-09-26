@@ -1,0 +1,735 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Member Basic Information Entry and Record Search",
+      "description": "On this screen, you will enter the member's basic demographic information to begin the intake process. The system will use this data to search for existing records. Please carefully fill out all required fields. Guidance is provided for each field, and you will be notified if any information is missing or incorrectly formatted. After entering the details, you can initiate a search for existing records. If a match is found, you will be able to review and use the existing record; otherwise, you can proceed to create a new one. Instructions and contextual help are available to assist you throughout the process.",
+      "details": [
+        {
+          "label": "Member Demographic Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": true,
+              "error_message": "SSN is required and must be valid.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number must be valid format.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email address must be valid format.",
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique.",
+        "Phone number must be valid format.",
+        "If minor (under 18), guardian information is mandatory.",
+        "Email address must be valid format.",
+        "Cannot submit if required fields are missing."
+      ],
+      "buttons": [
+        {
+          "label": "Search for Existing Record",
+          "actor": "Intake Specialist",
+          "description": "Initiates a search for existing member records using the entered demographic information.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        },
+        {
+          "label": "Clear Form",
+          "actor": "Intake Specialist",
+          "description": "Resets all fields to blank so you can start over.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Validate Member Demographic Data",
+          "implementation": "Validates all required demographic fields: First Name, Last Name, Date of Birth (must not be in the future), Gender, SSN (must be unique), and Address. If member is a minor (under 18), guardian information is required. Validates phone and email formats if provided. If validation fails, triggers ACTION_3 (Handle Demographic Validation Error). If validation passes, triggers ACTION_4 (Initiate MCI Search).",
+          "trigger": "button",
+          "triggerCondition": "On button: Search for Existing Record",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "ACTION_3",
+            "ACTION_4"
+          ]
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Clear Intake Form",
+          "implementation": "Resets all fields on the intake form to blank. If the form is partially completed, prompts the user for confirmation before clearing. No validation or error handling is triggered by this action.",
+          "trigger": "button",
+          "triggerCondition": "On button: Clear Form",
+          "sequence": 2,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_3",
+          "name": "Handle Demographic Validation Error",
+          "implementation": "Displays specific validation error messages to the user for missing or incorrectly formatted demographic fields, including missing guardian info for minors, duplicate SSN, invalid phone/email, or future date of birth. Prevents further processing until errors are resolved.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Member Demographic Data Failure",
+          "sequence": 3,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_4",
+          "name": "Initiate MCI Search",
+          "implementation": "Initiates a search for existing member records in the MCI using the entered demographic information. Triggers STEP_2 (Search MCI Record).",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Member Demographic Data Success",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search MCI Record",
+      "description": "When the 'Search MCI' button is triggered by the Intake Specialist, the system initiates a query to the Master Client Index (MCI) using the entered demographic data. The system returns the match status and, if a match is found, the corresponding record details.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "Upon 'Search MCI' button click, use the entered demographic data to query the MCI system."
+          },
+          {
+            "label": "Return Search Result",
+            "logic": "If the MCI system returns a result, provide the match status and record details to the Intake Specialist. If an error occurs, display the error message from the functional data."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_5",
+          "name": "Evaluate MCI Search Result",
+          "implementation": "Evaluates the result of the MCI search. If a match is found, triggers ACTION_28 (Review Existing MCI Record). If no match is found, triggers ACTION_8 (Proceed with New MCI Record). If a system error occurs, triggers ACTION_6 (Handle MCI Search Error).",
+          "trigger": "rule",
+          "triggerCondition": "On rule: MCI Search Completed",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "ACTION_28",
+            "ACTION_8",
+            "ACTION_6"
+          ]
+        },
+        {
+          "id": "ACTION_6",
+          "name": "Handle MCI Search Error",
+          "implementation": "Displays error message to the user if the MCI search fails due to system error, and logs the error for audit purposes. Allows user to retry search or edit demographic data.",
+          "trigger": "rule",
+          "triggerCondition": "On rule: MCI Search Error",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "MCI Record Found?",
+      "description": "The system evaluates the response from the MCI search to determine if a matching record exists. If a match is found, the process continues with the existing record; otherwise, a new record must be created.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Evaluate MCI Search Status",
+            "logic": "If 'status' in functional data is 'success' and a matching record is present, proceed to use the existing MCI record. If 'status' is 'error' or no match is found, proceed to create a new MCI record."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_7",
+          "name": "Proceed with Existing MCI Record",
+          "implementation": "Links intake to the existing MCI record and pre-fills intake fields with available MCI data. Navigates to domain-specific intake data entry (STEP_6).",
+          "trigger": "action",
+          "triggerCondition": "On action: Review Existing MCI Record Confirmed",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_8",
+          "name": "Proceed with New MCI Record",
+          "implementation": "Initiates creation of a new record in MCI and proceeds to domain-specific intake data entry. Triggers STEP_5 (Create New MCI Record).",
+          "trigger": "action",
+          "triggerCondition": "On action: Evaluate MCI Search Result - No Match Found",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Use Existing MCI Record",
+      "description": "If a matching MCI record is found, the system links the intake process to the existing MCI record and populates all available data fields from the MCI into the intake form.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Link to Existing Record",
+            "logic": "If 'status' is 'success' and a matching record is found, associate the intake with the existing MCI record and pre-fill intake fields with available MCI data."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Link Intake to Existing MCI Record",
+          "implementation": "Links the intake process to the existing MCI record and pre-fills intake fields with available MCI data. Navigates to STEP_6 (Domain-Specific Intake Data Entry).",
+          "trigger": "rule",
+          "triggerCondition": "On rule: Intake Linked to Existing MCI Record",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Create New MCI Record",
+      "description": "If no matching MCI record is found, the system creates a new client record in the MCI using the demographic data provided by the Intake Specialist.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create New Record",
+            "logic": "If 'status' is 'error' or no match is found in the MCI, initiate the creation of a new MCI record using the entered demographic data."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_10",
+          "name": "Create New MCI Record",
+          "implementation": "Creates a new client record in the MCI using the entered demographic data. Checks for duplicate SSN and other validation failures before creation. If creation is successful, navigates to STEP_6 (Domain-Specific Intake Data Entry). If creation fails due to duplicate SSN or other errors, triggers ACTION_11 (Handle MCI Record Creation Error).",
+          "trigger": "rule",
+          "triggerCondition": "On rule: Create New MCI Record",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "ACTION_11"
+          ]
+        },
+        {
+          "id": "ACTION_11",
+          "name": "Handle MCI Record Creation Error",
+          "implementation": "Displays error message to the user if the creation of a new MCI record fails due to system error, duplicate SSN, or other validation failures. Logs the error for audit purposes. Allows user to edit demographic data and retry.",
+          "trigger": "rule",
+          "triggerCondition": "On rule: MCI Record Creation Error",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Domain-Specific Intake Data Entry",
+      "description": "This screen allows you to enter additional intake information specific to the member's domain or program. You will see sections for program selection, eligibility details, and any special circumstances. Please review all instructions and provide complete and accurate information. Some sections may be repeatable if the member is involved in multiple programs or has multiple eligibility criteria. Contextual help and validation messages will guide you to ensure all required data is entered correctly before finalizing the intake.",
+      "details": [
+        {
+          "label": "Program Enrollment Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Program Name",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Program Name is required.",
+              "options": [
+                "Child Welfare",
+                "Adult Protective Services",
+                "Substance Abuse",
+                "Mental Health",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Enrollment Date",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Enrollment Date is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Eligibility Status",
+              "type": "radio",
+              "required": true,
+              "error_message": "Eligibility Status is required.",
+              "options": [
+                "Eligible",
+                "Not Eligible",
+                "Pending"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Special Circumstances",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Special Circumstances is optional.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Additional Intake Notes",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Intake Comments",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Intake Comments is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Supporting Documents",
+              "type": "file",
+              "required": false,
+              "error_message": "File upload failed.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Enrollment Date cannot be in the future.",
+        "Cannot enroll in the same program more than once.",
+        "If Eligibility Status is 'Not Eligible', reason must be provided in Special Circumstances.",
+        "Supporting Documents must be in PDF, DOC, or image format.",
+        "Total number of program enrollments cannot exceed 5."
+      ],
+      "buttons": [
+        {
+          "label": "Finalize Intake",
+          "actor": "Intake Specialist",
+          "description": "Validates and submits all intake data, updates member status, and triggers notification scheduling.",
+          "action_ids": [
+            "ACTION_12"
+          ]
+        },
+        {
+          "label": "Save Draft",
+          "actor": "Intake Specialist",
+          "description": "Saves the entered data as a draft for later completion.",
+          "action_ids": [
+            "ACTION_13"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_12",
+          "name": "Validate Domain-Specific Intake Data",
+          "implementation": "Validates all domain-specific intake data: Enrollment Date not in the future, no duplicate program enrollments, total enrollments not exceeding 5, if Eligibility Status is 'Not Eligible' then Special Circumstances is required, and supporting documents are in allowed formats. If validation fails, triggers corresponding error handling actions (ACTION_14-18). If validation passes, triggers ACTION_20 (Proceed to Intake Submission).",
+          "trigger": "button",
+          "triggerCondition": "On button: Finalize Intake",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "ACTION_14",
+            "ACTION_15",
+            "ACTION_16",
+            "ACTION_17",
+            "ACTION_18",
+            "ACTION_20"
+          ]
+        },
+        {
+          "id": "ACTION_13",
+          "name": "Save Intake Draft",
+          "implementation": "Saves the entered intake data as a draft in persistent storage associated with the current user/session. If saving fails, triggers ACTION_19 (Handle Intake Draft Save Error). Partial data is saved and can be retrieved by the user from the 'Drafts' section on login or intake dashboard.",
+          "trigger": "button",
+          "triggerCondition": "On button: Save Draft",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "ACTION_19"
+          ]
+        },
+        {
+          "id": "ACTION_14",
+          "name": "Handle Enrollment Date Validation Error",
+          "implementation": "Displays error message if Enrollment Date is in the future and prevents submission. Allows user to correct the date.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data - Enrollment Date Failure",
+          "sequence": 3,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_15",
+          "name": "Handle Duplicate Program Enrollment Error",
+          "implementation": "Displays error message if the member is already enrolled in the selected program and prevents submission. Allows user to select a different program or edit enrollments.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data - Duplicate Program Enrollment",
+          "sequence": 4,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_16",
+          "name": "Handle Program Enrollment Limit Error",
+          "implementation": "Displays error message if the total number of program enrollments exceeds 5 and prevents submission. Allows user to remove or edit enrollments.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data - Program Enrollment Limit Exceeded",
+          "sequence": 5,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_17",
+          "name": "Handle Eligibility Status Reason Error",
+          "implementation": "Displays error message if Eligibility Status is 'Not Eligible' and no reason is provided in Special Circumstances. Allows user to enter the required reason.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data - Missing Reason for Not Eligible",
+          "sequence": 6,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_18",
+          "name": "Handle File Upload Error",
+          "implementation": "Displays error message if supporting documents are not in allowed formats (PDF, DOC, image) or if file upload fails. Allows user to retry upload.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data - File Upload Failure",
+          "sequence": 7,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_19",
+          "name": "Handle Intake Draft Save Error",
+          "implementation": "Displays error message if saving the intake draft fails due to system error. Allows user to retry saving or download draft locally.",
+          "trigger": "action",
+          "triggerCondition": "On action: Save Intake Draft Failure",
+          "sequence": 8,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_20",
+          "name": "Proceed to Intake Submission",
+          "implementation": "If all domain-specific intake validations pass, triggers STEP_7 (Finalize and Submit Intake).",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate Domain-Specific Intake Data Success",
+          "sequence": 9,
+          "linkedWidgetIds": [
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Rule",
+      "label": "Finalize and Submit Intake",
+      "description": "When the Intake Specialist clicks the 'Finalize Intake' button, the system validates all collected intake data, submits the information, updates the member's status, and triggers notification scheduling. The system also generates audit logs and compliance documentation as part of the submission process.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Validate and Submit Intake",
+            "logic": "On 'Finalize Intake' button click, validate all intake data. If validation passes, submit the data, update member status, and schedule client notifications. Generate audit logs and compliance documentation. If an error occurs, display the error message from the functional data."
+          }
+        ]
+      },
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_21",
+          "name": "Validate All Intake Data",
+          "implementation": "Performs comprehensive validation of all intake data, including demographic and domain-specific fields. If validation fails, triggers ACTION_23 (Handle Intake Submission Error). If validation passes, triggers ACTION_22 (Submit Intake Data).",
+          "trigger": "action",
+          "triggerCondition": "On action: Proceed to Intake Submission",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "ACTION_23",
+            "ACTION_22"
+          ]
+        },
+        {
+          "id": "ACTION_22",
+          "name": "Submit Intake Data",
+          "implementation": "Submits validated intake data to the system, updates member status, and triggers ACTION_24 (Generate Audit Log and Compliance Documentation). If submission fails, triggers ACTION_23 (Handle Intake Submission Error).",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate All Intake Data Success",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "ACTION_24",
+            "ACTION_23"
+          ]
+        },
+        {
+          "id": "ACTION_23",
+          "name": "Handle Intake Submission Error",
+          "implementation": "Displays error message to the user if intake submission fails due to system error, and logs the error for audit purposes. Allows user to retry submission or save as draft.",
+          "trigger": "action",
+          "triggerCondition": "On action: Validate All Intake Data Failure or Submit Intake Data Failure",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_24",
+          "name": "Generate Audit Log and Compliance Documentation",
+          "implementation": "Generates audit logs for the intake submission, recording all relevant actions and changes for compliance purposes. Also generates and stores compliance documentation as required by policy and regulations. If successful, triggers ACTION_25 (Schedule Client Notification).",
+          "trigger": "action",
+          "triggerCondition": "On action: Submit Intake Data Success",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "ACTION_25"
+          ]
+        },
+        {
+          "id": "ACTION_25",
+          "name": "Schedule Client Notification",
+          "implementation": "Schedules automated client notifications regarding intake status to be sent daily at 2:00 AM. Triggers STEP_8 (Automated Client Notification).",
+          "trigger": "action",
+          "triggerCondition": "On action: Generate Audit Log and Compliance Documentation Success",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Member Demographic Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Program Enrollment Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Program Enrollment Details",
+      "endNode": "Program Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Program Enrollment Details",
+      "endNode": "Enrollment Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Program Enrollment Details",
+      "endNode": "Eligibility Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Program Enrollment Details",
+      "endNode": "Special Circumstances",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Additional Intake Notes",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Additional Intake Notes",
+      "endNode": "Intake Comments",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Additional Intake Notes",
+      "endNode": "Supporting Documents",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
