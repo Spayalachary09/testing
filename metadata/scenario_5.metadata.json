@@ -1,0 +1,2462 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Initial Report Details Entry",
+      "description": "On this screen, you will enter the initial details of the report. Please provide as much information as possible about the incident, reporter, and context. Required fields are marked with an asterisk (*). Guidance is provided for each field to help you complete the form accurately. This information is critical for initiating the intake process and ensuring the correct handling of the case. Review your entries before proceeding. If you are unsure about any field, hover over the info icon for additional instructions.",
+      "details": [
+        {
+          "label": "Report Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Report Date and Time",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Report date and time is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Report Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a report type.",
+              "options": [
+                "Phone",
+                "In Person",
+                "Online",
+                "Fax",
+                "Mail",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Reporter Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Reporter name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Reporter Relationship to Child",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select the reporter's relationship to the child.",
+              "options": [
+                "Parent",
+                "Relative",
+                "Teacher",
+                "Medical Professional",
+                "Law Enforcement",
+                "Neighbor",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Reporter Contact Information",
+              "type": "text",
+              "required": false,
+              "error_message": "Please enter valid contact information.",
+              "readOnly": false
+            },
+            {
+              "label": "Anonymous Reporter",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Please indicate if the reporter is anonymous.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Incident Date",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Incident date is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Incident Location",
+              "type": "address",
+              "required": false,
+              "error_message": "Please enter a valid address.",
+              "readOnly": false
+            },
+            {
+              "label": "Brief Description of Incident",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Please provide a brief description of the incident.",
+              "readOnly": false
+            },
+            {
+              "label": "Immediate Safety Concerns",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Please indicate if there are immediate safety concerns.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Safety Concern Details",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Please provide details if there are immediate safety concerns.",
+              "readOnly": false,
+              "visible_if": "Immediate Safety Concerns: Yes"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Report date and time cannot be in the future.",
+        "Incident date cannot be in the future.",
+        "If 'Immediate Safety Concerns' is checked, 'Safety Concern Details' is required.",
+        "If 'Anonymous Reporter' is checked, 'Reporter Name' and 'Reporter Contact Information' must be blank.",
+        "Reporter contact information must be a valid phone number or email if provided."
+      ],
+      "buttons": [
+        {
+          "label": "Save and Continue",
+          "actor": "Intake Worker",
+          "description": "Saves the entered report details and proceeds to the next step.",
+          "action_ids": [
+            "ACTION_1_VALIDATE_INITIAL",
+            "ACTION_1_SEARCH_PRIOR_HISTORY"
+          ]
+        },
+        {
+          "label": "Cancel",
+          "actor": "Intake Worker",
+          "description": "Cancels the intake process and returns to the dashboard.",
+          "action_ids": [
+            "ACTION_1_CANCEL"
+          ]
+        }
+      ],
+      "owner": "Intake Worker",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1_VALIDATE_INITIAL",
+          "name": "Validate Initial Report Details",
+          "implementation": "Validates all required initial report fields according to business rules (e.g., no future dates, mandatory fields, anonymous reporter logic, valid contact info). Displays inline error messages on STEP_1 for any validation failures and logs errors in the audit trail. Only proceeds if all validations pass.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Save and Continue' and all required fields are valid.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1_SEARCH_PRIOR_HISTORY",
+          "name": "Search Prior History",
+          "implementation": "Initiates agency record search for child and household members using entered identifiers. Handles transaction errors by displaying error messages on STEP_1 and logging errors in the audit trail. If successful, displays prior history results and proceeds to Intake Data Entry and Review.",
+          "trigger": "rule",
+          "triggerCondition": "Validation passes and user clicks 'Save and Continue'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_1_CANCEL",
+          "name": "Cancel Intake Process",
+          "implementation": "Cancels the intake process, returns user to dashboard, and logs cancellation event in audit trail. Displays data loss warning on STEP_1 if unsaved changes exist.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Cancel'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "dashboard"
+          ]
+        },
+        {
+          "id": "ACTION_1_HELP",
+          "name": "Open Help Modal",
+          "implementation": "Opens a modal window with help documentation for the current screen. Logs help access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Help' button.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1_SETTINGS",
+          "name": "Open Settings Modal",
+          "implementation": "Opens a modal window for user and system settings. Logs settings access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Settings' button.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1_PROFILE",
+          "name": "Open User Profile Modal",
+          "implementation": "Opens a modal window for viewing and editing user profile. Logs profile access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'User Profile' button.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search Prior History",
+      "description": "When the 'Search Prior History' button is triggered by the Intake Worker, the system queries agency records for the child and household members using entered identifiers. The system returns prior case numbers, dates, outcomes, and historical patterns for display and documentation. The process must handle errors such as database transaction failures and ensure that results are only used within an open transaction context.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger Search",
+            "logic": "Upon activation of the 'Search Prior History' button, initiate a query against agency records using identifiers provided for the child and household members."
+          },
+          {
+            "label": "Return Results",
+            "logic": "If the query is successful and the transaction is open, return prior case numbers, dates, outcomes, and historical patterns for display and documentation."
+          },
+          {
+            "label": "Handle Transaction Errors",
+            "logic": "If the system returns an error with status 'error' and a message indicating a transaction or result scope issue (e.g., 'The result is out of scope. The associated transaction has been closed. Results can only be used while the transaction is open.'), display an appropriate error message to the user and do not display any prior history results."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_2_PROCESS_PRIOR_HISTORY",
+          "name": "Process Prior History Results",
+          "implementation": "Processes results of prior history search. If successful and transaction is open, displays prior case numbers, dates, outcomes, and historical patterns on STEP_1. Logs search event in audit trail. On success, transitions workflow to Intake Data Entry and Review (STEP_3).",
+          "trigger": "rule",
+          "triggerCondition": "Prior history search completes successfully and transaction is open.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_2_ERROR_PRIOR_HISTORY",
+          "name": "Handle Prior History Search Error",
+          "implementation": "Displays error message on STEP_1 if prior history search fails or transaction is closed. Prevents display of prior history results and halts workflow progression. Logs error event and notifies user via in-app notification.",
+          "trigger": "rule",
+          "triggerCondition": "Prior history search returns error or transaction is closed.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "ScreenQueue",
+      "label": "Intake Data Entry and Review",
+      "description": "This ScreenQueue guides the Intake Worker through the complete intake process: entering child and associated individual details, documenting allegations, and reviewing all information for validation and submission.",
+      "screenQueueName": "IntakeProcessingQueue",
+      "assignedTo": "Intake Worker",
+      "screenSequence": [
+        {
+          "screenId": "STEP_3_1",
+          "screenSequence": 1,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Intake Worker'"
+            ],
+            "hide_conditions": [
+              "user_not_eligible",
+              "workflow_cancelled"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": false,
+              "required_data": [],
+              "user_permissions": [
+                "intake_entry"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_3_2",
+          "screenSequence": 2,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Intake Worker'"
+            ],
+            "hide_conditions": [
+              "user_not_eligible",
+              "workflow_cancelled"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "child_information",
+                "associated_individuals"
+              ],
+              "user_permissions": [
+                "intake_entry"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_3_3",
+          "screenSequence": 3,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Intake Worker'"
+            ],
+            "hide_conditions": [
+              "user_not_eligible",
+              "workflow_cancelled"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "allegations"
+              ],
+              "user_permissions": [
+                "intake_entry"
+              ]
+            }
+          }
+        }
+      ],
+      "sequenceLogic": {
+        "type": "linear",
+        "allowBackNavigation": true,
+        "skipLogic": "Screens may be skipped if intake is cancelled or if user does not have required permissions."
+      },
+      "completionLogic": {
+        "type": "all_screens",
+        "conditions": [
+          "All screens in sequence completed",
+          "All required fields validated"
+        ]
+      },
+      "quick_action_buttons": [
+        {
+          "button_id": "Print",
+          "label": "Print",
+          "description": "Prints the entire intake summary for review or record keeping. Does not include attachments.",
+          "type": "utility",
+          "button_type": "quick action button",
+          "icon": "print",
+          "position": "queue-top",
+          "action": {
+            "type": "print",
+            "print_config": {
+              "template": "eligibility_summary",
+              "include_attachments": false
+            }
+          }
+        },
+        {
+          "button_id": "export_pdf",
+          "label": "Export PDF",
+          "description": "Exports the intake summary and all entered data as a PDF document for download or sharing.",
+          "type": "utility",
+          "button_type": "quick action button",
+          "icon": "download",
+          "position": "queue-top",
+          "action": {
+            "type": "api_call",
+            "endpoint_config": {
+              "endpoint": "/api/intake/export/pdf",
+              "method": "POST",
+              "confirm_required": true,
+              "success_message": "Intake PDF exported successfully.",
+              "error_handling": "toast"
+            }
+          }
+        }
+      ],
+      "screens": [
+        {
+          "screen_number": 1,
+          "id": "STEP_3_1",
+          "step": "3_1",
+          "type": "Screen",
+          "label": "Child and Associated Individuals Entry",
+          "description": "On this screen, you will enter detailed information about the child and all associated individuals involved in the intake. You will see clear sections for the child and for each related person, such as parents, guardians, and household members. Guidance is provided to help you accurately record names, relationships, and contact details. You can add multiple individuals as needed, and the system will prompt you to ensure all required fields are completed. Instructions are displayed to clarify the importance of accurate data entry for case processing. You will be able to review, edit, and remove entries before proceeding.",
+          "details": [
+            {
+              "label": "Child Information",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Child Full Name",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Child name is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Date of Birth",
+                  "type": "date/time",
+                  "required": true,
+                  "error_message": "Date of birth is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Gender",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Gender is required.",
+                  "options": [
+                    "Male",
+                    "Female",
+                    "Other",
+                    "Prefer not to say"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "SSN",
+                  "type": "ssn",
+                  "required": false,
+                  "error_message": "SSN must be valid format.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Address",
+                  "type": "address",
+                  "required": true,
+                  "error_message": "Address is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Phone Number",
+                  "type": "phone",
+                  "required": false,
+                  "error_message": "Phone number must be valid format.",
+                  "readOnly": false
+                }
+              ]
+            },
+            {
+              "label": "Associated Individuals",
+              "repeatable_section": true,
+              "fields": [
+                {
+                  "label": "Full Name",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Name is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Relationship to Child",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Relationship is required.",
+                  "options": [
+                    "Mother",
+                    "Father",
+                    "Guardian",
+                    "Sibling",
+                    "Spouse",
+                    "Other"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "Date of Birth",
+                  "type": "date/time",
+                  "required": false,
+                  "error_message": "Date of birth must be valid.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Gender",
+                  "type": "dropdown",
+                  "required": false,
+                  "error_message": "Gender must be selected.",
+                  "options": [
+                    "Male",
+                    "Female",
+                    "Other",
+                    "Prefer not to say"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "SSN",
+                  "type": "ssn",
+                  "required": false,
+                  "error_message": "SSN must be valid format.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Address",
+                  "type": "address",
+                  "required": false,
+                  "error_message": "Address must be valid.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Phone Number",
+                  "type": "phone",
+                  "required": false,
+                  "error_message": "Phone number must be valid format.",
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Cannot have more than one mother or father per child.",
+            "Birth date cannot be in the future.",
+            "SSN must be unique for each individual.",
+            "Phone number must be valid format.",
+            "If relationship is 'Spouse', only one spouse allowed.",
+            "If individual is minor, guardian information is mandatory."
+          ],
+          "buttons": [
+            {
+              "label": "Next",
+              "actor": "Intake Worker",
+              "description": "Proceed to record allegations after entering all required child and associated individual details."
+            },
+            {
+              "label": "Cancel",
+              "actor": "Intake Worker",
+              "description": "Cancel entry and return to previous screen."
+            }
+          ],
+          "owner": "Intake Worker",
+          "step_number": "3_1",
+          "node_id": "STEP_3_1",
+          "navigation": {
+            "menu_group": "Intake Entry",
+            "display_order": 1,
+            "icon": "user-plus",
+            "breadcrumb": [
+              "Home",
+              "Intake",
+              "Child & Individuals"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home screen.",
+                "type": "primary",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen in the workflow.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "previous_screen",
+                    "confirm_required": false,
+                    "confirm_message": "Returned to previous screen.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for intake entry.",
+                "type": "ghost",
+                "icon": "help-circle",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Intake Entry Help",
+                    "content_source": "/help/intake-entry",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user and system settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to the Allegation Documentation screen after entering all required details.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "bottom-right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate all required fields for child and associated individuals.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "All required fields are valid."
+                          ],
+                          "error_message": [
+                            "Please complete all required fields."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Allegation Documentation screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Navigated to Allegation Documentation."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "child_full_name",
+                      "field_name": "Child Full Name",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Child name is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "child_dob",
+                      "field_name": "Date of Birth",
+                      "field_type": "date/time",
+                      "validation_type": "mandatory",
+                      "error_message": "Date of birth is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "child_gender",
+                      "field_name": "Gender",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Gender is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "child_address",
+                      "field_name": "Address",
+                      "field_type": "address",
+                      "validation_type": "mandatory",
+                      "error_message": "Address is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_1",
+                      "rule_name": "Unique SSN",
+                      "rule_description": "SSN must be unique for each individual.",
+                      "rule_type": "validation",
+                      "condition": "ssn_is_unique",
+                      "action_on_success": "Allow next step.",
+                      "action_on_failure": "Show error.",
+                      "error_message": "Duplicate SSN detected.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_2",
+                      "rule_name": "Birth Date Validity",
+                      "rule_description": "Birth date cannot be in the future.",
+                      "rule_type": "validation",
+                      "condition": "dob <= today",
+                      "action_on_success": "Allow next step.",
+                      "action_on_failure": "Show error.",
+                      "error_message": "Birth date cannot be in the future.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "ChildInfoValidation",
+                        "fields": [
+                          "child_full_name",
+                          "child_dob",
+                          "child_gender",
+                          "child_address"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [
+                      {
+                        "validation_name": "MotherFatherCount",
+                        "fields_involved": [
+                          "associated_individuals.relationship"
+                        ],
+                        "validation_logic": "count('Mother') <= 1 && count('Father') <= 1",
+                        "error_message": "Cannot have more than one mother or father per child."
+                      }
+                    ],
+                    "data_format_rules": [
+                      {
+                        "field_id": "child_ssn",
+                        "format_pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{4}$",
+                        "format_example": "123-45-6789",
+                        "format_description": "SSN must be in valid format."
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "button_id": "Cancel",
+                "label": "Cancel",
+                "description": "Cancel intake entry and return to previous screen.",
+                "type": "secondary",
+                "icon": "x-circle",
+                "button_type": "footer button",
+                "position": "bottom-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "previous_screen",
+                    "confirm_required": true,
+                    "confirm_message": "Intake entry cancelled.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 2,
+          "id": "STEP_3_2",
+          "step": "3_2",
+          "type": "Screen",
+          "label": "Allegation Documentation",
+          "description": "On this screen, you will document all allegations related to the intake. You can add multiple allegations, each with specific details such as type, description, alleged perpetrator, and date of occurrence. Clear instructions are provided to help you accurately describe each allegation. The system will prompt you to ensure all required fields are completed and will guide you to add supporting information as needed. You can review, edit, or remove allegations before proceeding.",
+          "details": [
+            {
+              "label": "Allegations",
+              "repeatable_section": true,
+              "fields": [
+                {
+                  "label": "Allegation Type",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Allegation type is required.",
+                  "options": [
+                    "Physical Abuse",
+                    "Neglect",
+                    "Sexual Abuse",
+                    "Emotional Abuse",
+                    "Other"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "Description",
+                  "type": "textarea",
+                  "required": true,
+                  "error_message": "Description is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Alleged Perpetrator",
+                  "type": "autosuggest",
+                  "required": true,
+                  "error_message": "Alleged perpetrator is required.",
+                  "readOnly": false,
+                  "source_table": "AssociatedIndividuals",
+                  "display_field": "Full Name",
+                  "value_field": "IndividualID"
+                },
+                {
+                  "label": "Date of Occurrence",
+                  "type": "date/time",
+                  "required": true,
+                  "error_message": "Date of occurrence is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Supporting Documentation",
+                  "type": "file",
+                  "required": false,
+                  "error_message": "File must be valid format.",
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Date of occurrence cannot be in the future.",
+            "Alleged perpetrator must be an associated individual.",
+            "Cannot have duplicate allegations of the same type for the same perpetrator.",
+            "Description must be provided for each allegation.",
+            "If 'Other' is selected as allegation type, description must specify details."
+          ],
+          "buttons": [
+            {
+              "label": "Next",
+              "actor": "Intake Worker",
+              "description": "Proceed to review and validate intake after documenting all allegations."
+            },
+            {
+              "label": "Back",
+              "actor": "Intake Worker",
+              "description": "Return to previous screen to edit child and associated individual details."
+            }
+          ],
+          "owner": "Intake Worker",
+          "step_number": "3_2",
+          "node_id": "STEP_3_2",
+          "navigation": {
+            "menu_group": "Allegation Entry",
+            "display_order": 2,
+            "icon": "alert-triangle",
+            "breadcrumb": [
+              "Home",
+              "Intake",
+              "Allegations"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home screen.",
+                "type": "primary",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen in the workflow.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "STEP_3_1",
+                    "confirm_required": false,
+                    "confirm_message": "Returned to previous screen.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for allegation entry.",
+                "type": "ghost",
+                "icon": "help-circle",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Allegation Entry Help",
+                    "content_source": "/help/allegation-entry",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user and system settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to Intake Review and Validation after documenting all allegations.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "bottom-right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate all required fields for allegations.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "All required fields are valid."
+                          ],
+                          "error_message": [
+                            "Please complete all required fields."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Intake Review and Validation screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Navigated to Intake Review and Validation."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "allegation_type",
+                      "field_name": "Allegation Type",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Allegation type is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "allegation_description",
+                      "field_name": "Description",
+                      "field_type": "textarea",
+                      "validation_type": "mandatory",
+                      "error_message": "Description is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "alleged_perpetrator",
+                      "field_name": "Alleged Perpetrator",
+                      "field_type": "autosuggest",
+                      "validation_type": "mandatory",
+                      "error_message": "Alleged perpetrator is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "date_of_occurrence",
+                      "field_name": "Date of Occurrence",
+                      "field_type": "date/time",
+                      "validation_type": "mandatory",
+                      "error_message": "Date of occurrence is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_3",
+                      "rule_name": "No Duplicate Allegations",
+                      "rule_description": "Cannot have duplicate allegations of the same type for the same perpetrator.",
+                      "rule_type": "validation",
+                      "condition": "no_duplicate_allegations",
+                      "action_on_success": "Allow next step.",
+                      "action_on_failure": "Show error.",
+                      "error_message": "Duplicate allegations detected.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_4",
+                      "rule_name": "Date Validity",
+                      "rule_description": "Date of occurrence cannot be in the future.",
+                      "rule_type": "validation",
+                      "condition": "date_of_occurrence <= today",
+                      "action_on_success": "Allow next step.",
+                      "action_on_failure": "Show error.",
+                      "error_message": "Date of occurrence cannot be in the future.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "AllegationValidation",
+                        "fields": [
+                          "allegation_type",
+                          "allegation_description",
+                          "alleged_perpetrator",
+                          "date_of_occurrence"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [
+                      {
+                        "validation_name": "PerpetratorAssociation",
+                        "fields_involved": [
+                          "alleged_perpetrator"
+                        ],
+                        "validation_logic": "alleged_perpetrator in associated_individuals",
+                        "error_message": "Alleged perpetrator must be an associated individual."
+                      }
+                    ],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to previous screen to edit child and associated individual details.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "bottom-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "STEP_3_1",
+                    "confirm_required": false,
+                    "confirm_message": "Returned to previous screen.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 3,
+          "id": "STEP_3_3",
+          "step": "3_3",
+          "type": "Screen",
+          "label": "Intake Review and Validation",
+          "description": "On this screen, you will review all information entered for the intake, including child details, associated individuals, and allegations. The system displays a summary of all data for your confirmation. You will be prompted to validate that all required fields are completed and that the information is accurate. Any missing or inconsistent data will be highlighted for correction. Instructions are provided to guide you through the validation process, and you must acknowledge that the data is complete and correct before submission.",
+          "details": [
+            {
+              "label": "Intake Summary",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Child and Associated Individuals Summary",
+                  "type": "textarea",
+                  "required": false,
+                  "error_message": "Summary must be reviewed.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Allegations Summary",
+                  "type": "textarea",
+                  "required": false,
+                  "error_message": "Summary must be reviewed.",
+                  "readOnly": true
+                }
+              ]
+            },
+            {
+              "label": "Validation Checklist",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "All required fields completed",
+                  "type": "checkbox",
+                  "required": true,
+                  "error_message": "You must confirm all required fields are completed.",
+                  "options": [
+                    "Confirmed"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "Information is accurate and complete",
+                  "type": "checkbox",
+                  "required": true,
+                  "error_message": "You must confirm information is accurate.",
+                  "options": [
+                    "Confirmed"
+                  ],
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "All required fields must be completed before submission.",
+            "No duplicate individuals or allegations allowed.",
+            "Birth dates cannot be in the future.",
+            "SSN must be unique for each individual.",
+            "Alleged perpetrator must be an associated individual.",
+            "If minor, guardian information must be present."
+          ],
+          "buttons": [
+            {
+              "label": "Submit Intake",
+              "actor": "Intake Worker",
+              "description": "Submit the intake for processing after confirming all information is complete and accurate."
+            },
+            {
+              "label": "Back",
+              "actor": "Intake Worker",
+              "description": "Return to previous screen to edit allegations."
+            }
+          ],
+          "owner": "Intake Worker",
+          "step_number": "3_3",
+          "node_id": "STEP_3_3",
+          "navigation": {
+            "menu_group": "Intake Review",
+            "display_order": 3,
+            "icon": "check-circle",
+            "breadcrumb": [
+              "Home",
+              "Intake",
+              "Review & Validation"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home screen.",
+                "type": "primary",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen in the workflow.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "top-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "STEP_3_2",
+                    "confirm_required": false,
+                    "confirm_message": "Returned to previous screen.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for intake review and validation.",
+                "type": "ghost",
+                "icon": "help-circle",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Intake Review Help",
+                    "content_source": "/help/intake-review",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user and system settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "top-right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Submit_Intake",
+                "label": "Submit Intake",
+                "description": "Submit the intake for processing after confirming all information is complete and accurate.",
+                "type": "primary",
+                "icon": "check-circle",
+                "button_type": "footer button",
+                "position": "bottom-right",
+                "action": {
+                  "type": "api_call",
+                  "endpoint_config": {
+                    "endpoint": "/api/intake/submit",
+                    "method": "POST",
+                    "confirm_required": true,
+                    "success_message": "Intake submitted successfully.",
+                    "error_handling": "toast"
+                  },
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate all required fields and business rules before submission.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "All required fields are valid."
+                          ],
+                          "error_message": [
+                            "Please complete all required fields."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "submit_intake",
+                        "description": "Submit intake data to backend for processing.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Intake submitted successfully."
+                          ],
+                          "error_message": [
+                            "Submission failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed",
+                    "validation_checklist_confirmed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "validation_checklist",
+                      "field_name": "Validation Checklist",
+                      "field_type": "checkbox",
+                      "validation_type": "mandatory",
+                      "error_message": "You must confirm all required fields are completed.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_5",
+                      "rule_name": "No Duplicate Individuals",
+                      "rule_description": "No duplicate individuals allowed.",
+                      "rule_type": "validation",
+                      "condition": "no_duplicate_individuals",
+                      "action_on_success": "Allow submission.",
+                      "action_on_failure": "Show error.",
+                      "error_message": "Duplicate individuals detected.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "ReviewValidation",
+                        "fields": [
+                          "validation_checklist"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to previous screen to edit allegations.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "bottom-left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "STEP_3_2",
+                    "confirm_required": false,
+                    "confirm_message": "Returned to previous screen.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "ACTION_1": {
+            "id": "ACTION_1",
+            "name": "Open Help Modal",
+            "implementation": "Opens a modal window with help documentation for the current screen.",
+            "action_type": "modal",
+            "config": {
+              "title": "Help",
+              "content_source": "/help/intake-entry",
+              "size": "medium"
+            }
+          }
+        },
+        {
+          "ACTION_2": {
+            "id": "ACTION_2",
+            "name": "Validate Fields",
+            "implementation": "Validates all required fields and business rules for the current screen.",
+            "action_type": "api_call",
+            "config": {
+              "endpoint": "/api/intake/validate",
+              "method": "POST",
+              "confirm_required": true,
+              "success_message": "Validation successful.",
+              "error_handling": "toast"
+            }
+          }
+        },
+        {
+          "ACTION_3": {
+            "id": "ACTION_3",
+            "name": "Navigate to Next Screen",
+            "implementation": "Navigates to the next screen in the intake workflow.",
+            "action_type": "navigation",
+            "config": {
+              "target": "next_screen",
+              "confirm_required": false,
+              "confirm_message": "Navigated to next screen.",
+              "data_loss_warning": true
+            }
+          }
+        }
+      ],
+      "step_number": 3,
+      "node_id": "STEP_3"
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Assignment",
+      "label": "Submit Intake",
+      "description": "Upon clicking the 'Submit Intake' button, the system initiates backend data validation for the intake record. This includes enforcing mandatory field completion, verifying date formats, checking logical consistency of entered data, and logging all entries and modifications with timestamps for audit trail purposes. If any validation fails, the system returns specific error messages to the user for correction before allowing submission.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Submit Intake",
+            "logic": "Trigger backend validation when the 'Submit Intake' button is pressed. Validate all required fields, ensure correct date formats, and check logical consistency. Log all changes with timestamps for audit purposes. If validation fails, return error messages to the user for correction. Only allow submission if all validations pass."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_4_SUBMIT_INTAKE",
+          "name": "Submit Intake and Log Audit Trail",
+          "implementation": "Triggers backend validation for all intake data, enforcing mandatory field completion, verifying date formats, checking logical consistency, and logging all entries/modifications with timestamps for audit trail. If validation passes, marks intake workflow as complete and proceeds to disposition (STEP_6). If validation fails, returns specific error messages for correction, logs error event, and notifies user.",
+          "trigger": "assignment",
+          "triggerCondition": "User clicks 'Submit Intake' and backend validation passes.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_4_ERROR_SUBMISSION",
+          "name": "Handle Intake Submission Error",
+          "implementation": "Returns error messages to user for any failed backend validation. Highlights fields requiring correction on STEP_3_3, logs error event in audit trail, and notifies user via in-app notification.",
+          "trigger": "assignment",
+          "triggerCondition": "Backend validation fails on submission.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Submit Intake",
+          "action_ids": [
+            "ACTION_4_SUBMIT_INTAKE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Task",
+      "label": "Review Intake Submission",
+      "description": "Intake Worker must review all entered intake data, address any validation errors returned by the system, ensure all mandatory fields are completed, verify date formats and logical consistency, and resubmit the intake if necessary. The system performs backend validation, enforces mandatory field completion, checks for logical consistency, and logs all entries/modifications with timestamps for audit trail. If validation fails, errors are returned for correction.",
+      "taskName": "Review and Correct Intake Submission",
+      "assignedTo": "Intake Worker",
+      "dueDateLogic": {
+        "type": "calculated",
+        "calculation": "currentDate + 1 hour"
+      },
+      "completionConditions": {
+        "type": "manual",
+        "logic": "All validation errors must be resolved, all mandatory fields completed, and intake successfully resubmitted without system errors. Audit trail must record all corrections and submissions."
+      },
+      "priorityLogic": {
+        "type": "manual",
+        "defaultPriority": "high"
+      },
+      "notifications": {
+        "enabled": true,
+        "type": [
+          "email",
+          "in-app",
+          "push"
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_5_RETURN_TO_ENTRY",
+          "name": "Return to Intake Data Entry for Correction",
+          "implementation": "Navigates workflow back to the appropriate intake data entry screen (STEP_3_1, STEP_3_2, or STEP_3_3) for correction or resubmission. Ensures audit trail logs all corrections and notifies user of required actions.",
+          "trigger": "assignment",
+          "triggerCondition": "User clicks 'Return' button after reviewing validation errors.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3_1",
+            "STEP_3_2",
+            "STEP_3_3"
+          ]
+        },
+        {
+          "id": "ACTION_5_RESUBMIT_INTAKE",
+          "name": "Resubmit Intake After Correction",
+          "implementation": "Validates corrected intake data and resubmits for backend validation. Displays inline error messages on STEP_5 if validation fails. Logs resubmission and any corrections in audit trail. If successful, proceeds to disposition (STEP_6).",
+          "trigger": "assignment",
+          "triggerCondition": "User clicks 'Resubmit' after correcting errors.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_5_BACK",
+          "name": "Navigate Back to Previous Step",
+          "implementation": "Navigates back to the previous workflow step (e.g., STEP_4 or STEP_3_3). Logs navigation event in audit trail.",
+          "trigger": "assignment",
+          "triggerCondition": "User clicks 'Back'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_4",
+            "STEP_3_3"
+          ]
+        },
+        {
+          "id": "ACTION_5_HELP",
+          "name": "Open Help Modal",
+          "implementation": "Opens help documentation for intake review and correction. Logs help access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Help' button.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_SETTINGS",
+          "name": "Open Settings Modal",
+          "implementation": "Opens user and system settings modal. Logs settings access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'Settings' button.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_PROFILE",
+          "name": "Open User Profile Modal",
+          "implementation": "Opens user profile modal for viewing and editing. Logs profile access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks 'User Profile' button.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_5_RETURN_TO_ENTRY"
+          ]
+        },
+        {
+          "label": "Resubmit",
+          "action_ids": [
+            "ACTION_5_RESUBMIT_INTAKE"
+          ]
+        },
+        {
+          "label": "Back",
+          "action_ids": [
+            "ACTION_5_BACK"
+          ]
+        },
+        {
+          "label": "Help",
+          "action_ids": [
+            "ACTION_5_HELP"
+          ]
+        },
+        {
+          "label": "Settings",
+          "action_ids": [
+            "ACTION_5_SETTINGS"
+          ]
+        },
+        {
+          "label": "User Profile",
+          "action_ids": [
+            "ACTION_5_PROFILE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Rule",
+      "label": "Determine Disposition",
+      "description": "The Intake Worker reviews statutory and agency criteria, facts, and legal requirements to determine if the report meets criteria for investigation. The worker selects either 'Screen In' (assign for investigation/assessment) or 'Screen Out' (no further action) and documents the rationale for the decision. The system must ensure that the decision is recorded and rationale is provided.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Disposition Selection",
+            "logic": "Require the Intake Worker to select either 'Screen In' or 'Screen Out' based on statutory and agency criteria, facts, and legal requirements."
+          },
+          {
+            "label": "Document Rationale",
+            "logic": "Require the Intake Worker to enter a rationale for the disposition decision. Prevent submission if rationale is missing."
+          },
+          {
+            "label": "Error Handling",
+            "logic": "If a system error occurs (e.g., status is 'error' and message indicates a transaction or result scope issue), prevent the disposition from being recorded and display an error message to the user."
+          }
+        ]
+      },
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_6_SELECT_DISPOSITION",
+          "name": "Select Disposition and Document Rationale",
+          "implementation": "Prompts Intake Worker to select 'Screen In' or 'Screen Out' based on statutory and agency criteria. Requires entry of rationale for decision. Prevents submission if rationale is missing. Records disposition and rationale in system, logs event in audit trail, and displays errors inline on STEP_6 if any validation fails.",
+          "trigger": "rule",
+          "triggerCondition": "User selects disposition and enters rationale, then clicks 'Submit Disposition'.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_7",
+            "STEP_9"
+          ]
+        },
+        {
+          "id": "ACTION_6_ERROR_DISPOSITION",
+          "name": "Handle Disposition Submission Error",
+          "implementation": "Displays error message inline on STEP_6 if system error occurs or rationale is missing. Prevents disposition from being recorded, logs error event in audit trail, and notifies user.",
+          "trigger": "rule",
+          "triggerCondition": "System error or missing rationale on disposition submission.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Submit Disposition",
+          "action_ids": [
+            "ACTION_6_SELECT_DISPOSITION"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Assignment",
+      "label": "Assign to Supervisor",
+      "description": "After successful intake submission, the system routes the completed intake record to the designated supervisor for review and approval. The system restricts access to sensitive information based on user roles and permissions, and notifies the supervisor of the new assignment. All routing actions and access changes are logged for accountability.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to Supervisor",
+            "logic": "Route the completed intake record to the designated supervisor. Enforce access restrictions based on user roles and permissions. Notify the supervisor of the new assignment. Log all routing and access actions for audit trail."
+          }
+        ]
+      },
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_7_ASSIGN_SUPERVISOR",
+          "name": "Assign Intake Record to Supervisor",
+          "implementation": "Routes completed intake record to designated supervisor for review and approval. Restricts access to sensitive information based on user roles and permissions. Notifies supervisor via email and in-app notification. Logs all routing and access actions for audit trail.",
+          "trigger": "assignment",
+          "triggerCondition": "Disposition is 'Screen In' and submission is successful.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        },
+        {
+          "id": "ACTION_7_ERROR_ASSIGNMENT",
+          "name": "Handle Assignment Error",
+          "implementation": "Displays error message inline on STEP_7 if assignment to supervisor fails. Logs error event in audit trail, notifies user, and prevents workflow progression until resolved.",
+          "trigger": "assignment",
+          "triggerCondition": "System error during assignment routing.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Task",
+      "label": "Supervisor Intake Review",
+      "description": "Supervisor must review the assigned intake record for completeness and accuracy, approve the intake or request further information from the Intake Worker as needed. The system routes the completed intake record to the designated supervisor, restricts access to sensitive information based on user roles and permissions, and notifies the supervisor of the new assignment.",
+      "taskName": "Review and Approve Intake Record",
+      "assignedTo": "Supervisor",
+      "dueDateLogic": {
+        "type": "calculated",
+        "calculation": "after previous step completion + 1 day"
+      },
+      "completionConditions": {
+        "type": "manual",
+        "logic": "Supervisor must review all intake details, confirm completeness and accuracy, and either approve the intake or request additional information. Approval or request must be logged in the system."
+      },
+      "priorityLogic": {
+        "type": "manual",
+        "defaultPriority": "high"
+      },
+      "notifications": {
+        "enabled": true,
+        "type": [
+          "email",
+          "in-app"
+        ]
+      },
+      "step_number": 8,
+      "node_id": "STEP_8",
+      "actions": [
+        {
+          "id": "ACTION_8_APPROVE",
+          "name": "Supervisor Reviews and Approves Intake",
+          "implementation": "Supervisor reviews assigned intake record for completeness and accuracy. On approval, logs approval event in audit trail, notifies Intake Worker, and proceeds to closure or next workflow step (STEP_9).",
+          "trigger": "assignment",
+          "triggerCondition": "Supervisor clicks 'Approve' after review.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_9"
+          ]
+        },
+        {
+          "id": "ACTION_8_REQUEST_INFO",
+          "name": "Supervisor Requests More Information",
+          "implementation": "Supervisor requests additional information from Intake Worker. Logs request event in audit trail, notifies Intake Worker via email and in-app notification, and returns workflow to Intake Worker for correction (STEP_5).",
+          "trigger": "assignment",
+          "triggerCondition": "Supervisor clicks 'Request More Info' after review.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_8_REJECT",
+          "name": "Supervisor Rejects Intake",
+          "implementation": "Supervisor rejects intake record outright. Requires entry of rejection rationale. Updates intake status to 'rejected', restricts access, logs rejection event in audit trail, and notifies Intake Worker. Prevents further workflow progression unless resubmission is allowed.",
+          "trigger": "assignment",
+          "triggerCondition": "Supervisor clicks 'Reject' and provides rationale.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        },
+        {
+          "id": "ACTION_8_ERROR_REVIEW",
+          "name": "Handle Supervisor Review Error",
+          "implementation": "Displays error message inline on STEP_8 if system error occurs during supervisor review or approval. Logs error event in audit trail, notifies supervisor, and prevents workflow progression until resolved.",
+          "trigger": "assignment",
+          "triggerCondition": "System error during supervisor review.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        },
+        {
+          "id": "ACTION_8_HELP",
+          "name": "Open Help Modal",
+          "implementation": "Opens help documentation for supervisor intake review. Logs help access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "Supervisor clicks 'Help' button.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        },
+        {
+          "id": "ACTION_8_SETTINGS",
+          "name": "Open Settings Modal",
+          "implementation": "Opens user and system settings modal. Logs settings access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "Supervisor clicks 'Settings' button.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        },
+        {
+          "id": "ACTION_8_PROFILE",
+          "name": "Open User Profile Modal",
+          "implementation": "Opens user profile modal for viewing and editing. Logs profile access in audit trail.",
+          "trigger": "rule",
+          "triggerCondition": "Supervisor clicks 'User Profile' button.",
+          "sequence": 7,
+          "linkedWidgetIds": [
+            "STEP_8"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Approve",
+          "action_ids": [
+            "ACTION_8_APPROVE"
+          ]
+        },
+        {
+          "label": "Request More Info",
+          "action_ids": [
+            "ACTION_8_REQUEST_INFO"
+          ]
+        },
+        {
+          "label": "Reject",
+          "action_ids": [
+            "ACTION_8_REJECT"
+          ]
+        },
+        {
+          "label": "Help",
+          "action_ids": [
+            "ACTION_8_HELP"
+          ]
+        },
+        {
+          "label": "Settings",
+          "action_ids": [
+            "ACTION_8_SETTINGS"
+          ]
+        },
+        {
+          "label": "User Profile",
+          "action_ids": [
+            "ACTION_8_PROFILE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Rule",
+      "label": "Close Intake Record",
+      "description": "When the intake is to be closed (typically after being screened out), the system marks the intake as closed, documents the rationale, restricts access to sensitive information, and maintains an audit trail for accountability. The process must handle errors such as transaction failures and ensure that closure actions are only performed within an open transaction context.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Mark Intake as Closed",
+            "logic": "Upon Intake Worker action to close the intake, update the intake record status to 'closed' and document the rationale for closure."
+          },
+          {
+            "label": "Restrict Access",
+            "logic": "Restrict access to sensitive information in the closed intake record based on user roles and permissions."
+          },
+          {
+            "label": "Maintain Audit Trail",
+            "logic": "Log the closure action, including user, timestamp, and rationale, to the audit trail for accountability."
+          },
+          {
+            "label": "Error Handling",
+            "logic": "If a system error occurs (e.g., status is 'error' and message indicates a transaction or result scope issue), prevent the intake from being closed and display an error message to the user."
+          }
+        ]
+      },
+      "step_number": 9,
+      "node_id": "STEP_9",
+      "actions": [
+        {
+          "id": "ACTION_9_CLOSE_INTAKE_WORKER",
+          "name": "Close Intake Record (Intake Worker)",
+          "implementation": "If user role is Intake Worker, updates intake record status to 'closed' upon action. Documents rationale for closure, restricts access to sensitive information based on user roles, and logs closure action (user, timestamp, rationale) in audit trail. Notifies relevant users of closure. Displays errors inline on STEP_9 if any validation fails.",
+          "trigger": "rule",
+          "triggerCondition": "Intake Worker clicks 'Close Intake', rationale is provided, and transaction is open.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_9"
+          ]
+        },
+        {
+          "id": "ACTION_9_CLOSE_INTAKE_SUPERVISOR",
+          "name": "Close Intake Record (Supervisor)",
+          "implementation": "If user role is Supervisor, updates intake record status to 'closed' upon action. Documents rationale for closure, restricts access to sensitive information based on user roles, and logs closure action (user, timestamp, rationale) in audit trail. Notifies relevant users of closure. Displays errors inline on STEP_9 if any validation fails.",
+          "trigger": "rule",
+          "triggerCondition": "Supervisor clicks 'Close Intake', rationale is provided, and transaction is open.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_9"
+          ]
+        },
+        {
+          "id": "ACTION_9_ERROR_CLOSURE",
+          "name": "Handle Intake Closure Error",
+          "implementation": "Displays error message inline on STEP_9 if system error or transaction failure occurs during closure. Prevents intake from being closed, logs error event in audit trail, and notifies user.",
+          "trigger": "rule",
+          "triggerCondition": "System error or transaction closed during closure attempt.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_9"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Close Intake (Intake Worker)",
+          "action_ids": [
+            "ACTION_9_CLOSE_INTAKE_WORKER"
+          ]
+        },
+        {
+          "label": "Close Intake (Supervisor)",
+          "action_ids": [
+            "ACTION_9_CLOSE_INTAKE_SUPERVISOR"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_REPORT_DATE_AND_TIME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_REPORT_TYPE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_REPORTER_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_REPORTER_RELATIONSHIP_TO_CHILD",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_REPORTER_CONTACT_INFORMATION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_ANONYMOUS_REPORTER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_INCIDENT_DATE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_INCIDENT_LOCATION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_BRIEF_DESCRIPTION_OF_INCIDENT",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_IMMEDIATE_SAFETY_CONCERNS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_1_REPORT_INFORMATION",
+      "endNode": "FIELD_STEP_1_SAFETY_CONCERN_DETAILS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3_1",
+      "endNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_CHILD_FULL_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_DATE_OF_BIRTH",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_GENDER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_CHILD_INFORMATION",
+      "endNode": "FIELD_STEP_3_1_PHONE_NUMBER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3_1",
+      "endNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_FULL_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_RELATIONSHIP_TO_CHILD",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_DATE_OF_BIRTH",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_GENDER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_1_ASSOCIATED_INDIVIDUALS",
+      "endNode": "FIELD_STEP_3_1_ASSOCIATED_PHONE_NUMBER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3_2",
+      "endNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "endNode": "FIELD_STEP_3_2_ALLEGATION_TYPE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "endNode": "FIELD_STEP_3_2_DESCRIPTION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "endNode": "FIELD_STEP_3_2_ALLEGED_PERPETRATOR",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "endNode": "FIELD_STEP_3_2_DATE_OF_OCCURRENCE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_2_ALLEGATIONS",
+      "endNode": "FIELD_STEP_3_2_SUPPORTING_DOCUMENTATION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3_3",
+      "endNode": "SECTION_STEP_3_3_INTAKE_SUMMARY",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_3_3_INTAKE_SUMMARY",
+      "endNode": "FIELD_STEP_3_3_CHILD_AND_ASSOCIATED_INDIVIDUALS_SUMMARY",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_3_INTAKE_SUMMARY",
+      "endNode": "FIELD_STEP_3_3_ALLEGATIONS_SUMMARY",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3_3",
+      "endNode": "SECTION_STEP_3_3_VALIDATION_CHECKLIST",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_STEP_3_3_VALIDATION_CHECKLIST",
+      "endNode": "FIELD_STEP_3_3_ALL_REQUIRED_FIELDS_COMPLETED",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_STEP_3_3_VALIDATION_CHECKLIST",
+      "endNode": "FIELD_STEP_3_3_INFORMATION_ACCURATE_AND_COMPLETE",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
