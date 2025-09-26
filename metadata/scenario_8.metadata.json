@@ -1,0 +1,813 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Member Intake and MCI Search",
+      "description": "On this screen, the Intake Specialist is guided to enter initial member demographic details and search for existing records in the Master Client Index (MCI). The screen provides clear instructions on entering accurate information, such as name, date of birth, SSN, and contact details. The user is informed that searching for existing records helps prevent duplicate entries and ensures data integrity. Contextual help is available for each field, and the user is prompted to review all entries before proceeding. The screen also explains the importance of verifying member identity and provides guidance on what to do if a match is found or not found.",
+      "details": [
+        {
+          "label": "Member Demographic Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique in the system.",
+        "Phone number must be in valid format.",
+        "If member is under 18, guardian information is required in later steps.",
+        "Email address must be in valid format."
+      ],
+      "buttons": [
+        {
+          "label": "Search MCI",
+          "actor": "Intake Specialist",
+          "description": "Initiates a search in the Master Client Index using the entered demographic data.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        },
+        {
+          "label": "Clear",
+          "actor": "Intake Specialist",
+          "description": "Clears all entered fields to allow re-entry.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Trigger MCI Search",
+          "implementation": "Validates all required demographic fields (First Name, Last Name, Date of Birth, Gender, SSN, Address). If validation passes, initiates a search in the Master Client Index using the entered demographic data. Passes all entered data to the MCI search process. If validation fails, displays specific error messages for each invalid field, logs the error, and prevents progression. All validation errors are recorded for audit purposes.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Search MCI' button and all required fields pass validation.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Clear Intake Entry Fields",
+          "implementation": "Clears all entered member demographic fields on the intake entry screen. Resets all validation messages and logs the clear action for audit.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Clear' button.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_3",
+          "name": "Display Intake Entry Validation Error",
+          "implementation": "Displays validation error messages for any required fields that are missing or invalid. Prevents progression until all errors are resolved. Logs all validation errors and provides user guidance for correction.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Search MCI' button and one or more required fields fail validation.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_4",
+          "name": "Return from Other Screens",
+          "implementation": "Allows navigation back to the Member Intake Entry Screen from other screens (e.g., Record Selection, Additional Intake Information). Restores previously entered data and logs the navigation event.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Back' button on another screen.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search MCI Process",
+      "description": "When the Intake Specialist clicks the 'Search MCI' button, the system initiates a process to query the Master Client Index (MCI) using the entered demographic data. The system returns any matching member records or indicates if no match is found.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "Upon activation of the 'Search MCI' button, the system uses the provided demographic data to query the MCI. If the query executes successfully, matching records are returned. If an error occurs (e.g., 'Unexpected Neo4j error'), the system displays the error message to the Intake Specialist."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_5",
+          "name": "Navigate to MCI Record Match Decision",
+          "implementation": "After the MCI search completes successfully, passes all search results and entered demographic data to the MCI Record Match Decision step. Logs the transition and any relevant data for audit.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search process completes with success.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_6",
+          "name": "Display MCI Search Error",
+          "implementation": "If the MCI search fails (e.g., due to a system error), displays the error message to the Intake Specialist in a modal or inline alert. Provides options to retry the search or return to the intake entry screen. Logs the error and escalation if repeated failures occur.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search process returns an error status.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_7",
+          "name": "Retry MCI Search",
+          "implementation": "Allows the Intake Specialist to retry the MCI search after an error has occurred. Re-uses the previously entered demographic data and logs the retry attempt.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after MCI search error.",
+          "sequence": 7,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "MCI Record Match Decision",
+      "description": "After the MCI search, the system determines if any matching member records exist. If matches are found, the process continues to allow selection of an existing record. If no matches are found, the process proceeds to create a new MCI record.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Evaluate MCI Search Result",
+            "logic": "If the search result status is 'error', display the error message to the Intake Specialist and halt further processing. If the status indicates success and matching records are found, proceed to the record selection step. If no matches are found, proceed to the new record creation process."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_8",
+          "name": "Navigate to Record Selection Screen",
+          "implementation": "If the MCI search result status is 'success' and matching records are found, transitions to the Select and Confirm Existing MCI Record screen. Passes all matching records and entered demographic data to the next screen. Logs the transition and data for audit.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search result status is 'success' and matching records are found.",
+          "sequence": 8,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_9",
+          "name": "Navigate to New MCI Record Creation",
+          "implementation": "If the MCI search result status is 'success' and no matching records are found, transitions to the Create New MCI Record process. Passes all entered demographic data to the new record creation process. Logs the transition and data for audit.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search result status is 'success' and no matching records are found.",
+          "sequence": 9,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_10",
+          "name": "Display MCI Search Result Error",
+          "implementation": "If the MCI search result status is 'error', displays the error message to the Intake Specialist and provides options to retry the search or return to the intake entry screen. Halts further processing until the error is resolved. Logs the error and escalation if repeated failures occur.",
+          "trigger": "Rule",
+          "triggerCondition": "MCI search result status is 'error'.",
+          "sequence": 10,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_11",
+          "name": "Retry MCI Search Result",
+          "implementation": "Allows the Intake Specialist to retry the MCI search after a result error. Re-uses the previously entered demographic data and logs the retry attempt.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after MCI search result error.",
+          "sequence": 11,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Select and Confirm Existing MCI Record",
+      "description": "After searching, the Intake Specialist is presented with a list of matching member records from the Master Client Index. The screen displays key details for each match, such as name, date of birth, SSN, and address, allowing the user to review and compare. The user is guided to select the correct record if a match is found, with instructions to confirm the selection before proceeding. If no match is appropriate, the user is advised to return and create a new record. The screen provides contextual help for resolving duplicate or similar records and requires acknowledgment of the selection.",
+      "details": [
+        {
+          "label": "Matching MCI Records",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Record Selection",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select a record to proceed.",
+              "options": [
+                "Select"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": false,
+              "error_message": "First Name is displayed for reference.",
+              "readOnly": true
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Last Name is displayed for reference.",
+              "readOnly": true
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": false,
+              "error_message": "Date of Birth is displayed for reference.",
+              "readOnly": true
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Gender is displayed for reference.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn",
+              "required": false,
+              "error_message": "SSN is displayed for reference.",
+              "readOnly": true
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": false,
+              "error_message": "Address is displayed for reference.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot select more than one record.",
+        "If no record is selected, user must confirm creation of a new MCI record.",
+        "Selected record must match entered demographic data.",
+        "If duplicate records are found, user must resolve before proceeding."
+      ],
+      "buttons": [
+        {
+          "label": "Confirm Selection",
+          "actor": "Intake Specialist",
+          "description": "Confirms the selected MCI record for intake processing.",
+          "action_ids": [
+            "ACTION_12"
+          ]
+        },
+        {
+          "label": "Create New Record",
+          "actor": "Intake Specialist",
+          "description": "Initiates creation of a new MCI record if no suitable match is found.",
+          "action_ids": [
+            "ACTION_14"
+          ]
+        },
+        {
+          "label": "Back",
+          "actor": "Intake Specialist",
+          "description": "Returns to the previous screen to modify search criteria.",
+          "action_ids": [
+            "ACTION_15"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_12",
+          "name": "Confirm Existing MCI Record Selection",
+          "implementation": "Validates that a record is selected and matches entered demographic data. If validation passes, updates the workflow to use the selected MCI record, passes the selected record and demographic data to the Additional Intake Information screen (STEP_6), and logs the selection. If validation fails, displays error messages, logs the error, and prevents progression until resolved.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Confirm Selection' and validation passes.",
+          "sequence": 12,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_13",
+          "name": "Display Record Selection Validation Error",
+          "implementation": "Displays error messages if no record is selected or if the selected record does not match entered demographic data. Prevents progression until errors are resolved. Logs all validation errors and provides user guidance for correction.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Confirm Selection' and validation fails.",
+          "sequence": 13,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_14",
+          "name": "Initiate New MCI Record Creation",
+          "implementation": "If no suitable match is found, initiates creation of a new MCI record by transitioning to the Create New MCI Record process (STEP_5). Passes all entered demographic data to the new record creation process and logs the transition.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Create New Record' button.",
+          "sequence": 14,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_15",
+          "name": "Return to Intake Entry Screen",
+          "implementation": "Returns to the Member Intake Entry Screen to allow the Intake Specialist to modify search criteria or correct data. Restores previously entered data and logs the navigation event.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Back' button.",
+          "sequence": 15,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Create New MCI Record Process",
+      "description": "If no matching MCI record is found, the system creates a new member record in the Master Client Index using the entered demographic and domain-specific data. The process must handle and report any errors encountered during record creation.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create New MCI Record",
+            "logic": "If the Intake Specialist initiates new record creation, the system attempts to create a new MCI record with the provided data. If the operation is successful, the new record is added to the MCI. If an error occurs (e.g., 'Unexpected Neo4j error'), the system displays the error message and does not create the record."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_16",
+          "name": "Create New MCI Record",
+          "implementation": "Validates all required data for new MCI record creation. If validation passes, attempts to create a new member record in the Master Client Index. On success, passes the new record and demographic data to the Additional Intake Information screen (STEP_6), logs the creation, and records the event for audit. On failure, displays the error message to the Intake Specialist, logs the error, and provides options to retry or return to intake entry.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist initiates new record creation and all required data is valid.",
+          "sequence": 16,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_17",
+          "name": "Display New MCI Record Creation Error",
+          "implementation": "If an error occurs during new MCI record creation (e.g., database error), displays the error message to the Intake Specialist, logs the error, and provides options to retry or return to the intake entry screen. Escalates to support if repeated failures occur.",
+          "trigger": "Rule",
+          "triggerCondition": "New MCI record creation fails.",
+          "sequence": 17,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_18",
+          "name": "Retry New MCI Record Creation",
+          "implementation": "Allows the Intake Specialist to retry the new MCI record creation after a failure. Re-uses the previously entered demographic data and logs the retry attempt.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Retry' button after new MCI record creation error.",
+          "sequence": 18,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Retry",
+          "action_ids": [
+            "ACTION_18"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Additional Intake Information",
+      "description": "This screen allows the Intake Specialist to enter any additional required intake information for the member. The user is presented with fields for domain-specific data such as program eligibility, referral source, and special needs. Instructions clarify which fields are mandatory and provide guidance on entering accurate information. The screen may include repeatable sections for multiple referrals or needs. The user is prompted to review all entries for completeness and accuracy before finalizing the intake. Contextual help and validation messages assist the user in meeting all requirements.",
+      "details": [
+        {
+          "label": "Intake Program Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Program Eligibility",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Program eligibility is required.",
+              "options": [
+                "Medicaid",
+                "Medicare",
+                "CHIP",
+                "Private Insurance",
+                "Uninsured"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Referral Source",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Referral source is required.",
+              "options": [
+                "Self",
+                "Family",
+                "Physician",
+                "Hospital",
+                "Agency",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Referral Date",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Referral date is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Special Needs and Accommodations",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Special Need Type",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Special need type is optional.",
+              "options": [
+                "Physical Disability",
+                "Mental Health",
+                "Language Assistance",
+                "Dietary Restriction",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Description",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Description is optional.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Referral date cannot be in the future.",
+        "If 'Other' is selected for Referral Source, description is required.",
+        "If 'Special Need Type' is selected, description must be provided.",
+        "Cannot have duplicate special need types for the same member.",
+        "Program eligibility must match member's demographic and insurance data."
+      ],
+      "buttons": [
+        {
+          "label": "Save and Continue",
+          "actor": "Intake Specialist",
+          "description": "Saves the entered intake information and proceeds to finalize the intake process.",
+          "action_ids": [
+            "ACTION_19"
+          ]
+        },
+        {
+          "label": "Back",
+          "actor": "Intake Specialist",
+          "description": "Returns to the previous screen to review or edit member details.",
+          "action_ids": [
+            "ACTION_21"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_19",
+          "name": "Save Additional Intake Data and Continue",
+          "implementation": "Validates all required additional intake fields (Program Eligibility, Referral Source, Referral Date, and any required descriptions for 'Other' or special needs). Checks for duplicate special need types and displays error if found. If validation passes, saves the intake data to the system, passes all collected data to the Finalize and Submit Intake Process screen (STEP_7), and logs the event. If validation fails, displays error messages, logs the error, and prevents progression until errors are resolved.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Save and Continue' and all required fields pass validation.",
+          "sequence": 19,
+          "linkedWidgetIds": [
+            "STEP_7"
+          ]
+        },
+        {
+          "id": "ACTION_20",
+          "name": "Display Additional Intake Data Validation Error",
+          "implementation": "Displays error messages for any required additional intake fields that are missing or invalid, including duplicate special need types. Prevents progression until all errors are resolved. Logs all validation errors and provides user guidance for correction.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Save and Continue' and one or more required fields fail validation.",
+          "sequence": 20,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_21",
+          "name": "Return to Previous Step",
+          "implementation": "Returns to the previous screen (STEP_4 or STEP_1, depending on workflow context) to allow the Intake Specialist to review or edit member details. Restores previously entered data and logs the navigation event.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Specialist clicks 'Back' button.",
+          "sequence": 21,
+          "linkedWidgetIds": [
+            "STEP_4",
+            "STEP_1"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Member Demographic Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Member Demographic Information",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Matching MCI Records",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Record Selection",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matching MCI Records",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Intake Program Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Intake Program Details",
+      "endNode": "Program Eligibility",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Program Details",
+      "endNode": "Referral Source",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Program Details",
+      "endNode": "Referral Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Special Needs and Accommodations",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Special Needs and Accommodations",
+      "endNode": "Special Need Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Special Needs and Accommodations",
+      "endNode": "Description",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
