@@ -1,0 +1,709 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Member Intake and Record Search",
+      "description": "On this screen, you will enter the initial details for a new member intake. You can search for existing member records to avoid duplicates. The screen provides clear instructions and guidance for entering personal and contact information, and prompts you to review your entries before proceeding. If a matching record is found, you will be able to link to it; otherwise, you can continue to create a new record. Please ensure all required fields are completed accurately. The system will validate your entries and provide feedback if corrections are needed.",
+      "details": [
+        {
+          "label": "Member Personal Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Contact Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone Number is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email Address is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Home Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Home Address is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Search Existing Member Records",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Search by Name or SSN",
+              "type": "autosuggest",
+              "required": false,
+              "error_message": "Search input is optional.",
+              "readOnly": false,
+              "source_table": "MCI_Member",
+              "display_field": "FullName",
+              "value_field": "MemberID"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique.",
+        "Phone number must be in valid format.",
+        "If member is under 18, guardian information is required.",
+        "Cannot create duplicate member records with same SSN."
+      ],
+      "buttons": [
+        {
+          "label": "Search Records",
+          "actor": "Intake Specialist",
+          "description": "Initiates a search for existing member records using the entered details.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        },
+        {
+          "label": "Next",
+          "actor": "Intake Specialist",
+          "description": "Proceeds to the next step after entering and validating member details.",
+          "action_ids": [
+            "ACTION_3"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Validate Member Details",
+          "implementation": "Validates all entered member details in real-time as the Intake Specialist fills out the form. Checks required fields, unique SSN, valid phone format, and guardian info if under 18. Displays specific error messages next to fields if validation fails. Prevents progression until all validations pass.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist enters or updates any member detail field.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Trigger MCI Search",
+          "implementation": "Initiates a query to the Master Client Index (MCI) using validated member details. If validation fails, displays error messages and halts search. If validation passes, proceeds to STEP_2 for MCI search and displays loading indicator.",
+          "trigger": "rule",
+          "triggerCondition": "Intake Specialist clicks 'Search Records' button and all required member details are valid.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_3",
+          "name": "Proceed to Next Step",
+          "implementation": "Allows progression to the next step after all member details are validated. If validation fails, displays error messages and prevents progression.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist clicks 'Next' button.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_4",
+          "name": "Edit Member Information",
+          "implementation": "Allows the Intake Specialist to edit entered member information at any time before proceeding. Preserves entered data for editing and re-validation. Real-time validation is applied as edits are made.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist clicks 'Edit Information' button.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search MCI Record",
+      "description": "When the Intake Specialist clicks the 'Search MCI' button, the system initiates a query to the Master Client Index (MCI) using the entered member details. The system retrieves and displays any matching member records for review.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "Upon 'Search MCI' button click, system uses entered member details to query the MCI. If the query encounters an error (e.g., status = 'error'), display the error message to the Intake Specialist and halt further processing until resolved."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_5",
+          "name": "Handle MCI Search Results",
+          "implementation": "Evaluates the results of the MCI search. If status is 'error', displays the error message to the Intake Specialist and provides options to retry search or return to STEP_1 to edit member details. If status is not 'error', passes search results to STEP_3 for evaluation.",
+          "trigger": "rule",
+          "triggerCondition": "MCI search completes (success or error).",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3",
+            "STEP_1",
+            "STEP_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "MCI Record Found?",
+      "description": "The system evaluates the results of the MCI search to determine if a matching member record exists. If the search returns one or more valid records, proceed to link intake to the existing record; otherwise, prompt for new record creation.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Evaluate Search Results",
+            "logic": "If status = 'error', display the error message and do not proceed. If status is not 'error', check if the search results contain at least one matching member record. If a match is found, proceed to 'Use Existing MCI Record'; if not, proceed to 'Create New MCI Record'."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_6",
+          "name": "Evaluate MCI Search Results",
+          "implementation": "Checks if search results contain at least one matching member record and status is not 'error'. If a match is found, proceeds to STEP_4 to link intake to existing record. If no match is found, proceeds to STEP_5 to create new MCI record. If status is 'error', displays error message and provides options to retry search or return to STEP_1.",
+          "trigger": "rule",
+          "triggerCondition": "MCI search results are available.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4",
+            "STEP_5",
+            "STEP_1",
+            "STEP_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Use Existing MCI Record",
+      "description": "If a matching MCI record is found, the Intake Specialist selects the record. The system links the intake to the selected MCI record and pre-populates demographic fields where available.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Link Intake to Existing Record",
+            "logic": "If status is not 'error' and a matching MCI record is selected, system links the intake to the selected record and pre-populates demographic fields. If status = 'error', display the error message and prevent linking."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_7",
+          "name": "Link Intake to Existing MCI Record and Pre-populate Demographics",
+          "implementation": "Links the intake to the selected existing MCI record. Pre-populates demographic fields from the MCI record into the intake. If successful, navigates to STEP_6 for review and finalization. If status is 'error', displays error message and provides options to retry linking, select a different record, or return to STEP_1 to edit member details.",
+          "trigger": "rule",
+          "triggerCondition": "Intake Specialist selects a matching MCI record.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_4",
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Create New MCI Record",
+      "description": "If no matching MCI record is found, the Intake Specialist initiates creation of a new MCI record using the entered member details. The system creates the new record and links it to the intake.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create and Link New Record",
+            "logic": "If status is not 'error', system creates a new MCI record using the entered member details and links it to the intake. If status = 'error', display the error message and prevent record creation."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_8",
+          "name": "Create and Link New MCI Record",
+          "implementation": "Creates a new MCI record using entered member details and links it to the intake. After successful creation, navigates to STEP_6 for review and finalization. If status is 'error', displays error message and provides options to retry creation, return to STEP_1 to edit member details, or cancel intake.",
+          "trigger": "rule",
+          "triggerCondition": "No matching MCI record found.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_5",
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Review and Finalize Member Intake",
+      "description": "This screen allows you to review all the information collected for the member intake. You will see a summary of personal, contact, and demographic details, including any linked records. Please verify that all information is accurate and complete. The screen provides instructions for final confirmation and highlights any missing or inconsistent data. You must acknowledge the accuracy of the information before submitting. Once satisfied, you can finalize the intake process.",
+      "details": [
+        {
+          "label": "Member Intake Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone Number is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email Address is optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Home Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Home Address is required.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Acknowledgment",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "I confirm that all information entered is accurate and complete.",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "You must confirm the accuracy of the information.",
+              "options": [
+                "Confirmed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique.",
+        "Phone number must be in valid format.",
+        "If member is under 18, guardian information is required.",
+        "Cannot submit intake without acknowledgment."
+      ],
+      "buttons": [
+        {
+          "label": "Edit Information",
+          "actor": "Intake Specialist",
+          "description": "Allows you to return to previous screens to correct or update member details.",
+          "action_ids": [
+            "ACTION_11"
+          ]
+        },
+        {
+          "label": "Submit Intake",
+          "actor": "Intake Specialist",
+          "description": "Finalizes and submits the member intake for processing. Triggers background operations and notifications.",
+          "action_ids": [
+            "ACTION_9",
+            "ACTION_10",
+            "ACTION_12",
+            "ACTION_13"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Real-time Validate Intake Data",
+          "implementation": "Validates all intake data in real-time as the Intake Specialist reviews the summary. Checks required fields, unique SSN, valid phone format, guardian info if under 18, and acknowledgment checkbox. Displays specific error messages next to fields if validation fails. Prevents submission until all validations pass.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist reviews or edits any intake data or acknowledgment checkbox.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_10",
+          "name": "Validate Acknowledgment Checkbox",
+          "implementation": "Checks that the acknowledgment checkbox is checked before allowing submission. If not checked, displays error message and prevents submission.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist attempts to submit intake without acknowledgment.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_11",
+          "name": "Edit Member Information",
+          "implementation": "Allows the Intake Specialist to return to previous screens (STEP_1) to correct or update member details. Preserves entered data for editing and re-validation. After editing, re-validates data before allowing submission.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist clicks 'Edit Information' button.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_12",
+          "name": "Re-validate Data After Editing",
+          "implementation": "After editing member information, re-validates all intake data to ensure completeness and correctness before submission. Displays any errors found and prevents submission until resolved.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist returns from editing and attempts to submit intake.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        },
+        {
+          "id": "ACTION_13",
+          "name": "Submit Intake",
+          "implementation": "Validates all intake data for completeness and correctness. If all validations pass, proceeds to STEP_7 to save intake data and trigger background operations. If validation fails, displays error messages and prevents submission.",
+          "trigger": "assignment",
+          "triggerCondition": "Intake Specialist clicks 'Submit Intake' button and all validations pass.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Rule",
+      "label": "Submit Intake",
+      "description": "Upon submission of finalized intake information, the system validates and saves all intake data. It triggers background operations including audit logging, compliance documentation, and schedules daily client notification at 2:00 AM.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Validate and Save Intake",
+            "logic": "If status is not 'error', system validates and saves intake data, triggers audit logging, compliance documentation, and schedules daily client notification at 2:00 AM. If status = 'error', display the error message and prevent submission."
+          }
+        ]
+      },
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_14",
+          "name": "Validate, Save, and Trigger Background Operations",
+          "implementation": "Validates all intake data for completeness and correctness. If status is not 'error', saves intake data, triggers audit logging, compliance documentation, and schedules daily client notification at 2:00 AM. If status is 'error', displays error message and provides options to retry submission or return to STEP_6 for further editing.",
+          "trigger": "rule",
+          "triggerCondition": "Intake submission is initiated from STEP_6 and all validations pass.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_7"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_CONTACT_INFORMATION_STEP_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_SEARCH_EXISTING_MEMBER_RECORDS_STEP_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "SECTION_ACKNOWLEDGMENT_STEP_6",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_FIRST_NAME_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_MIDDLE_NAME_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_LAST_NAME_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_DATE_OF_BIRTH_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_GENDER_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "endNode": "FIELD_SSN_SECTION_MEMBER_PERSONAL_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_CONTACT_INFORMATION_STEP_1",
+      "endNode": "FIELD_PHONE_NUMBER_SECTION_CONTACT_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_CONTACT_INFORMATION_STEP_1",
+      "endNode": "FIELD_EMAIL_ADDRESS_SECTION_CONTACT_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_CONTACT_INFORMATION_STEP_1",
+      "endNode": "FIELD_HOME_ADDRESS_SECTION_CONTACT_INFORMATION_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_SEARCH_EXISTING_MEMBER_RECORDS_STEP_1",
+      "endNode": "FIELD_SEARCH_BY_NAME_OR_SSN_SECTION_SEARCH_EXISTING_MEMBER_RECORDS_STEP_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_FIRST_NAME_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_MIDDLE_NAME_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_LAST_NAME_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_DATE_OF_BIRTH_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_GENDER_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_SSN_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_PHONE_NUMBER_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_EMAIL_ADDRESS_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "endNode": "FIELD_HOME_ADDRESS_SECTION_MEMBER_INTAKE_SUMMARY_STEP_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_ACKNOWLEDGMENT_STEP_6",
+      "endNode": "FIELD_CONFIRM_ACCURACY_SECTION_ACKNOWLEDGMENT_STEP_6",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
