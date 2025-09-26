@@ -1,0 +1,2381 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Intake Channel Selection and Referral Initiation",
+      "description": "On this screen, you will begin a new intake referral. You will select the intake channel (Phone Call or Online Portal). The system will automatically generate a unique case ID and record the referral date and time. You will see a brief explanation of the intake process and what happens next. Please confirm the information before proceeding.",
+      "details": [
+        {
+          "label": "Intake Channel Selection",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Intake Channel",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an intake channel.",
+              "options": [
+                "Phone Call",
+                "Online Portal"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Referral Date/Time",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Referral date and time is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Case ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Case ID is required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Referral date/time must be current and not in the future.",
+        "Case ID must be unique."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to select intake method.",
+          "action_ids": [
+            "ACTION_1B"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1A",
+          "name": "Auto-Populate Referral Date/Time and Generate Case ID",
+          "implementation": "On screen load, the system automatically populates the current referral date/time and generates a unique case ID. These fields are displayed as read-only. The system also provides a brief explanation of the intake process and next steps.",
+          "trigger": "System",
+          "triggerCondition": "Screen loaded.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1B",
+          "name": "Validate Intake Channel and Proceed",
+          "implementation": "Validates that an intake channel is selected. If valid, proceeds to Intake Method Selection (STEP_2). If not valid, displays error and remains on this screen. Ensures referral date/time is current and case ID is unique.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and required fields are valid.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Intake Method Selection",
+      "description": "On this screen, you will choose the intake method. If you select Conversational Intake, you will be able to enter a narrative and the system will pre-fill structured fields. If you select Standard Intake, you will draft the narrative during the call and it will be displayed for reference throughout the process. Instructions are provided to help you understand the differences.",
+      "details": [
+        {
+          "label": "Intake Method",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Intake Method",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select an intake method.",
+              "options": [
+                "Conversational Intake",
+                "Standard Intake"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Intake method selection is required."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to narrative entry.",
+          "action_ids": [
+            "ACTION_2A",
+            "ACTION_2B"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_2A",
+          "name": "Branch to Conversational Intake Narrative Entry",
+          "implementation": "If 'Conversational Intake' is selected, enables narrative entry and pre-fills structured fields where possible. Provides instructions and guidance on narrative entry. Proceeds to Narrative Entry (STEP_3).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and Intake Method is 'Conversational Intake'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_2B",
+          "name": "Branch to Standard Intake Narrative Draft",
+          "implementation": "If 'Standard Intake' is selected, enables narrative draft entry during call and ensures the narrative will be displayed for reference throughout the process. Provides instructions and guidance. Proceeds to Narrative Draft (STEP_4).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and Intake Method is 'Standard Intake'.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Narrative Entry (Conversational Intake)",
+      "description": "You will enter a detailed narrative describing the referral. The system will use this narrative to pre-fill structured fields in subsequent screens. Guidance is provided to help you include all relevant information. You can review and edit the narrative before continuing.",
+      "details": [
+        {
+          "label": "Referral Narrative",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Narrative Description",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Narrative description is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Narrative description must not be empty.",
+        "Narrative should include all relevant referral details."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to person information entry.",
+          "action_ids": [
+            "ACTION_3A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_3A",
+          "name": "Validate Conversational Narrative, Pre-Fill Structured Fields, and Proceed",
+          "implementation": "Validates that the narrative is entered. If valid, the system pre-fills structured fields in subsequent screens based on the narrative content. Provides guidance for narrative entry. Proceeds to Person Information Entry (STEP_5). If not valid, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and required narrative is present.",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Narrative Draft (Standard Intake)",
+      "description": "Draft the referral narrative during the call. The narrative will be displayed on each screen to assist with entering structured data. You can update the narrative as needed. Instructions are provided to help you capture all necessary information.",
+      "details": [
+        {
+          "label": "Referral Narrative Draft",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Narrative Draft",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Narrative draft is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Narrative draft must not be empty.",
+        "Narrative should be updated as new information is gathered."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to person information entry.",
+          "action_ids": [
+            "ACTION_4A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_4A",
+          "name": "Validate Standard Narrative Draft, Display Narrative for Reference, and Proceed",
+          "implementation": "Validates that the narrative draft is entered. If valid, ensures the narrative is displayed on each subsequent screen to assist with structured data entry. Provides instructions for updating the narrative as new information is gathered. Proceeds to Person Information Entry (STEP_5). If not valid, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and required narrative draft is present.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Person Information Entry",
+      "description": "Enter detailed information for each person involved in the referral. You can add multiple individuals. For each person, provide names, date of birth, language, address, contact details, gender, SSN, relationship to child(ren), intake role, school info/ICWA (if victim), and any special considerations. The system will generate a unique individual ID for each entry. Guidance is provided for each field.",
+      "details": [
+        {
+          "label": "Person Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Language",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Primary language is required.",
+              "options": [
+                "English",
+                "Spanish",
+                "Chinese",
+                "Russian",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Address Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Address type is required.",
+              "options": [
+                "Residential",
+                "Mailing",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Residential/Mailing Toggle",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select address type.",
+              "options": [
+                "Residential",
+                "Mailing"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Phone",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Email",
+              "type": "text",
+              "required": false,
+              "error_message": "Email format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Non-Binary",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "SSN",
+              "type": "ssn",
+              "required": false,
+              "error_message": "SSN format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Child(ren)",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship to child(ren) is required.",
+              "options": [
+                "Mother",
+                "Father",
+                "Sibling",
+                "Guardian",
+                "Relative",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Intake Role",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Intake role is required.",
+              "options": [
+                "Victim",
+                "Perpetrator",
+                "Reporter",
+                "Witness",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "School Info/ICWA (if Victim)",
+              "type": "text",
+              "required": false,
+              "error_message": "School info/ICWA is optional.",
+              "readOnly": false,
+              "visible_if": "Intake Role: Victim"
+            },
+            {
+              "label": "Special Considerations",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Special considerations are optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Individual ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Individual ID is required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Birth date cannot be in the future.",
+        "SSN must be unique.",
+        "Cannot have more than one mother per child.",
+        "Phone number must be valid format.",
+        "If minor, guardian information is mandatory.",
+        "If Intake Role is Victim, school info/ICWA is required.",
+        "Relationship to child(ren) cannot be duplicated for the same person."
+      ],
+      "buttons": [
+        {
+          "label": "Add Person",
+          "actor": "Intake Case Worker",
+          "description": "Add another person to the referral.",
+          "action_ids": [
+            "ACTION_5A"
+          ]
+        },
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to search prior history.",
+          "action_ids": [
+            "ACTION_5B"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_5A",
+          "name": "Add Person to Referral, Generate Individual ID, and Provide Field Guidance",
+          "implementation": "Validates entered person details. If valid, system generates a unique individual ID for the person, adds the person to the referral, clears fields for next entry, and provides guidance for each field. Allows multiple persons to be added. If not valid, displays error and remains on this screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Button 'Add Person' clicked and all required person fields are valid.",
+          "sequence": 7,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5B",
+          "name": "Proceed to Search Prior History",
+          "implementation": "Validates that at least one person has been added. If valid, proceeds to Search Prior History (STEP_6). If not, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and at least one person is present.",
+          "sequence": 8,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Search Prior History",
+      "description": "The system will automatically search for prior history in criminal records, human services, courts, Medicaid, and internal databases. You will see a summary of matched records for each person entered. Review the results and confirm if any matches are relevant to the current referral.",
+      "details": [
+        {
+          "label": "Prior History Results",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Source System",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Source system is required.",
+              "options": [
+                "Criminal Records",
+                "Human Services",
+                "Courts",
+                "Medicaid",
+                "Internal Database"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Matched Person",
+              "type": "text",
+              "required": true,
+              "error_message": "Matched person is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Match Details",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Match details are optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Confirm Match",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Confirm match selection is optional.",
+              "options": [
+                "Confirmed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Matched person must correspond to entered person information.",
+        "Cannot confirm duplicate matches for the same person."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to review fetched data.",
+          "action_ids": [
+            "ACTION_6A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_6A",
+          "name": "Display and Confirm Review of Prior History Results",
+          "implementation": "System automatically searches for prior history in external and internal databases for each person entered. Displays a summary of matched records for each person. User reviews and confirms matches. Validates that the user has reviewed and confirmed the prior history results. If valid, proceeds to Review Fetched Data (STEP_7). If not, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and user has confirmed review of prior history results.",
+          "sequence": 9,
+          "linkedWidgetIds": [
+            "STEP_7",
+            "STEP_6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Screen",
+      "label": "Review Fetched Data",
+      "description": "Review the data fetched from prior history searches. Confirm matches and use the information to gain a better understanding of the case. You can mark records as relevant or not relevant. Instructions are provided to help you interpret the results.",
+      "details": [
+        {
+          "label": "Fetched Data Review",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Record Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Record type is required.",
+              "options": [
+                "Criminal",
+                "Human Services",
+                "Court",
+                "Medicaid",
+                "Internal"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Record Details",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Record details are optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Relevant to Case",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Relevance selection is optional.",
+              "options": [
+                "Relevant"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot mark the same record as both relevant and not relevant.",
+        "Record type must match the source system."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to duplicate referral check.",
+          "action_ids": [
+            "ACTION_7A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_7A",
+          "name": "Mark Records as Relevant/Not Relevant and Proceed",
+          "implementation": "Displays fetched data from prior history searches. User marks records as relevant or not relevant. Validates that the user has reviewed and marked records appropriately. Provides instructions for interpreting results. If valid, proceeds to Duplicate Referral Check (STEP_8). If not, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and user has confirmed review of fetched data.",
+          "sequence": 10,
+          "linkedWidgetIds": [
+            "STEP_8",
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Rule",
+      "label": "Duplicate Referral Check",
+      "description": "Checks for duplicate referrals in the system. If a duplicate is found, the system prompts the Intake Case Worker to either link the referral to an existing record or end the intake process. If no duplicate is found, the intake process continues as a new entry.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Duplicate Found",
+            "logic": "If the system identifies a referral with matching key attributes (e.g., person details, incident details) and status is 'error' with a relevant message, prompt the Intake Case Worker to link to the existing record or end the intake."
+          },
+          {
+            "label": "No Duplicate Found",
+            "logic": "If no matching referral is found, or status is not 'error', allow the Intake Case Worker to proceed with creating a new referral entry."
+          }
+        ]
+      },
+      "step_number": 8,
+      "node_id": "STEP_8",
+      "actions": [
+        {
+          "id": "ACTION_8A",
+          "name": "Duplicate Referral Detected - Prompt User",
+          "implementation": "If a duplicate referral is detected based on matching key attributes, system prompts the Intake Case Worker to link to an existing record or end the intake process. Proceeds to Duplicate Referral Handling (STEP_10).",
+          "trigger": "Rule",
+          "triggerCondition": "Duplicate referral detected after prior history review.",
+          "sequence": 11,
+          "linkedWidgetIds": [
+            "STEP_10"
+          ]
+        },
+        {
+          "id": "ACTION_8B",
+          "name": "No Duplicate Referral - Proceed",
+          "implementation": "If no duplicate referral is detected, proceeds to Incident and Allegation Information Entry (STEP_11).",
+          "trigger": "Rule",
+          "triggerCondition": "No duplicate referral detected after prior history review.",
+          "sequence": 12,
+          "linkedWidgetIds": [
+            "STEP_11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Assignment",
+      "label": "Link to Existing Record or End Intake",
+      "description": "System links the referral to an existing case or person record if a duplicate is found, or terminates the intake process if the referral is not to be continued. The Intake Case Worker is responsible for confirming the match and selecting the appropriate action. The system must ensure data integrity when linking and must log the action taken.",
+      "Input Parameter": [
+        "referral_id",
+        "existing_case_id",
+        "existing_person_id",
+        "duplicate_check_result",
+        "user_action"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Link to Existing Record",
+            "logic": "If the Intake Case Worker confirms a duplicate referral, the system links the current referral to the identified existing case or person record using the provided IDs. The system updates the referral status and logs the linkage action."
+          },
+          {
+            "label": "End Intake",
+            "logic": "If the Intake Case Worker determines the referral should not proceed (e.g., duplicate or erroneous entry), the system terminates the intake process for this referral, updates the status to 'ended', and logs the termination reason."
+          }
+        ]
+      },
+      "step_number": 9,
+      "node_id": "STEP_9",
+      "actions": [
+        {
+          "id": "ACTION_9A",
+          "name": "Link Referral to Existing Record and Log Action",
+          "implementation": "If user selects 'Link to Existing Record', system links referral to existing case/person, updates status, logs action, and ends intake process. Displays confirmation and returns to dashboard or summary screen. Ensures data integrity and logs linkage action.",
+          "trigger": "Assignment",
+          "triggerCondition": "User selects 'Link to Existing Record' on STEP_10.",
+          "sequence": 13,
+          "linkedWidgetIds": [
+            "SCREEN_CONFIRMATION_LINKED"
+          ]
+        },
+        {
+          "id": "ACTION_9B",
+          "name": "End Intake Process and Log Reason",
+          "implementation": "If user selects 'End Intake', system terminates intake process, updates status to 'ended', logs reason, displays confirmation, and returns to dashboard or summary screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "User selects 'End Intake' on STEP_10.",
+          "sequence": 14,
+          "linkedWidgetIds": [
+            "SCREEN_CONFIRMATION_ENDED"
+          ]
+        },
+        {
+          "id": "ACTION_9C",
+          "name": "Continue with New Entry",
+          "implementation": "If user selects 'Continue with New Entry', proceeds to Incident and Allegation Information Entry (STEP_11).",
+          "trigger": "Assignment",
+          "triggerCondition": "User selects 'Continue with New Entry' on STEP_10.",
+          "sequence": 15,
+          "linkedWidgetIds": [
+            "STEP_11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_10",
+      "step": 10,
+      "type": "Screen",
+      "label": "Link to Existing Record or End Intake",
+      "description": "If a duplicate referral is found, you will be prompted to link this referral to an existing case/person or end the intake process. Review the information and make the appropriate selection. Guidance is provided to help you decide.",
+      "details": [
+        {
+          "label": "Duplicate Referral Handling",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Duplicate Referral Found",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please indicate if a duplicate referral was found.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Action",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an action.",
+              "options": [
+                "Link to Existing Record",
+                "End Intake",
+                "Continue with New Entry"
+              ],
+              "readOnly": false,
+              "visible_if": "Duplicate Referral Found: Yes"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If duplicate referral is found, action selection is required.",
+        "Cannot link to more than one existing record for the same referral."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to incident and allegation information entry.",
+          "action_ids": [
+            "ACTION_10A",
+            "ACTION_10B",
+            "ACTION_10C"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 10,
+      "node_id": "STEP_10",
+      "actions": [
+        {
+          "id": "ACTION_10A",
+          "name": "Handle Link to Existing Record with Guidance",
+          "implementation": "Triggers linking of referral to existing record via STEP_9.ACTION_9A. Provides guidance to help user decide. Displays confirmation and returns to dashboard or summary screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and user selected 'Link to Existing Record'.",
+          "sequence": 16,
+          "linkedWidgetIds": [
+            "SCREEN_CONFIRMATION_LINKED"
+          ]
+        },
+        {
+          "id": "ACTION_10B",
+          "name": "Handle End Intake with Guidance",
+          "implementation": "Triggers end of intake process via STEP_9.ACTION_9B. Provides guidance to help user decide. Displays confirmation and returns to dashboard or summary screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and user selected 'End Intake'.",
+          "sequence": 17,
+          "linkedWidgetIds": [
+            "SCREEN_CONFIRMATION_ENDED"
+          ]
+        },
+        {
+          "id": "ACTION_10C",
+          "name": "Handle Continue with New Entry with Guidance",
+          "implementation": "Triggers continuation of intake process via STEP_9.ACTION_9C. Provides guidance to help user decide. Proceeds to Incident and Allegation Information Entry (STEP_11).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and user selected 'Continue with New Entry' or 'No' for duplicate.",
+          "sequence": 18,
+          "linkedWidgetIds": [
+            "STEP_11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_11",
+      "step": 11,
+      "type": "Screen",
+      "label": "Incident and Allegation Information Entry",
+      "description": "Enter detailed information about the incident and allegations. Provide a narrative, date/time, location, individuals present, injury details for each victim, law enforcement and medical provider involvement, fatality/near fatality status, substance-exposed infant, child removal, case type, abuse/allegation type, and safety risks. Instructions are provided for each field. You can add multiple victims and allegations.",
+      "details": [
+        {
+          "label": "Incident Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Incident Narrative",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Incident narrative is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Incident Date/Time",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Incident date/time is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Incident Location",
+              "type": "address",
+              "required": true,
+              "error_message": "Incident location is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Individuals Present",
+              "type": "multiselect",
+              "required": true,
+              "error_message": "Please select individuals present.",
+              "options": [
+                "Victim",
+                "Perpetrator",
+                "Witness",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Law Enforcement Involvement",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Law enforcement involvement selection is optional.",
+              "options": [
+                "Involved"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Medical Provider Involvement",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Medical provider involvement selection is optional.",
+              "options": [
+                "Involved"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Fatality/Near Fatality",
+              "type": "radio",
+              "required": false,
+              "error_message": "Fatality/near fatality selection is optional.",
+              "options": [
+                "Fatality",
+                "Near Fatality",
+                "None"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Substance-Exposed Infant",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Substance-exposed infant selection is optional.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Child Removal",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Child removal selection is optional.",
+              "options": [
+                "Removed"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Case Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Case type is required.",
+              "options": [
+                "Abuse",
+                "Neglect",
+                "Dependency",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Safety Risks",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Safety risks are optional.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Victim Injury Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Victim Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Victim name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Injury Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Injury type is required.",
+              "options": [
+                "Physical",
+                "Emotional",
+                "Sexual",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Injury Location",
+              "type": "text",
+              "required": false,
+              "error_message": "Injury location is optional.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Allegation Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Abuse/Allegation Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Abuse/allegation type is required.",
+              "options": [
+                "Physical Abuse",
+                "Neglect",
+                "Sexual Abuse",
+                "Emotional Abuse",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Allegation Description",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Allegation description is optional.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Incident date/time cannot be in the future.",
+        "At least one individual must be present.",
+        "If fatality or near fatality is selected, medical provider involvement is required.",
+        "Cannot have duplicate allegations for the same victim.",
+        "If child removal is selected, removal details must be provided."
+      ],
+      "buttons": [
+        {
+          "label": "Add Victim Injury",
+          "actor": "Intake Case Worker",
+          "description": "Add injury details for another victim.",
+          "action_ids": [
+            "ACTION_11A"
+          ]
+        },
+        {
+          "label": "Add Allegation",
+          "actor": "Intake Case Worker",
+          "description": "Add another allegation.",
+          "action_ids": [
+            "ACTION_11B"
+          ]
+        },
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to SDM questionnaire.",
+          "action_ids": [
+            "ACTION_11C"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 11,
+      "node_id": "STEP_11",
+      "actions": [
+        {
+          "id": "ACTION_11A",
+          "name": "Add Victim Injury with Field Guidance",
+          "implementation": "Validates victim injury details and adds to the list. Provides instructions and guidance for each field. Allows multiple victim injuries to be added. If not valid, displays error and remains on this screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Button 'Add Victim Injury' clicked and required fields are valid.",
+          "sequence": 21,
+          "linkedWidgetIds": [
+            "STEP_11"
+          ]
+        },
+        {
+          "id": "ACTION_11B",
+          "name": "Add Allegation with Field Guidance",
+          "implementation": "Validates allegation details and adds to the list. Provides instructions and guidance for each field. Allows multiple allegations to be added. If not valid, displays error and remains on this screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Button 'Add Allegation' clicked and required fields are valid.",
+          "sequence": 22,
+          "linkedWidgetIds": [
+            "STEP_11"
+          ]
+        },
+        {
+          "id": "ACTION_11C",
+          "name": "Proceed to SDM Questionnaire with Instructions",
+          "implementation": "Validates that all required incident and allegation information is entered. Provides instructions for adding multiple victims and allegations. If valid, proceeds to SDM Questionnaire (STEP_12). If not, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and all required fields are valid.",
+          "sequence": 23,
+          "linkedWidgetIds": [
+            "STEP_12",
+            "STEP_11"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_12",
+      "step": 12,
+      "type": "Screen",
+      "label": "Structured Decision Making (SDM) Questionnaire",
+      "description": "Complete the SDM questionnaire to assess risk and recommend response time. Many fields will be pre-populated from previous screens. Review each question and provide additional information as needed. Guidance is provided for each question to help you make informed decisions.",
+      "details": [
+        {
+          "label": "SDM Risk Assessment",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Risk Level",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Risk level is required.",
+              "options": [
+                "Low",
+                "Moderate",
+                "High",
+                "Very High"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Recommended Response Time",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Recommended response time is required.",
+              "options": [
+                "Immediate",
+                "24 Hours",
+                "72 Hours",
+                "5 Days"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "SDM Narrative",
+              "type": "textarea",
+              "required": false,
+              "error_message": "SDM narrative is optional.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Risk level must be consistent with incident and allegation details.",
+        "Recommended response time must match risk level.",
+        "SDM narrative should support selected risk level and response time."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Intake Case Worker",
+          "description": "Proceed to disposition review and edit.",
+          "action_ids": [
+            "ACTION_12A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 12,
+      "node_id": "STEP_12",
+      "actions": [
+        {
+          "id": "ACTION_12A",
+          "name": "Validate SDM Questionnaire, Pre-Populate Fields, Provide Guidance, and Proceed",
+          "implementation": "Validates SDM questionnaire responses. Pre-populates fields from previous screens. Provides guidance for each question to help user make informed decisions. If valid, proceeds to Disposition Review and Edit (STEP_13). If not, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Next' clicked and all required fields are valid.",
+          "sequence": 24,
+          "linkedWidgetIds": [
+            "STEP_13",
+            "STEP_12"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_13",
+      "step": 13,
+      "type": "Screen",
+      "label": "Disposition Review and Edit",
+      "description": "Review and edit the pre-populated intake type, allegations, victim demographics, exposure to perpetrator, risk level, and recommended response time. Select the disposition for the referral: 'screen in' or 'screen out'. Instructions are provided to help you make the correct selection.",
+      "details": [
+        {
+          "label": "Disposition Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Intake Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Intake type is required.",
+              "options": [
+                "Abuse",
+                "Neglect",
+                "Dependency",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Allegations",
+              "type": "multiselect",
+              "required": true,
+              "error_message": "At least one allegation is required.",
+              "options": [
+                "Physical Abuse",
+                "Neglect",
+                "Sexual Abuse",
+                "Emotional Abuse",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Victim Demographics",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Victim demographics are optional.",
+              "readOnly": true
+            },
+            {
+              "label": "Exposure to Perpetrator",
+              "type": "radio",
+              "required": true,
+              "error_message": "Exposure to perpetrator selection is required.",
+              "options": [
+                "Yes",
+                "No",
+                "Unknown"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Risk Level",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Risk level is required.",
+              "options": [
+                "Low",
+                "Moderate",
+                "High",
+                "Very High"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Recommended Response Time",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Recommended response time is required.",
+              "options": [
+                "Immediate",
+                "24 Hours",
+                "72 Hours",
+                "5 Days"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Disposition",
+              "type": "radio",
+              "required": true,
+              "error_message": "Disposition selection is required.",
+              "options": [
+                "Screen In",
+                "Screen Out"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "At least one allegation must be selected.",
+        "Risk level must match SDM questionnaire.",
+        "If disposition is 'Screen In', recommended response time must be set.",
+        "Exposure to perpetrator must be specified for all victims."
+      ],
+      "buttons": [
+        {
+          "label": "Submit for Supervisor Review",
+          "actor": "Intake Case Worker",
+          "description": "Submit referral for supervisor review.",
+          "action_ids": [
+            "ACTION_13A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 13,
+      "node_id": "STEP_13",
+      "actions": [
+        {
+          "id": "ACTION_13A",
+          "name": "Submit Referral for Supervisor Review and Lock Editing",
+          "implementation": "Validates all required fields and submits referral for supervisor review. Locks the referral for editing after submission. If validation fails, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Submit for Supervisor Review' clicked and all validations pass.",
+          "sequence": 25,
+          "linkedWidgetIds": [
+            "STEP_14",
+            "STEP_13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_14",
+      "step": 14,
+      "type": "Rule",
+      "label": "Submit Referral for Supervisor Review",
+      "description": "Upon submission, the system validates all required fields in the referral. If validation passes, the referral is locked for editing and routed to the supervisor's review queue. If validation fails, an error message is displayed and submission is blocked.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Validation Success",
+            "logic": "If all required fields are present and status is not 'error', lock the referral for editing and route to supervisor queue."
+          },
+          {
+            "label": "Validation Failure",
+            "logic": "If any required field is missing or status is 'error', display the error message and prevent submission until all required fields are completed."
+          }
+        ]
+      },
+      "step_number": 14,
+      "node_id": "STEP_14",
+      "actions": [
+        {
+          "id": "ACTION_14A",
+          "name": "Validation Success - Lock and Route to Supervisor Queue",
+          "implementation": "If validation passes, locks referral for editing and routes to supervisor queue (STEP_15).",
+          "trigger": "Rule",
+          "triggerCondition": "Referral submitted for supervisor review and all validations pass.",
+          "sequence": 26,
+          "linkedWidgetIds": [
+            "STEP_15"
+          ]
+        },
+        {
+          "id": "ACTION_14B",
+          "name": "Validation Failure - Show Error",
+          "implementation": "If validation fails, displays error message and prevents submission until all required fields are completed. Remains on current screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Referral submitted for supervisor review and validation fails.",
+          "sequence": 27,
+          "linkedWidgetIds": [
+            "STEP_13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_15",
+      "step": 15,
+      "type": "Assignment",
+      "label": "Assign to Supervisor",
+      "description": "Upon successful submission and validation of the referral by the Intake Case Worker, the system automatically assigns the referral record to the appropriate supervisor's review queue. The assignment is based on predefined routing logic (e.g., supervisor workload, region, or specialty). The system must ensure the referral is locked for editing and notify the supervisor.",
+      "Input Parameter": [
+        "referral_id",
+        "supervisor_id",
+        "routing_criteria",
+        "submission_status"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Place Referral in Supervisor Queue",
+            "logic": "System evaluates routing criteria and assigns the referral to the correct supervisor's review queue. The referral record is locked for further editing by the Intake Case Worker and a notification is sent to the assigned supervisor."
+          }
+        ]
+      },
+      "step_number": 15,
+      "node_id": "STEP_15",
+      "actions": [
+        {
+          "id": "ACTION_15A",
+          "name": "Assign Referral to Supervisor and Notify",
+          "implementation": "Assigns referral to supervisor's review queue based on routing logic (e.g., workload, region, specialty). Locks referral for further editing by Intake Case Worker and sends notification to assigned supervisor. If assignment fails, displays error and remains on current screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Referral validated and ready for supervisor review.",
+          "sequence": 28,
+          "linkedWidgetIds": [
+            "STEP_16",
+            "STEP_13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_16",
+      "step": 16,
+      "type": "Screen",
+      "label": "Supervisor Review Assignment",
+      "description": "As a supervisor, you will see referrals assigned to your review queue. Review the referral record and take appropriate action. You can view all details and select to approve or return for edits. Instructions are provided for each action.",
+      "details": [
+        {
+          "label": "Supervisor Review Queue",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Referral Record",
+              "type": "text",
+              "required": true,
+              "error_message": "Referral record is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Review Status",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Review status is required.",
+              "options": [
+                "Pending",
+                "In Review",
+                "Completed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Referral record must be present in supervisor queue.",
+        "Review status must be updated upon action."
+      ],
+      "buttons": [
+        {
+          "label": "Open Referral",
+          "actor": "Supervisor",
+          "description": "Open referral for detailed review.",
+          "action_ids": [
+            "ACTION_16A"
+          ]
+        }
+      ],
+      "owner": "Supervisor",
+      "step_number": 16,
+      "node_id": "STEP_16",
+      "actions": [
+        {
+          "id": "ACTION_16A",
+          "name": "Open Referral for Supervisor Review with Instructions",
+          "implementation": "Allows supervisor to open referral for detailed review (STEP_17). Provides instructions for each action (approve or return for edits).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Open Referral' clicked.",
+          "sequence": 29,
+          "linkedWidgetIds": [
+            "STEP_17"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_17",
+      "step": 17,
+      "type": "Screen",
+      "label": "Supervisor Review",
+      "description": "Review the submitted referral in detail. You can edit any field as needed and select to approve or return for edits. Guidance is provided to help you ensure all required information is present and accurate.",
+      "details": [
+        {
+          "label": "Referral Review and Decision",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Referral Details",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Referral details are required.",
+              "readOnly": false
+            },
+            {
+              "label": "Supervisor Decision",
+              "type": "radio",
+              "required": true,
+              "error_message": "Supervisor decision is required.",
+              "options": [
+                "Approve",
+                "Return for Edits"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required referral fields must be completed before approval.",
+        "If returned for edits, comments must be provided."
+      ],
+      "buttons": [
+        {
+          "label": "Approve",
+          "actor": "Supervisor",
+          "description": "Approve referral and proceed to finalize.",
+          "action_ids": [
+            "ACTION_17A"
+          ]
+        },
+        {
+          "label": "Return for Edits",
+          "actor": "Supervisor",
+          "description": "Return referral to case worker for edits.",
+          "action_ids": [
+            "ACTION_17B"
+          ]
+        }
+      ],
+      "owner": "Supervisor",
+      "step_number": 17,
+      "node_id": "STEP_17",
+      "actions": [
+        {
+          "id": "ACTION_17A",
+          "name": "Supervisor Approves Referral with Guidance",
+          "implementation": "Supervisor reviews referral and selects 'Approve'. Provides guidance to ensure all required information is present and accurate. Proceeds to supervisor approval decision (STEP_18.ACTION_18A).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Approve' clicked.",
+          "sequence": 30,
+          "linkedWidgetIds": [
+            "STEP_18"
+          ]
+        },
+        {
+          "id": "ACTION_17B",
+          "name": "Supervisor Returns Referral for Edits with Guidance",
+          "implementation": "Supervisor reviews referral and selects 'Return for Edits'. Provides guidance to ensure all required information is present and accurate. Proceeds to supervisor approval decision (STEP_18.ACTION_18B).",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Return for Edits' clicked.",
+          "sequence": 31,
+          "linkedWidgetIds": [
+            "STEP_18"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_18",
+      "step": 18,
+      "type": "Rule",
+      "label": "Supervisor Approval Decision",
+      "description": "Supervisor reviews the submitted referral and decides to approve or return for edits. If approved, the referral proceeds to finalization and assignment. If returned, the referral is sent back to the Intake Case Worker for required changes.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Approved",
+            "logic": "If supervisor selects 'approve' and status is not 'error', proceed to finalize the referral and assign to the appropriate queue."
+          },
+          {
+            "label": "Returned for Edits",
+            "logic": "If supervisor selects 'return for edits' or status is 'error', unlock the referral and notify the Intake Case Worker to make required changes."
+          }
+        ]
+      },
+      "step_number": 18,
+      "node_id": "STEP_18",
+      "actions": [
+        {
+          "id": "ACTION_18A",
+          "name": "Finalize Referral After Approval",
+          "implementation": "If supervisor approves, proceeds to finalize referral (STEP_19).",
+          "trigger": "Rule",
+          "triggerCondition": "Supervisor selects 'Approve'.",
+          "sequence": 32,
+          "linkedWidgetIds": [
+            "STEP_19"
+          ]
+        },
+        {
+          "id": "ACTION_18B",
+          "name": "Return Referral for Edits",
+          "implementation": "If supervisor returns for edits, unlocks referral and notifies case worker (STEP_20).",
+          "trigger": "Rule",
+          "triggerCondition": "Supervisor selects 'Return for Edits'.",
+          "sequence": 33,
+          "linkedWidgetIds": [
+            "STEP_20"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_19",
+      "step": 19,
+      "type": "Rule",
+      "label": "Finalize Referral",
+      "description": "System marks the referral as finalized after supervisor approval and prepares it for assignment to the assessment/investigation queue. If an error occurs during finalization, the system displays an error message and prevents assignment.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Finalize and Assign",
+            "logic": "If supervisor approval is received and status is not 'error', mark the referral as finalized and route to the assessment/investigation queue."
+          },
+          {
+            "label": "Finalization Error",
+            "logic": "If status is 'error' during finalization, display the error message and prevent assignment until the issue is resolved."
+          }
+        ]
+      },
+      "step_number": 19,
+      "node_id": "STEP_19",
+      "actions": [
+        {
+          "id": "ACTION_19A",
+          "name": "Finalize and Assign Referral",
+          "implementation": "If supervisor approval is received and finalization succeeds, marks referral as finalized and routes to assessment/investigation queue (STEP_22). Logs the assignment action. If error occurs, displays error and remains on current screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Supervisor approval received and finalization attempted, no error.",
+          "sequence": 34,
+          "linkedWidgetIds": [
+            "STEP_22"
+          ]
+        },
+        {
+          "id": "ACTION_19B",
+          "name": "Finalization Error - Show Error",
+          "implementation": "If error occurs during finalization, displays error message and remains on current screen for correction.",
+          "trigger": "Rule",
+          "triggerCondition": "Supervisor approval received and finalization error occurs.",
+          "sequence": 35,
+          "linkedWidgetIds": [
+            "STEP_17"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_20",
+      "step": 20,
+      "type": "Assignment",
+      "label": "Return Referral for Edits",
+      "description": "If the supervisor determines that edits are required, the system unlocks the referral for editing and notifies the Intake Case Worker. The referral status is updated to indicate it is pending edits, and the system logs the supervisor's comments or required changes.",
+      "Input Parameter": [
+        "referral_id",
+        "supervisor_comments",
+        "case_worker_id",
+        "edit_status"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Unlock Referral and Notify Case Worker",
+            "logic": "System updates the referral status to 'pending edits', unlocks the record for editing, and sends a notification to the assigned Intake Case Worker with the supervisor's comments or required changes."
+          }
+        ]
+      },
+      "step_number": 20,
+      "node_id": "STEP_20",
+      "actions": [
+        {
+          "id": "ACTION_20A",
+          "name": "Unlock Referral, Notify Case Worker, and Log Supervisor Comments",
+          "implementation": "Unlocks referral for editing, notifies Intake Case Worker with supervisor's comments, updates status to 'pending edits', and logs supervisor's comments or required changes. If notification fails, displays error and remains on current screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Supervisor returns referral for edits.",
+          "sequence": 36,
+          "linkedWidgetIds": [
+            "STEP_21"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_21",
+      "step": 21,
+      "type": "Screen",
+      "label": "Referral Returned for Edits",
+      "description": "Edit and update the referral as required after the supervisor returns it for edits. The system will unlock the referral and notify you of the required changes. Review supervisor comments and make the necessary updates before resubmitting.",
+      "details": [
+        {
+          "label": "Edit Referral",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Supervisor Comments",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Supervisor comments are required.",
+              "readOnly": true
+            },
+            {
+              "label": "Updated Referral Details",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Updated referral details are required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All supervisor comments must be addressed before resubmission.",
+        "Updated referral details must be complete and accurate."
+      ],
+      "buttons": [
+        {
+          "label": "Resubmit for Supervisor Review",
+          "actor": "Intake Case Worker",
+          "description": "Resubmit referral after making required edits.",
+          "action_ids": [
+            "ACTION_21A"
+          ]
+        }
+      ],
+      "owner": "Intake Case Worker",
+      "step_number": 21,
+      "node_id": "STEP_21",
+      "actions": [
+        {
+          "id": "ACTION_21A",
+          "name": "Resubmit Referral for Supervisor Review, Notify, and Log",
+          "implementation": "Validates that all supervisor comments are addressed and updated referral details are complete. Notifies Intake Case Worker of successful resubmission and logs supervisor's comments. If valid, resubmits referral for supervisor review by routing through validation (STEP_14) and assignment (STEP_15) before returning to supervisor queue. If not valid, displays error and remains on this screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Resubmit for Supervisor Review' clicked and all required fields are valid.",
+          "sequence": 37,
+          "linkedWidgetIds": [
+            "STEP_14",
+            "STEP_21"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_22",
+      "step": 22,
+      "type": "Assignment",
+      "label": "Assign to Assessment/Investigation Queue",
+      "description": "After supervisor approval and finalization, the system routes the referral to the appropriate assessment or investigation queue. The routing is determined by intake type, disposition, and other relevant criteria. The system must update the referral status and log the assignment.",
+      "Input Parameter": [
+        "referral_id",
+        "intake_type",
+        "disposition",
+        "assignment_criteria"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Route Referral to Designated Queue",
+            "logic": "System evaluates the intake type, disposition, and assignment criteria to determine the correct assessment or investigation queue. The referral is assigned accordingly, status is updated, and the action is logged."
+          }
+        ]
+      },
+      "step_number": 22,
+      "node_id": "STEP_22",
+      "actions": [
+        {
+          "id": "ACTION_22A",
+          "name": "Assign Referral to Assessment/Investigation Queue and Log Assignment",
+          "implementation": "Routes finalized referral to appropriate assessment/investigation queue based on intake type, disposition, and assignment criteria. Updates referral status and logs the assignment. If assignment fails, displays error and remains on current screen.",
+          "trigger": "Assignment",
+          "triggerCondition": "Referral finalized and ready for assignment.",
+          "sequence": 38,
+          "linkedWidgetIds": [
+            "STEP_23"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_23",
+      "step": 23,
+      "type": "Screen",
+      "label": "Assessment/Investigation Assignment",
+      "description": "As an assessment/investigation worker, you will see referrals assigned to your queue based on intake type and disposition. Review the referral details and begin the assessment or investigation process. Instructions are provided for next steps.",
+      "details": [
+        {
+          "label": "Assessment/Investigation Queue",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Referral Record",
+              "type": "text",
+              "required": true,
+              "error_message": "Referral record is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Assignment Status",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Assignment status is required.",
+              "options": [
+                "Assigned",
+                "In Progress",
+                "Completed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Referral record must be present in assessment/investigation queue.",
+        "Assignment status must be updated as work progresses."
+      ],
+      "buttons": [
+        {
+          "label": "Open Referral",
+          "actor": "Assessment/Investigation Worker",
+          "description": "Open referral for assessment or investigation.",
+          "action_ids": [
+            "ACTION_23A"
+          ]
+        }
+      ],
+      "owner": "Assessment/Investigation Worker",
+      "step_number": 23,
+      "node_id": "STEP_23",
+      "actions": [
+        {
+          "id": "ACTION_23A",
+          "name": "Open Referral for Assessment/Investigation with Next Steps",
+          "implementation": "Allows assessment/investigation worker to open referral and begin process. Updates assignment status to 'In Progress'. Provides instructions for next steps as described in the technical data.",
+          "trigger": "Rule",
+          "triggerCondition": "Button 'Open Referral' clicked.",
+          "sequence": 39,
+          "linkedWidgetIds": [
+            "STEP_23"
+          ]
+        },
+        {
+          "id": "ACTION_23B",
+          "name": "Update Assignment Status to Completed and Log",
+          "implementation": "Allows assessment/investigation worker to mark assignment status as 'Completed' when work is finished. Logs the completion action and updates status as described in the technical data.",
+          "trigger": "Rule",
+          "triggerCondition": "Assignment work completed and status updated.",
+          "sequence": 40,
+          "linkedWidgetIds": [
+            "STEP_23"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "STEP_11",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "STEP_12",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "STEP_13",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "STEP_14",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_14",
+      "endNode": "STEP_15",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_15",
+      "endNode": "STEP_16",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_16",
+      "endNode": "STEP_17",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_17",
+      "endNode": "STEP_18",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_18",
+      "endNode": "STEP_19",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_19",
+      "endNode": "STEP_20",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_20",
+      "endNode": "STEP_21",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_21",
+      "endNode": "STEP_22",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_22",
+      "endNode": "STEP_23",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_Intake Channel Selection",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_Intake Method",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "SECTION_Referral Narrative",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "SECTION_Referral Narrative Draft",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "SECTION_Person Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "SECTION_Prior History Results",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "SECTION_Fetched Data Review",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "SECTION_Duplicate Referral Handling",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "SECTION_Incident Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "SECTION_Victim Injury Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "SECTION_Allegation Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "SECTION_SDM Risk Assessment",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "SECTION_Disposition Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_16",
+      "endNode": "SECTION_Supervisor Review Queue",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_17",
+      "endNode": "SECTION_Referral Review and Decision",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_21",
+      "endNode": "SECTION_Edit Referral",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_23",
+      "endNode": "SECTION_Assessment/Investigation Queue",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_Intake Channel Selection",
+      "endNode": "FIELD_Intake Channel",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Intake Channel Selection",
+      "endNode": "FIELD_Referral Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Intake Channel Selection",
+      "endNode": "FIELD_Case ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Intake Method",
+      "endNode": "FIELD_Intake Method",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Referral Narrative",
+      "endNode": "FIELD_Narrative Description",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Referral Narrative Draft",
+      "endNode": "FIELD_Narrative Draft",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Primary Language",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Address Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Residential/Mailing Toggle",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Relationship to Child(ren)",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Intake Role",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_School Info/ICWA (if Victim)",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Special Considerations",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Person Details",
+      "endNode": "FIELD_Individual ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Prior History Results",
+      "endNode": "FIELD_Source System",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Prior History Results",
+      "endNode": "FIELD_Matched Person",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Prior History Results",
+      "endNode": "FIELD_Match Details",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Prior History Results",
+      "endNode": "FIELD_Confirm Match",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Fetched Data Review",
+      "endNode": "FIELD_Record Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Fetched Data Review",
+      "endNode": "FIELD_Record Details",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Fetched Data Review",
+      "endNode": "FIELD_Relevant to Case",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Duplicate Referral Handling",
+      "endNode": "FIELD_Duplicate Referral Found",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Duplicate Referral Handling",
+      "endNode": "FIELD_Action",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Incident Narrative",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Incident Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Incident Location",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Individuals Present",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Law Enforcement Involvement",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Medical Provider Involvement",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Fatality/Near Fatality",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Substance-Exposed Infant",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Child Removal",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Case Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Incident Details",
+      "endNode": "FIELD_Safety Risks",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Victim Injury Details",
+      "endNode": "FIELD_Victim Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Victim Injury Details",
+      "endNode": "FIELD_Injury Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Victim Injury Details",
+      "endNode": "FIELD_Injury Location",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Allegation Details",
+      "endNode": "FIELD_Abuse/Allegation Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Allegation Details",
+      "endNode": "FIELD_Allegation Description",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_SDM Risk Assessment",
+      "endNode": "FIELD_Risk Level",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_SDM Risk Assessment",
+      "endNode": "FIELD_Recommended Response Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_SDM Risk Assessment",
+      "endNode": "FIELD_SDM Narrative",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Intake Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Allegations",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Victim Demographics",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Exposure to Perpetrator",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Risk Level",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Recommended Response Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Disposition Details",
+      "endNode": "FIELD_Disposition",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Supervisor Review Queue",
+      "endNode": "FIELD_Referral Record",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Supervisor Review Queue",
+      "endNode": "FIELD_Review Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Referral Review and Decision",
+      "endNode": "FIELD_Referral Details",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Referral Review and Decision",
+      "endNode": "FIELD_Supervisor Decision",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Edit Referral",
+      "endNode": "FIELD_Supervisor Comments",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Edit Referral",
+      "endNode": "FIELD_Updated Referral Details",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Assessment/Investigation Queue",
+      "endNode": "FIELD_Referral Record",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_Assessment/Investigation Queue",
+      "endNode": "FIELD_Assignment Status",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
