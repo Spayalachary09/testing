@@ -1,0 +1,3068 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "ScreenQueue",
+      "label": "Applicant Intake and Eligibility Workflow",
+      "description": "This ScreenQueue guides the applicant through a multi-step intake and eligibility workflow, including personal information entry, household size, income details, citizenship status, and final review/confirmation before submission.",
+      "screenQueueName": "ApplicantEligibilityIntakeQueue",
+      "assignedTo": "Applicant",
+      "screenSequence": [
+        {
+          "screenId": "STEP_1_1",
+          "screenSequence": 1,
+          "visibility": {
+            "show_conditions": [
+              "step_1_started",
+              "user_role == 'Applicant'"
+            ],
+            "hide_conditions": [
+              "workflow_cancelled",
+              "user_not_eligible"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": false,
+              "required_data": [],
+              "user_permissions": [
+                "Applicant"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_1_2",
+          "screenSequence": 2,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Applicant'"
+            ],
+            "hide_conditions": [
+              "workflow_cancelled",
+              "user_not_eligible"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "Full Name",
+                "Date of Birth",
+                "Address"
+              ],
+              "user_permissions": [
+                "Applicant"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_1_3",
+          "screenSequence": 3,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Applicant'"
+            ],
+            "hide_conditions": [
+              "workflow_cancelled",
+              "user_not_eligible"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "Household Size"
+              ],
+              "user_permissions": [
+                "Applicant"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_1_4",
+          "screenSequence": 4,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Applicant'"
+            ],
+            "hide_conditions": [
+              "workflow_cancelled",
+              "user_not_eligible"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "Income Type",
+                "Income Amount",
+                "Frequency",
+                "Income Recipient"
+              ],
+              "user_permissions": [
+                "Applicant"
+              ]
+            }
+          }
+        },
+        {
+          "screenId": "STEP_1_5",
+          "screenSequence": 5,
+          "visibility": {
+            "show_conditions": [
+              "previous_screen_completed",
+              "user_role == 'Applicant'"
+            ],
+            "hide_conditions": [
+              "workflow_cancelled",
+              "user_not_eligible"
+            ],
+            "conditional_logic": {
+              "default_visibility": true,
+              "depends_on_previous": true,
+              "required_data": [
+                "Citizenship Status"
+              ],
+              "user_permissions": [
+                "Applicant"
+              ]
+            }
+          }
+        }
+      ],
+      "sequenceLogic": {
+        "type": "linear",
+        "allowBackNavigation": true,
+        "skipLogic": "Screens may be skipped if user is not eligible or workflow is cancelled. If 'Non-Citizen' or 'Other' is selected for citizenship, additional documentation screens may be triggered outside this queue."
+      },
+      "completionLogic": {
+        "type": "all_screens",
+        "conditions": [
+          "All screens in sequence completed",
+          "All required fields validated"
+        ]
+      },
+      "quick_action_buttons": [
+        {
+          "button_id": "Print",
+          "label": "Print",
+          "description": "Prints the eligibility summary for the applicant, excluding attachments. Useful for record-keeping or offline review.",
+          "type": "utility",
+          "button_type": "quick action button",
+          "icon": "print",
+          "position": "queue-top",
+          "action": {
+            "type": "print",
+            "print_config": {
+              "template": "eligibility_summary",
+              "include_attachments": false
+            }
+          }
+        },
+        {
+          "button_id": "export_pdf",
+          "label": "Export PDF",
+          "description": "Exports the entire application workflow and entered data as a PDF document for download or sharing.",
+          "type": "utility",
+          "button_type": "quick action button",
+          "icon": "download",
+          "position": "queue-top",
+          "action": {
+            "type": "api_call",
+            "endpoint_config": {
+              "endpoint": "/api/applicant/export/pdf",
+              "method": "POST",
+              "confirm_required": true,
+              "success_message": "PDF exported successfully.",
+              "error_handling": "toast"
+            }
+          }
+        }
+      ],
+      "screens": [
+        {
+          "screen_number": 1,
+          "id": "STEP_1_1",
+          "step": "1_1",
+          "type": "Screen",
+          "label": "Applicant Personal Information Entry",
+          "description": "On this screen, you will enter your personal details to begin your application. Please provide accurate information as it will be used to identify you and process your application. Fields marked with an asterisk (*) are required. You will see clear instructions for each field, and guidance is provided to help you complete the form correctly.",
+          "details": [
+            {
+              "label": "Personal Details",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Full Name",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Full Name is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Date of Birth",
+                  "type": "date/time",
+                  "required": true,
+                  "error_message": "Date of Birth is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Address",
+                  "type": "address",
+                  "required": true,
+                  "error_message": "Address is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Phone Number",
+                  "type": "phone",
+                  "required": false,
+                  "error_message": "Phone number format is invalid.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Email",
+                  "type": "text",
+                  "required": false,
+                  "error_message": "Email format is invalid.",
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Date of Birth cannot be in the future.",
+            "Phone number must be in valid format.",
+            "Email must be in valid format.",
+            "Full Name is required.",
+            "Address is required."
+          ],
+          "buttons": [
+            {
+              "label": "Next",
+              "actor": "Applicant",
+              "description": "Proceed to enter household details."
+            }
+          ],
+          "owner": "Applicant",
+          "step_number": "1_1",
+          "node_id": "STEP_1_1",
+          "navigation": {
+            "menu_group": "Applicant Intake",
+            "display_order": 1,
+            "icon": "user",
+            "breadcrumb": [
+              "Home",
+              "Applicant Intake",
+              "Personal Information"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home.",
+                "type": "ghost",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for personal information entry.",
+                "type": "secondary",
+                "icon": "help",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Help - Personal Information",
+                    "content_source": "/help/personal-info",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to the next step: Household Size Information.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate all required personal information fields.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Personal information validated."
+                          ],
+                          "error_message": [
+                            "Please complete all required fields."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Household Size Information screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Moved to Household Size Information."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Full_Name",
+                      "field_name": "Full Name",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Full Name is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Date_of_Birth",
+                      "field_name": "Date of Birth",
+                      "field_type": "date",
+                      "validation_type": "mandatory",
+                      "error_message": "Date of Birth is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Address",
+                      "field_name": "Address",
+                      "field_type": "address",
+                      "validation_type": "mandatory",
+                      "error_message": "Address is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_1",
+                      "rule_name": "DOB Not Future",
+                      "rule_description": "Date of Birth cannot be in the future.",
+                      "rule_type": "validation",
+                      "condition": "Date_of_Birth < today",
+                      "action_on_success": "Allow navigation",
+                      "action_on_failure": "Block navigation",
+                      "error_message": "Date of Birth cannot be in the future.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "PersonalInfoValidation",
+                        "fields": [
+                          "Full_Name",
+                          "Date_of_Birth",
+                          "Address"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": [
+                      {
+                        "field_id": "Phone_Number",
+                        "format_pattern": "^\\d{10}$",
+                        "format_example": "5551234567",
+                        "format_description": "10-digit phone number"
+                      },
+                      {
+                        "field_id": "Email",
+                        "format_pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                        "format_example": "user@example.com",
+                        "format_description": "Valid email address"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 2,
+          "id": "STEP_1_2",
+          "step": "1_2",
+          "type": "Screen",
+          "label": "Household Size Information",
+          "description": "On this screen, you will enter the number of people living in your household. This information is important for determining eligibility and benefit amounts. Please count all individuals who live with you, including yourself. If you need help, refer to the guidance provided on the screen.",
+          "details": [
+            {
+              "label": "Household Details",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Household Size",
+                  "type": "number/currency",
+                  "required": true,
+                  "error_message": "Household Size is required.",
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Household Size must be a positive integer.",
+            "Household Size is required.",
+            "Household Size cannot be zero."
+          ],
+          "buttons": [
+            {
+              "label": "Next",
+              "actor": "Applicant",
+              "description": "Proceed to enter income details."
+            },
+            {
+              "label": "Back",
+              "actor": "Applicant",
+              "description": "Return to personal information entry."
+            }
+          ],
+          "owner": "Applicant",
+          "step_number": "1_2",
+          "node_id": "STEP_1_2",
+          "navigation": {
+            "menu_group": "Applicant Intake",
+            "display_order": 2,
+            "icon": "users",
+            "breadcrumb": [
+              "Home",
+              "Applicant Intake",
+              "Household Size"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home.",
+                "type": "ghost",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen: Personal Information Entry.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Personal Information Entry screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Personal Information Entry."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for household size entry.",
+                "type": "secondary",
+                "icon": "help",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Help - Household Size",
+                    "content_source": "/help/household-size",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to the next step: Income Details Entry.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate household size field.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Household size validated."
+                          ],
+                          "error_message": [
+                            "Please enter a valid household size."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Income Details Entry screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Moved to Income Details Entry."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Household_Size",
+                      "field_name": "Household Size",
+                      "field_type": "number",
+                      "validation_type": "mandatory",
+                      "error_message": "Household Size is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_2",
+                      "rule_name": "Household Size Positive",
+                      "rule_description": "Household Size must be a positive integer and not zero.",
+                      "rule_type": "validation",
+                      "condition": "Household_Size > 0",
+                      "action_on_success": "Allow navigation",
+                      "action_on_failure": "Block navigation",
+                      "error_message": "Household Size must be a positive integer.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "HouseholdSizeValidation",
+                        "fields": [
+                          "Household_Size"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous step: Personal Information Entry.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Personal Information Entry screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Personal Information Entry."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 3,
+          "id": "STEP_1_3",
+          "step": "1_3",
+          "type": "Screen",
+          "label": "Income Details Entry",
+          "description": "On this screen, you will provide details about your household's income. Please enter all sources of income for each household member. You can add multiple income entries if needed. Accurate income information is required for eligibility determination. Guidance is provided for each field, and you can add or remove income entries as needed.",
+          "details": [
+            {
+              "label": "Income Sources",
+              "repeatable_section": true,
+              "fields": [
+                {
+                  "label": "Income Type",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Income Type is required.",
+                  "options": [
+                    "Employment",
+                    "Self-Employment",
+                    "Social Security",
+                    "Unemployment",
+                    "Child Support",
+                    "Other"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "Income Amount",
+                  "type": "number/currency",
+                  "required": true,
+                  "error_message": "Income Amount is required.",
+                  "readOnly": false
+                },
+                {
+                  "label": "Frequency",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Frequency is required.",
+                  "options": [
+                    "Weekly",
+                    "Bi-Weekly",
+                    "Monthly",
+                    "Annually"
+                  ],
+                  "readOnly": false
+                },
+                {
+                  "label": "Income Recipient",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Income Recipient is required.",
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Income Amount must be a positive number.",
+            "Cannot have duplicate income entries for the same type and recipient.",
+            "Income Type, Amount, Frequency, and Recipient are required for each entry.",
+            "Income cannot be negative."
+          ],
+          "buttons": [
+            {
+              "label": "Add Income Entry",
+              "actor": "Applicant",
+              "description": "Add another income source for your household."
+            },
+            {
+              "label": "Next",
+              "actor": "Applicant",
+              "description": "Proceed to enter citizenship status."
+            },
+            {
+              "label": "Back",
+              "actor": "Applicant",
+              "description": "Return to household details entry."
+            }
+          ],
+          "owner": "Applicant",
+          "step_number": "1_3",
+          "node_id": "STEP_1_3",
+          "navigation": {
+            "menu_group": "Applicant Intake",
+            "display_order": 3,
+            "icon": "money",
+            "breadcrumb": [
+              "Home",
+              "Applicant Intake",
+              "Income Details"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home.",
+                "type": "ghost",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen: Household Size Information.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Household Size Information screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Household Size Information."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for income details entry.",
+                "type": "secondary",
+                "icon": "help",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Help - Income Details",
+                    "content_source": "/help/income-details",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Add_Income_Entry",
+                "label": "Add Income Entry",
+                "description": "Add another income source for your household.",
+                "type": "secondary",
+                "icon": "plus",
+                "button_type": "footer button",
+                "position": "left",
+                "action": {
+                  "type": "api_call",
+                  "endpoint_config": {
+                    "endpoint": "/api/applicant/income/add",
+                    "method": "POST",
+                    "confirm_required": false,
+                    "success_message": "Income entry added.",
+                    "error_handling": "toast"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Income_Type",
+                      "field_name": "Income Type",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Type is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Amount",
+                      "field_name": "Income Amount",
+                      "field_type": "number",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Amount is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Frequency",
+                      "field_name": "Frequency",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Frequency is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Recipient",
+                      "field_name": "Income Recipient",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Recipient is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_3",
+                      "rule_name": "Income Amount Positive",
+                      "rule_description": "Income Amount must be a positive number.",
+                      "rule_type": "validation",
+                      "condition": "Income_Amount > 0",
+                      "action_on_success": "Allow addition",
+                      "action_on_failure": "Block addition",
+                      "error_message": "Income Amount must be positive.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_4",
+                      "rule_name": "No Duplicate Income",
+                      "rule_description": "Cannot have duplicate income entries for the same type and recipient.",
+                      "rule_type": "validation",
+                      "condition": "no_duplicate_income_entries",
+                      "action_on_success": "Allow addition",
+                      "action_on_failure": "Block addition",
+                      "error_message": "Duplicate income entry detected.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "IncomeEntryValidation",
+                        "fields": [
+                          "Income_Type",
+                          "Income_Amount",
+                          "Frequency",
+                          "Income_Recipient"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to the next step: Citizenship Status Selection.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate all required income fields.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Income details validated."
+                          ],
+                          "error_message": [
+                            "Please complete all required income fields."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Citizenship Status Selection screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Moved to Citizenship Status Selection."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Income_Type",
+                      "field_name": "Income Type",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Type is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Amount",
+                      "field_name": "Income Amount",
+                      "field_type": "number",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Amount is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Frequency",
+                      "field_name": "Frequency",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Frequency is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Recipient",
+                      "field_name": "Income Recipient",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Recipient is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_3",
+                      "rule_name": "Income Amount Positive",
+                      "rule_description": "Income Amount must be a positive number.",
+                      "rule_type": "validation",
+                      "condition": "Income_Amount > 0",
+                      "action_on_success": "Allow navigation",
+                      "action_on_failure": "Block navigation",
+                      "error_message": "Income Amount must be positive.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_4",
+                      "rule_name": "No Duplicate Income",
+                      "rule_description": "Cannot have duplicate income entries for the same type and recipient.",
+                      "rule_type": "validation",
+                      "condition": "no_duplicate_income_entries",
+                      "action_on_success": "Allow navigation",
+                      "action_on_failure": "Block navigation",
+                      "error_message": "Duplicate income entry detected.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "IncomeDetailsValidation",
+                        "fields": [
+                          "Income_Type",
+                          "Income_Amount",
+                          "Frequency",
+                          "Income_Recipient"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous step: Household Size Information.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Household Size Information screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Household Size Information."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 4,
+          "id": "STEP_1_4",
+          "step": "1_4",
+          "type": "Screen",
+          "label": "Citizenship Status Selection",
+          "description": "On this screen, you will select your citizenship status. This information is required for eligibility purposes. Please choose the option that best describes your current status. If you are not a U.S. citizen, you may be asked to provide additional documentation later in the process.",
+          "details": [
+            {
+              "label": "Citizenship Information",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Citizenship Status",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Citizenship Status is required.",
+                  "options": [
+                    "U.S. Citizen",
+                    "Permanent Resident",
+                    "Refugee/Asylee",
+                    "Non-Citizen",
+                    "Other"
+                  ],
+                  "readOnly": false
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "Citizenship Status is required.",
+            "If Non-Citizen or Other is selected, additional documentation may be required."
+          ],
+          "buttons": [
+            {
+              "label": "Next",
+              "actor": "Applicant",
+              "description": "Proceed to review your application."
+            },
+            {
+              "label": "Back",
+              "actor": "Applicant",
+              "description": "Return to income details entry."
+            }
+          ],
+          "owner": "Applicant",
+          "step_number": "1_4",
+          "node_id": "STEP_1_4",
+          "navigation": {
+            "menu_group": "Applicant Intake",
+            "display_order": 4,
+            "icon": "flag",
+            "breadcrumb": [
+              "Home",
+              "Applicant Intake",
+              "Citizenship Status"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home.",
+                "type": "ghost",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen: Income Details Entry.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Income Details Entry screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Income Details Entry."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for citizenship status selection.",
+                "type": "secondary",
+                "icon": "help",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Help - Citizenship Status",
+                    "content_source": "/help/citizenship-status",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Next",
+                "label": "Next",
+                "description": "Proceed to the next step: Application Review and Confirmation.",
+                "type": "primary",
+                "icon": "arrow-right",
+                "button_type": "footer button",
+                "position": "right",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "validate_fields",
+                        "description": "Validate citizenship status field.",
+                        "actions": [
+                          "ACTION_2"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Citizenship status validated."
+                          ],
+                          "error_message": [
+                            "Please select a citizenship status."
+                          ]
+                        }
+                      },
+                      {
+                        "step": 2,
+                        "step_name": "redirect_to_next_screen",
+                        "description": "Navigate to Application Review and Confirmation screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Moved to Application Review and Confirmation."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Citizenship_Status",
+                      "field_name": "Citizenship Status",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Citizenship Status is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_5",
+                      "rule_name": "Citizenship Status Required",
+                      "rule_description": "Citizenship Status must be selected.",
+                      "rule_type": "validation",
+                      "condition": "Citizenship_Status != ''",
+                      "action_on_success": "Allow navigation",
+                      "action_on_failure": "Block navigation",
+                      "error_message": "Citizenship Status is required.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "inline",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "CitizenshipStatusValidation",
+                        "fields": [
+                          "Citizenship_Status"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous step: Income Details Entry.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to Income Details Entry screen.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to Income Details Entry."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        },
+        {
+          "screen_number": 5,
+          "id": "STEP_1_5",
+          "step": "1_5",
+          "type": "Screen",
+          "label": "Application Review and Confirmation",
+          "description": "On this screen, you will review all the information you have entered so far. Please carefully check each section for accuracy. If you need to make changes, you can go back to the relevant section. Once you are satisfied, you can submit your application. A summary of your personal information, household details, income, and citizenship status will be displayed for your confirmation.",
+          "details": [
+            {
+              "label": "Review Personal Information",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Full Name",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Full Name is required.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Date of Birth",
+                  "type": "date/time",
+                  "required": true,
+                  "error_message": "Date of Birth is required.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Address",
+                  "type": "address",
+                  "required": true,
+                  "error_message": "Address is required.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Phone Number",
+                  "type": "phone",
+                  "required": false,
+                  "error_message": "Phone number format is invalid.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Email",
+                  "type": "text",
+                  "required": false,
+                  "error_message": "Email format is invalid.",
+                  "readOnly": true
+                }
+              ]
+            },
+            {
+              "label": "Review Household Details",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Household Size",
+                  "type": "number/currency",
+                  "required": true,
+                  "error_message": "Household Size is required.",
+                  "readOnly": true
+                }
+              ]
+            },
+            {
+              "label": "Review Income Details",
+              "repeatable_section": true,
+              "fields": [
+                {
+                  "label": "Income Type",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Income Type is required.",
+                  "options": [
+                    "Employment",
+                    "Self-Employment",
+                    "Social Security",
+                    "Unemployment",
+                    "Child Support",
+                    "Other"
+                  ],
+                  "readOnly": true
+                },
+                {
+                  "label": "Income Amount",
+                  "type": "number/currency",
+                  "required": true,
+                  "error_message": "Income Amount is required.",
+                  "readOnly": true
+                },
+                {
+                  "label": "Frequency",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Frequency is required.",
+                  "options": [
+                    "Weekly",
+                    "Bi-Weekly",
+                    "Monthly",
+                    "Annually"
+                  ],
+                  "readOnly": true
+                },
+                {
+                  "label": "Income Recipient",
+                  "type": "text",
+                  "required": true,
+                  "error_message": "Income Recipient is required.",
+                  "readOnly": true
+                }
+              ]
+            },
+            {
+              "label": "Review Citizenship Status",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "Citizenship Status",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Citizenship Status is required.",
+                  "options": [
+                    "U.S. Citizen",
+                    "Permanent Resident",
+                    "Refugee/Asylee",
+                    "Non-Citizen",
+                    "Other"
+                  ],
+                  "readOnly": true
+                }
+              ]
+            }
+          ],
+          "data_validation": [
+            "All required fields must be completed before submission.",
+            "If any required field is missing, user must return to the relevant section for correction.",
+            "Income entries must be valid and non-negative.",
+            "Date of Birth cannot be in the future.",
+            "Household Size must be a positive integer."
+          ],
+          "buttons": [
+            {
+              "label": "Submit Application",
+              "actor": "Applicant",
+              "description": "Submit your completed application for processing."
+            },
+            {
+              "label": "Back",
+              "actor": "Applicant",
+              "description": "Return to previous section to make corrections."
+            }
+          ],
+          "owner": "Applicant",
+          "step_number": "1_5",
+          "node_id": "STEP_1_5",
+          "navigation": {
+            "menu_group": "Applicant Intake",
+            "display_order": 5,
+            "icon": "check-circle",
+            "breadcrumb": [
+              "Home",
+              "Applicant Intake",
+              "Review & Confirmation"
+            ]
+          },
+          "page_level_buttons": {
+            "header_buttons": [
+              {
+                "button_id": "Home",
+                "label": "Home",
+                "description": "Navigate to the dashboard home.",
+                "type": "ghost",
+                "icon": "home",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "navigation",
+                  "navigation_config": {
+                    "target": "dashboard",
+                    "confirm_required": false,
+                    "confirm_message": "Navigated to dashboard.",
+                    "data_loss_warning": true
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous screen to make corrections.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "header button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to previous section for corrections.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to previous section."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Help",
+                "label": "Help",
+                "description": "Open help documentation for application review and confirmation.",
+                "type": "secondary",
+                "icon": "help",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Help - Application Review",
+                    "content_source": "/help/application-review",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "Settings",
+                "label": "Settings",
+                "description": "Access user settings.",
+                "type": "ghost",
+                "icon": "settings",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "Settings",
+                    "content_source": "/settings",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              },
+              {
+                "button_id": "User_Profile",
+                "label": "User Profile",
+                "description": "View and edit your user profile.",
+                "type": "ghost",
+                "icon": "user",
+                "button_type": "header button",
+                "position": "right",
+                "action": {
+                  "type": "modal",
+                  "modal_config": {
+                    "title": "User Profile",
+                    "content_source": "/profile",
+                    "size": "medium"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "always"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {}
+              }
+            ],
+            "footer_buttons": [
+              {
+                "button_id": "Submit_Application",
+                "label": "Submit Application",
+                "description": "Submit your completed application for processing.",
+                "type": "primary",
+                "icon": "check-circle",
+                "button_type": "footer button",
+                "position": "right",
+                "action": {
+                  "type": "api_call",
+                  "endpoint_config": {
+                    "endpoint": "/api/applicant/submit",
+                    "method": "POST",
+                    "confirm_required": true,
+                    "success_message": "Application submitted successfully.",
+                    "error_handling": "toast"
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "all_required_fields_completed"
+                  ],
+                  "hide_conditions": []
+                },
+                "validation": {
+                  "required_fields": [
+                    {
+                      "field_id": "Full_Name",
+                      "field_name": "Full Name",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Full Name is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Date_of_Birth",
+                      "field_name": "Date of Birth",
+                      "field_type": "date",
+                      "validation_type": "mandatory",
+                      "error_message": "Date of Birth is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Address",
+                      "field_name": "Address",
+                      "field_type": "address",
+                      "validation_type": "mandatory",
+                      "error_message": "Address is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Household_Size",
+                      "field_name": "Household Size",
+                      "field_type": "number",
+                      "validation_type": "mandatory",
+                      "error_message": "Household Size is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Type",
+                      "field_name": "Income Type",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Type is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Amount",
+                      "field_name": "Income Amount",
+                      "field_type": "number",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Amount is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Frequency",
+                      "field_name": "Frequency",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Frequency is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Income_Recipient",
+                      "field_name": "Income Recipient",
+                      "field_type": "text",
+                      "validation_type": "mandatory",
+                      "error_message": "Income Recipient is required.",
+                      "dependency": ""
+                    },
+                    {
+                      "field_id": "Citizenship_Status",
+                      "field_name": "Citizenship Status",
+                      "field_type": "dropdown",
+                      "validation_type": "mandatory",
+                      "error_message": "Citizenship Status is required.",
+                      "dependency": ""
+                    }
+                  ],
+                  "business_rules": [
+                    {
+                      "rule_id": "BR_6",
+                      "rule_name": "All Required Fields Completed",
+                      "rule_description": "All required fields must be completed before submission.",
+                      "rule_type": "validation",
+                      "condition": "all_required_fields_completed",
+                      "action_on_success": "Allow submission",
+                      "action_on_failure": "Block submission",
+                      "error_message": "Please complete all required fields before submitting.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_7",
+                      "rule_name": "Income Validity",
+                      "rule_description": "Income entries must be valid and non-negative.",
+                      "rule_type": "validation",
+                      "condition": "Income_Amount >= 0",
+                      "action_on_success": "Allow submission",
+                      "action_on_failure": "Block submission",
+                      "error_message": "Income entries must be valid and non-negative.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_8",
+                      "rule_name": "DOB Not Future",
+                      "rule_description": "Date of Birth cannot be in the future.",
+                      "rule_type": "validation",
+                      "condition": "Date_of_Birth < today",
+                      "action_on_success": "Allow submission",
+                      "action_on_failure": "Block submission",
+                      "error_message": "Date of Birth cannot be in the future.",
+                      "severity": "error"
+                    },
+                    {
+                      "rule_id": "BR_9",
+                      "rule_name": "Household Size Positive",
+                      "rule_description": "Household Size must be a positive integer.",
+                      "rule_type": "validation",
+                      "condition": "Household_Size > 0",
+                      "action_on_success": "Allow submission",
+                      "action_on_failure": "Block submission",
+                      "error_message": "Household Size must be a positive integer.",
+                      "severity": "error"
+                    }
+                  ],
+                  "disable_conditions": [],
+                  "form_validation": {
+                    "validate_on": [
+                      "submit"
+                    ],
+                    "validation_strategy": "client_side",
+                    "show_errors": "summary",
+                    "prevent_submission": true,
+                    "validation_groups": [
+                      {
+                        "group_name": "ApplicationReviewValidation",
+                        "fields": [
+                          "Full_Name",
+                          "Date_of_Birth",
+                          "Address",
+                          "Household_Size",
+                          "Income_Type",
+                          "Income_Amount",
+                          "Frequency",
+                          "Income_Recipient",
+                          "Citizenship_Status"
+                        ],
+                        "validation_order": "sequential"
+                      }
+                    ]
+                  },
+                  "data_integrity": {
+                    "cross_field_validation": [],
+                    "data_format_rules": []
+                  }
+                }
+              },
+              {
+                "button_id": "Back",
+                "label": "Back",
+                "description": "Return to the previous section to make corrections.",
+                "type": "secondary",
+                "icon": "arrow-left",
+                "button_type": "footer button",
+                "position": "left",
+                "action": {
+                  "type": "workflow_navigation",
+                  "logic": {
+                    "workflow_steps": [
+                      {
+                        "step": 1,
+                        "step_name": "navigate_to_previous_screen",
+                        "description": "Navigate to previous section for corrections.",
+                        "actions": [
+                          "ACTION_3"
+                        ],
+                        "conditions": {
+                          "success_message": [
+                            "Returned to previous section."
+                          ],
+                          "error_message": [
+                            "Navigation failed."
+                          ]
+                        }
+                      }
+                    ],
+                    "execution_flow": {
+                      "sequential": true,
+                      "allow_skip": false,
+                      "retry_on_failure": true,
+                      "max_retries": 2
+                    }
+                  }
+                },
+                "visibility": {
+                  "show_conditions": [
+                    "current_step > 1"
+                  ],
+                  "hide_conditions": [
+                    "first_step"
+                  ]
+                },
+                "validation": {}
+              }
+            ]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION_1_1",
+          "name": "Validate Personal Information Fields",
+          "implementation": "Validates required fields (Full Name, Date of Birth, Address) and business rules (Date of Birth not in future) on the Personal Information screen. If validation passes, proceed to Household Size screen. If validation fails, display error messages inline, highlight invalid fields, and prevent navigation.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Next' on STEP_1_1",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1_1",
+            "STEP_1_2"
+          ]
+        },
+        {
+          "id": "ACTION_1_2",
+          "name": "Validate Household Size Field",
+          "implementation": "Validates required field (Household Size) and business rules (must be positive integer, not zero) on the Household Size screen. If validation passes, proceed to Income Details screen. If validation fails, display error messages inline, highlight invalid fields, and prevent navigation.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Next' on STEP_1_2",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1_2",
+            "STEP_1_3"
+          ]
+        },
+        {
+          "id": "ACTION_1_3",
+          "name": "Validate Income Entry",
+          "implementation": "Validates required fields (Income Type, Income Amount, Frequency, Income Recipient) and business rules (Income Amount must be positive, no duplicate entries) when adding a new income entry. If validation passes, add entry and display success toast. If validation fails, display error messages inline, highlight invalid fields, and prevent addition.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Add Income Entry' on STEP_1_3",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1_3"
+          ]
+        },
+        {
+          "id": "ACTION_1_4",
+          "name": "Validate Income Details Fields",
+          "implementation": "Validates all required income fields and business rules (positive amount, no duplicates) before allowing navigation to Citizenship Status screen. If validation passes, proceed. If validation fails, display error messages inline, highlight invalid fields, and prevent navigation.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Next' on STEP_1_3",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1_3",
+            "STEP_1_4"
+          ]
+        },
+        {
+          "id": "ACTION_1_5",
+          "name": "Validate Citizenship Status Field",
+          "implementation": "Validates required field (Citizenship Status) on Citizenship Status screen. If Non-Citizen or Other is selected, trigger additional documentation workflow. If validation passes, proceed to Application Review screen. If validation fails, display error messages inline, highlight invalid fields, and prevent navigation.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Next' on STEP_1_4",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_6",
+          "name": "Validate Application Review Fields",
+          "implementation": "Validates that all required fields (Full Name, Date of Birth, Address, Household Size, Income Details, Citizenship Status) are completed and valid before allowing submission. If validation passes, proceed to submission. If validation fails, display summary error messages, highlight missing/invalid fields, and prevent submission.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Submit Application' on STEP_1_5",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_7",
+          "name": "Navigate Back to Previous Screen",
+          "implementation": "Allows applicant to return to the previous intake screen for corrections. Navigation is only allowed if the previous screen exists. After navigation, display the previous screen and retain entered data.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Back' on any intake screen (STEP_1_2, STEP_1_3, STEP_1_4, STEP_1_5)",
+          "sequence": 7,
+          "linkedWidgetIds": [
+            "STEP_1_2",
+            "STEP_1_3",
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_8",
+          "name": "Navigate to Next Screen After Review",
+          "implementation": "After successful validation on Application Review screen, navigates applicant to submission workflow (STEP_3).",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Next' on STEP_1_5 and validation passes",
+          "sequence": 8,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_9",
+          "name": "Open Help Modal",
+          "implementation": "Opens a modal window with help documentation relevant to the current screen. Content source is determined by the screen context.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Help' on any screen",
+          "sequence": 9,
+          "linkedWidgetIds": [
+            "STEP_1_1",
+            "STEP_1_2",
+            "STEP_1_3",
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_10",
+          "name": "Open Settings Modal",
+          "implementation": "Opens a modal window for user settings. Allows applicant to view and edit settings.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Settings' on any screen",
+          "sequence": 10,
+          "linkedWidgetIds": [
+            "STEP_1_1",
+            "STEP_1_2",
+            "STEP_1_3",
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_11",
+          "name": "Open User Profile Modal",
+          "implementation": "Opens a modal window for user profile. Allows applicant to view and edit profile information.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'User Profile' on any screen",
+          "sequence": 11,
+          "linkedWidgetIds": [
+            "STEP_1_1",
+            "STEP_1_2",
+            "STEP_1_3",
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_12",
+          "name": "Print Eligibility Summary",
+          "implementation": "Triggers print dialog for eligibility summary, excluding attachments. If print fails, display error toast and allow retry.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Print' quick action button on STEP_1_5",
+          "sequence": 12,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_1_13",
+          "name": "Export Application as PDF",
+          "implementation": "Exports the entire application workflow and entered data as a PDF document for download or sharing. If export fails, display error toast and allow retry.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Export PDF' quick action button on STEP_1_5",
+          "sequence": 13,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        }
+      ],
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "buttons": [
+        {
+          "label": "Next",
+          "action_ids": [
+            "ACTION_1_1",
+            "ACTION_1_2",
+            "ACTION_1_4",
+            "ACTION_1_5",
+            "ACTION_1_8"
+          ]
+        },
+        {
+          "label": "Add Income Entry",
+          "action_ids": [
+            "ACTION_1_3"
+          ]
+        },
+        {
+          "label": "Back",
+          "action_ids": [
+            "ACTION_1_7"
+          ]
+        },
+        {
+          "label": "Help",
+          "action_ids": [
+            "ACTION_1_9"
+          ]
+        },
+        {
+          "label": "Settings",
+          "action_ids": [
+            "ACTION_1_10"
+          ]
+        },
+        {
+          "label": "User Profile",
+          "action_ids": [
+            "ACTION_1_11"
+          ]
+        },
+        {
+          "label": "Print",
+          "action_ids": [
+            "ACTION_1_12"
+          ]
+        },
+        {
+          "label": "Export PDF",
+          "action_ids": [
+            "ACTION_1_13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Check Required Fields Completion",
+      "description": "This rule verifies that all required fields (Full Name, Date of Birth, Address, Household Size, Income Details, and Citizenship Status) are completed before allowing the applicant to submit the application. If any required field is missing, the system prevents submission and returns the applicant to the Review Application screen for correction.",
+      "Input Parameter": [
+        "Full Name",
+        "Date of Birth",
+        "Address",
+        "Household Size",
+        "Income Details",
+        "Citizenship Status"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "All Required Fields Completed",
+            "logic": "If Full Name, Date of Birth, Address, Household Size, Income Details, and Citizenship Status are all present and not empty, allow submission to proceed."
+          },
+          {
+            "label": "Missing Required Fields",
+            "logic": "If any of Full Name, Date of Birth, Address, Household Size, Income Details, or Citizenship Status is missing or empty, prevent submission and return to Review Application for correction."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_2_1",
+          "name": "Check Required Fields Completion",
+          "implementation": "Checks if all required fields (Full Name, Date of Birth, Address, Household Size, Income Details, Citizenship Status) are present and not empty. If all are present, proceed to submission (STEP_3). If any are missing, prevent submission, display error summary at top of STEP_1_5, highlight missing/invalid fields, and navigate back to Application Review screen for correction.",
+          "trigger": "button_click",
+          "triggerCondition": "Applicant clicks 'Submit Application' on STEP_1_5",
+          "sequence": 14,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_2_2",
+          "name": "Navigate Back to Application Review for Correction",
+          "implementation": "If required fields are missing or invalid, system navigates applicant back to Application Review screen (STEP_1_5), highlights missing/invalid fields in red, displays error summary at top, and provides inline guidance for correction.",
+          "trigger": "validation_fail",
+          "triggerCondition": "ACTION_2_1 validation fails",
+          "sequence": 15,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "action_ids": [
+            "ACTION_2_1"
+          ]
+        },
+        {
+          "label": "Back",
+          "action_ids": [
+            "ACTION_2_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Submit Application",
+      "description": "This rule governs the process of submitting the completed SNAP application. Upon clicking the 'Submit Application' button, the system saves the application data, generates a unique confirmation number, and displays a confirmation message to the applicant.",
+      "Input Parameter": [
+        "Full Name",
+        "Date of Birth",
+        "Address",
+        "Household Size",
+        "Income Details",
+        "Citizenship Status"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Save Application Data",
+            "logic": "On submit, persist all entered application data (Full Name, Date of Birth, Address, Household Size, Income Details, Citizenship Status) to the application record."
+          },
+          {
+            "label": "Generate Confirmation Number",
+            "logic": "After saving the application data, generate a unique confirmation number for the application."
+          },
+          {
+            "label": "Display Confirmation Message",
+            "logic": "Display a confirmation message to the applicant including the confirmation number after successful submission."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_3_1",
+          "name": "Persist Application Data",
+          "implementation": "Saves all entered application data (Full Name, Date of Birth, Address, Household Size, Income Details, Citizenship Status) to the application record. If persistence is successful, proceed to confirmation number generation. If persistence fails, display error message, log error, and allow applicant to retry submission.",
+          "trigger": "validation_pass",
+          "triggerCondition": "ACTION_2_1 validation passes",
+          "sequence": 16,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_3_2",
+          "name": "Check Data Persistence Success",
+          "implementation": "Checks if application data was successfully saved. If successful, proceed to generate confirmation number. If not, display error message, log error, and allow applicant to retry submission.",
+          "trigger": "process_complete",
+          "triggerCondition": "ACTION_3_1 completes",
+          "sequence": 17,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_3_3",
+          "name": "Generate Confirmation Number",
+          "implementation": "Generates a unique confirmation number for the application after successful data persistence. If generation fails, display error message, log error, and allow retry.",
+          "trigger": "process_complete",
+          "triggerCondition": "ACTION_3_2 success",
+          "sequence": 18,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_3_4",
+          "name": "Display Confirmation Message",
+          "implementation": "Displays a confirmation message to the applicant including the confirmation number after successful submission. If display fails, log error, display error toast, and allow retry.",
+          "trigger": "process_complete",
+          "triggerCondition": "ACTION_3_3 success",
+          "sequence": 19,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_3_5",
+          "name": "Notify Applicant of Successful Submission",
+          "implementation": "Sends email and in-app notification to applicant confirming successful submission and providing confirmation number. If notification fails, log error and allow retry.",
+          "trigger": "process_complete",
+          "triggerCondition": "ACTION_3_4 success",
+          "sequence": 20,
+          "linkedWidgetIds": [
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_3_6",
+          "name": "Trigger Assignment to Caseworker",
+          "implementation": "After successful application submission and confirmation number generation, triggers assignment of the application to an available caseworker (STEP_4).",
+          "trigger": "process_complete",
+          "triggerCondition": "ACTION_3_5 success",
+          "sequence": 21,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "action_ids": [
+            "ACTION_3_1",
+            "ACTION_3_2",
+            "ACTION_3_3",
+            "ACTION_3_4",
+            "ACTION_3_5",
+            "ACTION_3_6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Assignment",
+      "label": "Assign to Caseworker",
+      "description": "Automatically assign the submitted application to an available SNAP caseworker for review. The system should select a caseworker based on availability and workload balancing criteria, update the application record with the assigned caseworker's identifier, and trigger a notification to the caseworker for further processing.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to Caseworker",
+            "logic": "Upon successful submission of the application, the system queries the pool of SNAP caseworkers, selects one based on current workload and availability, and updates the application record with the assigned caseworker's ID. If an error occurs (e.g., database transaction error as indicated by the 'status' and 'message' fields), the system should log the error and retry the assignment or escalate to an administrator."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_4_1",
+          "name": "Assign Application to Caseworker",
+          "implementation": "System queries the pool of SNAP caseworkers, selects one based on current workload and availability, updates the application record with the assigned caseworker's ID, and triggers notification to the caseworker. If assignment is successful, proceed to STEP_5. If assignment fails, trigger error handling and escalation.",
+          "trigger": "process_complete",
+          "triggerCondition": "Application submitted and confirmation number generated (ACTION_3_6)",
+          "sequence": 22,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_4_2",
+          "name": "Handle Assignment Failure and Escalation",
+          "implementation": "If assignment to caseworker fails (e.g., due to database error or no available caseworker), log the error, retry assignment up to 2 times. If still unsuccessful, send notification to administrator via email and in-app, update application status to 'Assignment Pending', and notify applicant of delay with estimated resolution time.",
+          "trigger": "process_fail",
+          "triggerCondition": "ACTION_4_1 fails",
+          "sequence": 23,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Task",
+      "label": "Review Assigned Application",
+      "description": "The caseworker must review the SNAP application assigned for processing, verify all required information, and initiate eligibility determination. This includes checking completeness, accuracy, and compliance with program requirements before proceeding to the next stage.",
+      "taskName": "Review SNAP Application for Eligibility Determination",
+      "assignedTo": "Caseworker",
+      "dueDateLogic": {
+        "type": "calculated",
+        "calculation": "currentDate + 1 day"
+      },
+      "completionConditions": {
+        "type": "manual",
+        "logic": "Caseworker must confirm that all required fields are present, validate the accuracy of applicant information, and document any discrepancies or missing data. Task is complete when the caseworker marks the application as reviewed and ready for eligibility determination."
+      },
+      "priorityLogic": {
+        "type": "manual",
+        "defaultPriority": "high"
+      },
+      "notifications": {
+        "enabled": true,
+        "type": [
+          "email",
+          "in-app"
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_5_1",
+          "name": "Notify Caseworker of Assignment",
+          "implementation": "Upon successful assignment, system triggers email and in-app notification to the assigned caseworker with application details and review due date. If notification fails, log error and allow retry.",
+          "trigger": "process_complete",
+          "triggerCondition": "Caseworker assigned in ACTION_4_1",
+          "sequence": 24,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_2",
+          "name": "Review Assigned Application",
+          "implementation": "Caseworker reviews the assigned SNAP application, verifies all required information, checks completeness, accuracy, and compliance with program requirements. Discrepancies or missing data are documented in a review notes section. If review is complete and accurate, mark as reviewed. If discrepancies are found, return application to intake and specify which screens require correction.",
+          "trigger": "button_click",
+          "triggerCondition": "Caseworker opens assigned application for review on STEP_5",
+          "sequence": 25,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_3",
+          "name": "Mark Application as Reviewed",
+          "implementation": "Caseworker marks the application as reviewed and ready for eligibility determination after confirming all required fields and accuracy. System updates application status, logs review completion, and notifies applicant of review completion.",
+          "trigger": "button_click",
+          "triggerCondition": "Caseworker clicks 'Mark as Reviewed' on STEP_5",
+          "sequence": 26,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_4",
+          "name": "Return Application to Applicant Intake",
+          "implementation": "If discrepancies or missing data are found, caseworker returns the application to intake. System updates application status, notifies applicant of required corrections via email and in-app notification, and reopens relevant intake screens (STEP_1_1 to STEP_1_5) for editing. Review notes specify which sections require correction.",
+          "trigger": "button_click",
+          "triggerCondition": "Caseworker clicks 'Return' during review on STEP_5",
+          "sequence": 27,
+          "linkedWidgetIds": [
+            "STEP_1_1",
+            "STEP_1_2",
+            "STEP_1_3",
+            "STEP_1_4",
+            "STEP_1_5"
+          ]
+        },
+        {
+          "id": "ACTION_5_5",
+          "name": "Open Help Modal (Caseworker)",
+          "implementation": "Opens a modal window with help documentation relevant to the caseworker review screen. Content source is '/help/application-review'.",
+          "trigger": "button_click",
+          "triggerCondition": "Caseworker clicks 'Help' on STEP_5",
+          "sequence": 28,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Mark as Reviewed",
+          "action_ids": [
+            "ACTION_5_3"
+          ]
+        },
+        {
+          "label": "Return",
+          "action_ids": [
+            "ACTION_5_4"
+          ]
+        },
+        {
+          "label": "Help",
+          "action_ids": [
+            "ACTION_5_5"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_2",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_3",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_4",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_5",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1_1",
+      "endNode": "Personal Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_2",
+      "endNode": "Household Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Details",
+      "endNode": "Household Size",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_3",
+      "endNode": "Income Sources",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Income Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Income Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Frequency",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Income Recipient",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_4",
+      "endNode": "Citizenship Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Citizenship Information",
+      "endNode": "Citizenship Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_5",
+      "endNode": "Review Personal Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Review Personal Information",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Personal Information",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Personal Information",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Personal Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Personal Information",
+      "endNode": "Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_5",
+      "endNode": "Review Household Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Review Household Details",
+      "endNode": "Household Size",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_5",
+      "endNode": "Review Income Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Review Income Details",
+      "endNode": "Income Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Income Details",
+      "endNode": "Income Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Income Details",
+      "endNode": "Frequency",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Review Income Details",
+      "endNode": "Income Recipient",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_5",
+      "endNode": "Review Citizenship Status",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Review Citizenship Status",
+      "endNode": "Citizenship Status",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
