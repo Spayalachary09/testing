@@ -1,0 +1,536 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Compliance Dashboard Access",
+      "description": "On this screen, you will log into the system and access the Compliance Dashboard from the main menu. The dashboard provides a centralized location for monitoring compliance metrics across your organization. You will see navigation options and guidance on how to proceed to the dashboard. This is your starting point for compliance oversight activities.",
+      "details": [
+        {
+          "label": "Dashboard Access",
+          "repeatable_section": false,
+          "fields": []
+        }
+      ],
+      "data_validation": [
+        "User must be authenticated to access the dashboard",
+        "User must have Supervisor role to view compliance dashboard"
+      ],
+      "buttons": [
+        {
+          "label": "Go to Dashboard Filters",
+          "actor": "Supervisor",
+          "description": "Navigate to the dashboard filter selection screen to begin filtering compliance data.",
+          "actions": [
+            "Navigate to Select Dashboard Filters"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Compliance Dashboard Filter Selection",
+      "description": "This screen allows you to filter compliance data before viewing the dashboard. Select the Organizational Unit from a dropdown, search for an Individual Worker using autocomplete, specify a Date Range, and choose which Metric Types to display. Use these filters to tailor the dashboard to your needs. Once you have set your filters, click 'Apply Filters' to view the relevant compliance metrics.",
+      "details": [
+        {
+          "label": "Dashboard Filters",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Organizational Unit",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an organizational unit.",
+              "options": [
+                "HR",
+                "Operations",
+                "Finance",
+                "IT",
+                "Compliance"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Individual Worker",
+              "type": "autosuggest",
+              "required": false,
+              "error_message": "Please select a valid worker.",
+              "options": [],
+              "readOnly": false,
+              "visible_if": "",
+              "source_table": "Workers",
+              "display_field": "FullName",
+              "value_field": "WorkerID"
+            },
+            {
+              "label": "Date Range Start",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Please select a start date.",
+              "options": [],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Date Range End",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Please select an end date.",
+              "options": [],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Metric Type",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Please select at least one metric type.",
+              "options": [
+                "Completed Training",
+                "Safety Violations",
+                "Audit Results"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date Range End must be after Date Range Start",
+        "At least one Metric Type must be selected",
+        "Organizational Unit is required",
+        "If Individual Worker is selected, must exist in Workers table"
+      ],
+      "buttons": [
+        {
+          "label": "Apply Filters",
+          "actor": "Supervisor",
+          "description": "Apply the selected filters and retrieve compliance metrics for the dashboard.",
+          "actions": [
+            "Trigger Display Compliance Dashboard"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Retrieve Filtered Compliance Metrics",
+      "description": "Query compliance data sources for the selected organizational unit, worker, date range, and metric types. Aggregate and format the data for dashboard display. Apply access control to ensure the Supervisor only sees authorized data.",
+      "Input Parameter": [
+        "Middle Name",
+        "Last Name",
+        "Preferred Language",
+        "Email Address",
+        "Phone Number",
+        "Agree to Receive Notifications Electronically"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Filter Data by Selected Criteria",
+            "logic": "When the Supervisor applies filters, the system queries compliance data sources using the selected values for Organizational Unit, Individual Worker, Date Range, and Metric Type. Only records matching all selected criteria are retrieved."
+          },
+          {
+            "label": "Aggregate and Format Data",
+            "logic": "The retrieved data is aggregated and formatted for dashboard display. For example, Completed Training is summarized as progress bars, Safety Violations as counts and trends, and Audit Results as pass/fail rates and recent findings."
+          },
+          {
+            "label": "Apply Access Control",
+            "logic": "Before displaying any data, the system checks the Supervisor's access rights to ensure only authorized data for the selected Organizational Unit and workers is shown. Data outside the Supervisor's scope is excluded from results."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Compliance Metrics Dashboard",
+      "description": "This dashboard displays compliance metrics based on your selected filters. You will see widgets for Completed Training (with progress bars), Safety Violations (counts and trend charts), and Audit Results (pass/fail rates and recent findings). Each widget provides a summary and allows you to drill down for more details. Use the 'View Details' button on any widget to explore specific records and take further action if needed.",
+      "details": [
+        {
+          "label": "Compliance Metrics Overview",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Completed Training Progress",
+              "type": "slider",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Safety Violations Count",
+              "type": "number/currency",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Safety Violations Trend",
+              "type": "slider",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Audit Results Pass Rate",
+              "type": "number/currency",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Recent Audit Findings",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All displayed data must match the applied filters",
+        "Supervisor can only view data for authorized organizational units and workers"
+      ],
+      "buttons": [
+        {
+          "label": "View Details",
+          "actor": "Supervisor",
+          "description": "Drill down into the selected metric to view detailed records and take further action.",
+          "actions": [
+            "Navigate to Drill Down to Metric Details"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Metric Details and Issue Flagging",
+      "description": "This screen provides a detailed list view for the selected compliance metric. For Completed Training, you will see individual training records per worker. For Safety Violations, incident details are shown. For Audit Results, audit findings are listed. Each record includes a 'Flag Issue' button, allowing you to report compliance concerns directly from the list. Review the details and flag any issues that require follow-up.",
+      "details": [
+        {
+          "label": "Metric Details List",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Record Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Record name is required.",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Record Details",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": true,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Each record must be associated with the selected metric type",
+        "No duplicate records in the list"
+      ],
+      "buttons": [
+        {
+          "label": "Flag Issue",
+          "actor": "Supervisor",
+          "description": "Open the issue flagging form for the selected record.",
+          "actions": [
+            "Navigate to Flag Compliance Issue"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Flag Compliance Issue Form",
+      "description": "Use this form to flag a compliance issue related to the selected record. The form is pre-filled with context from the record you selected. Choose the Issue Type, provide a detailed Description, and suggest an Action to address the issue. Once completed, submit the form to create a new compliance issue for follow-up by the Compliance Officer.",
+      "details": [
+        {
+          "label": "Compliance Issue Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Issue Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an issue type.",
+              "options": [
+                "Training Incomplete",
+                "Policy Violation",
+                "Audit Failure",
+                "Other"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Description",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Description is required.",
+              "options": [],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Suggested Action",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Issue Type is required",
+        "Description must not be empty",
+        "If Issue Type is 'Other', Description must specify the issue"
+      ],
+      "buttons": [
+        {
+          "label": "Submit",
+          "actor": "Supervisor",
+          "description": "Submit the compliance issue for processing and assignment.",
+          "actions": [
+            "Trigger Submit Compliance Issue",
+            "Trigger Assign to Compliance Officer"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Rule",
+      "label": "Submit Compliance Issue",
+      "description": "Validate form input, create a compliance issue record in the database, link it to the relevant worker/metric, and set the status to 'Open'.",
+      "Input Parameter": [],
+      "details": {
+        "rules": [
+          {
+            "label": "Validate Form Input",
+            "logic": "Upon form submission, the system validates all required fields (Issue Type, Description, Suggested Action) are present and correctly formatted. If validation fails, display error messages and prevent submission."
+          },
+          {
+            "label": "Create Compliance Issue Record",
+            "logic": "If validation passes, the system creates a new compliance issue record in the database, pre-filling context from the selected record (e.g., worker, metric, incident details)."
+          },
+          {
+            "label": "Link to Relevant Worker/Metric",
+            "logic": "The new issue record is linked to the relevant worker and/or compliance metric from which the issue was flagged."
+          },
+          {
+            "label": "Set Status to 'Open'",
+            "logic": "The status of the new compliance issue record is set to 'Open' upon creation."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_Dashboard Access",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_2_Dashboard Filters",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2_Dashboard Filters",
+      "endNode": "STEP_2_Organizational Unit",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_Dashboard Filters",
+      "endNode": "STEP_2_Individual Worker",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_Dashboard Filters",
+      "endNode": "STEP_2_Date Range Start",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_Dashboard Filters",
+      "endNode": "STEP_2_Date Range End",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_Dashboard Filters",
+      "endNode": "STEP_2_Metric Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_4_Compliance Metrics Overview",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4_Compliance Metrics Overview",
+      "endNode": "STEP_4_Completed Training Progress",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_Compliance Metrics Overview",
+      "endNode": "STEP_4_Safety Violations Count",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_Compliance Metrics Overview",
+      "endNode": "STEP_4_Safety Violations Trend",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_Compliance Metrics Overview",
+      "endNode": "STEP_4_Audit Results Pass Rate",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_Compliance Metrics Overview",
+      "endNode": "STEP_4_Recent Audit Findings",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_5_Metric Details List",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_5_Metric Details List",
+      "endNode": "STEP_5_Record Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_5_Metric Details List",
+      "endNode": "STEP_5_Record Details",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_6_Compliance Issue Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6_Compliance Issue Details",
+      "endNode": "STEP_6_Issue Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6_Compliance Issue Details",
+      "endNode": "STEP_6_Description",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6_Compliance Issue Details",
+      "endNode": "STEP_6_Suggested Action",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_3_Filter Data by Selected Criteria",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_3_Aggregate and Format Data",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_3_Apply Access Control",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_7_Validate Form Input",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_7_Create Compliance Issue Record",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_7_Link to Relevant Worker/Metric",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_7_Set Status to 'Open'",
+      "relationship": "HAS_SECTION"
+    }
+  ]
+}
