@@ -1,0 +1,375 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Login and Access Compliance Dashboard",
+      "description": "On this screen, you will be prompted to log in to the system using your credentials. After successful authentication, you will be directed to the Compliance Dashboard section. Please enter your username and password to proceed. This is the secure entry point for supervisors to access compliance data and management tools.",
+      "details": [
+        {
+          "label": "Supervisor Login",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Username",
+              "type": "text",
+              "required": true,
+              "error_message": "Username is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Password",
+              "type": "text",
+              "required": true,
+              "error_message": "Password is required.",
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Username and Password must not be empty.",
+        "Username must be a valid system account.",
+        "Password must meet minimum security requirements (e.g., length, complexity)."
+      ],
+      "buttons": [
+        {
+          "label": "Login",
+          "actor": "Supervisor",
+          "description": "Authenticate and access the Compliance Dashboard.",
+          "actions": [
+            "Navigate to Select Filter Criteria"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Select Compliance Filter Criteria",
+      "description": "This screen allows you to filter compliance data by organizational unit, individual worker, and date range. Use the dropdown to select an organizational unit, the search box to find a specific worker, and the calendar picker to specify a date range. Once your criteria are set, click 'Apply Filters' to view relevant compliance metrics. Instructions and guidance are provided to help you refine your search for targeted compliance insights.",
+      "details": [
+        {
+          "label": "Filter Criteria Selection",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Organizational Unit",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Please select a valid organizational unit.",
+              "options": [
+                "HR",
+                "Ops",
+                "IT",
+                "Fin",
+                "Sales"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Individual Worker",
+              "type": "autosuggest",
+              "required": false,
+              "error_message": "Please select a valid worker.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Date Range",
+              "type": "date",
+              "required": false,
+              "error_message": "Please select a valid date range.",
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If both Organizational Unit and Individual Worker are selected, ensure the worker belongs to the selected unit.",
+        "Date Range start date must not be after end date.",
+        "Date Range must not be in the future.",
+        "At least one filter criterion must be selected."
+      ],
+      "buttons": [
+        {
+          "label": "Apply Filters",
+          "actor": "Supervisor",
+          "description": "Apply selected filter criteria to retrieve compliance metrics.",
+          "actions": [
+            "Trigger Apply Dashboard Filters",
+            "Navigate to Display Filtered Compliance Metrics"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Apply Dashboard Filters",
+      "description": "When the Supervisor clicks the 'Apply Filters' button, the system must query the backend for completed training, outstanding certifications, and recent incident reports for the selected Organizational Unit and/or Individual Worker within the specified Date Range. The system must aggregate and format the retrieved data for dashboard display.",
+      "Input Parameter": [
+        "Organizational Unit",
+        "Individual Worker",
+        "Date Range",
+        "Apply Filters"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Backend Query Trigger",
+            "logic": "On 'Apply Filters' button click, initiate a backend query using the selected values for Organizational Unit, Individual Worker, and Date Range as filter criteria."
+          },
+          {
+            "label": "Data Retrieval",
+            "logic": "Retrieve records for completed training, outstanding certifications, and recent incident reports matching the filter criteria from the backend data sources."
+          },
+          {
+            "label": "Data Aggregation",
+            "logic": "Aggregate the retrieved data to calculate counts and generate lists for each metric (Completed Training, Outstanding Certifications, Recent Incident Reports)."
+          },
+          {
+            "label": "Data Formatting",
+            "logic": "Format the aggregated data for display on the dashboard, ensuring each metric is presented as a count and/or list as required."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Filtered Compliance Metrics Dashboard",
+      "description": "After applying your filter criteria, this dashboard displays key compliance metrics for the selected organizational unit and/or worker. You will see counts and lists for completed training, outstanding certifications, and recent incident reports. Each metric includes a 'View Details' button to explore more granular information. Use this dashboard to quickly assess compliance status and identify areas needing attention.",
+      "details": [
+        {
+          "label": "Compliance Metrics Overview",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Completed Training",
+              "type": "calculated",
+              "required": false,
+              "error_message": "Unable to retrieve completed training data.",
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Outstanding Certifications",
+              "type": "calculated",
+              "required": false,
+              "error_message": "Unable to retrieve outstanding certifications data.",
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Recent Incident Reports",
+              "type": "calculated",
+              "required": false,
+              "error_message": "Unable to retrieve recent incident reports data.",
+              "readOnly": true,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Metrics must reflect the applied filter criteria.",
+        "Counts must be accurate and up-to-date.",
+        "No duplicate entries in lists.",
+        "Incident reports must be within the selected date range."
+      ],
+      "buttons": [
+        {
+          "label": "View Details (Completed Training)",
+          "actor": "Supervisor",
+          "description": "View detailed list of completed training records.",
+          "actions": [
+            "Navigate to View Metric Details"
+          ]
+        },
+        {
+          "label": "View Details (Outstanding Certifications)",
+          "actor": "Supervisor",
+          "description": "View detailed list of outstanding certifications.",
+          "actions": [
+            "Navigate to View Metric Details"
+          ]
+        },
+        {
+          "label": "View Details (Recent Incident Reports)",
+          "actor": "Supervisor",
+          "description": "View detailed list of recent incident reports.",
+          "actions": [
+            "Navigate to View Metric Details"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Metric Details and Prior History Search",
+      "description": "This screen presents a detailed list for the selected compliance metric, such as workers with outstanding certifications or incident report details. You can review individual records and use the 'Search Prior History' button to access historical compliance data for a selected worker. Guidance is provided to help you interpret the details and understand the context of each record.",
+      "details": [
+        {
+          "label": "Metric Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Metric Detail Record",
+              "type": "calculated",
+              "required": false,
+              "error_message": "Unable to retrieve metric details.",
+              "readOnly": true,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Metric details must correspond to the selected metric.",
+        "No duplicate records in the detail list.",
+        "Historical data must be accurate and relevant to the selected worker.",
+        "If searching prior history, ensure a worker is selected."
+      ],
+      "buttons": [
+        {
+          "label": "Search Prior History",
+          "actor": "Supervisor",
+          "description": "Retrieve and display historical compliance records for the selected worker.",
+          "actions": [
+            "Trigger Search Prior History"
+          ]
+        }
+      ],
+      "owner": "Supervisor"
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Rule",
+      "label": "Search Prior History",
+      "description": "When the Supervisor clicks the 'Search Prior History' button in the metric detail view, the system must query the backend for all historical training, certification, and incident report data for the selected worker. The results must be displayed in a modal or expanded section within the UI.",
+      "Input Parameter": [
+        "Search Prior History",
+        "Metric Detail Record"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Historical Data Query Trigger",
+            "logic": "On 'Search Prior History' button click, use the selected worker from the Metric Detail Record to query the backend for all historical training, certification, and incident report records."
+          },
+          {
+            "label": "Result Display",
+            "logic": "Display the retrieved historical records in a modal window or an expanded section within the current view, ensuring the data is clearly associated with the selected worker."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_SUPERVISOR_LOGIN",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1_SUPERVISOR_LOGIN",
+      "endNode": "STEP_1_SUPERVISOR_LOGIN_USERNAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_SUPERVISOR_LOGIN",
+      "endNode": "STEP_1_SUPERVISOR_LOGIN_PASSWORD",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_2_FILTER_CRITERIA_SELECTION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2_FILTER_CRITERIA_SELECTION",
+      "endNode": "STEP_2_FILTER_CRITERIA_SELECTION_ORGANIZATIONAL_UNIT",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_FILTER_CRITERIA_SELECTION",
+      "endNode": "STEP_2_FILTER_CRITERIA_SELECTION_INDIVIDUAL_WORKER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2_FILTER_CRITERIA_SELECTION",
+      "endNode": "STEP_2_FILTER_CRITERIA_SELECTION_DATE_RANGE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW",
+      "endNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW_COMPLETED_TRAINING",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW",
+      "endNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW_OUTSTANDING_CERTIFICATIONS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW",
+      "endNode": "STEP_4_COMPLIANCE_METRICS_OVERVIEW_RECENT_INCIDENT_REPORTS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_5_METRIC_DETAILS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_5_METRIC_DETAILS",
+      "endNode": "STEP_5_METRIC_DETAILS_METRIC_DETAIL_RECORD",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
