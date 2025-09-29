@@ -1,0 +1,211 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Referral Information Entry",
+      "description": "On this screen, you will enter all the required details to create a new referral. Please provide accurate information about the individual being referred, including their contact details and a description of the concern or service need. You will also specify the urgency level of the referral. All required fields are marked with an asterisk (*). Review your entries carefully before submitting. Once submitted, the referral will be processed and assigned for intake review. If you have questions about any field, hover over the information icon for guidance.",
+      "details": [
+        {
+          "label": "Referral Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name must be valid text.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone number is required and must be valid.",
+              "readOnly": false
+            },
+            {
+              "label": "Email",
+              "type": "email",
+              "required": true,
+              "error_message": "Email is required and must be a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Description of Concern or Service Need",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Description of Concern or Service Need is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Referral",
+              "type": "date",
+              "required": true,
+              "error_message": "Date of Referral is required and must be a valid date.",
+              "readOnly": false
+            },
+            {
+              "label": "Urgency Level",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Urgency Level is required.",
+              "options": [
+                "Low",
+                "Med",
+                "High"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Phone number must be in a valid format.",
+        "Email must be in a valid email format.",
+        "Date of Referral cannot be in the future.",
+        "All required fields must be completed before submission.",
+        "If Urgency Level is 'High', ensure Description of Concern or Service Need provides sufficient detail.",
+        "No duplicate referrals for the same individual on the same date."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Referral",
+          "actor": "Referral Worker",
+          "description": "Click to submit the referral information for processing. Once submitted, the referral will be timestamped and routed for intake assignment.",
+          "actions": [
+            "Trigger Submit Referral",
+            "Trigger Assign to Agency Intake Worker"
+          ]
+        }
+      ],
+      "owner": "Referral Worker"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Submit Referral",
+      "description": "When the 'Submit Referral' button is clicked by the Referral Worker, the system must capture all entered referral data, create a new referral record, timestamp the submission, and flag the record with the selected urgency level. Additionally, the system must trigger audit logging and compliance documentation actions as part of the submission process.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Phone",
+        "Email",
+        "Address",
+        "Description of Concern or Service Need",
+        "Date of Referral",
+        "Urgency Level",
+        "Submit Referral"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Capture Referral Data",
+            "logic": "On 'Submit Referral' button click, collect the values from all required and optional fields: First Name, Middle Name, Last Name, Phone, Email, Address, Description of Concern or Service Need, Date of Referral, and Urgency Level."
+          },
+          {
+            "label": "Create Referral Record",
+            "logic": "Create a new referral record in the system using the captured data. Ensure all required fields are present and valid before record creation."
+          },
+          {
+            "label": "Timestamp Submission",
+            "logic": "Record the current system date and time as the submission timestamp for the new referral record."
+          },
+          {
+            "label": "Flag Urgency Level",
+            "logic": "Set the urgency level flag on the referral record based on the value selected in the 'Urgency Level' field."
+          },
+          {
+            "label": "Trigger Audit Logging",
+            "logic": "Log the referral submission event, including the user ID of the Referral Worker, timestamp, and all submitted data, in the system audit log."
+          },
+          {
+            "label": "Trigger Compliance Documentation",
+            "logic": "Initiate any required compliance documentation processes associated with the referral submission, as per system and regulatory requirements."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Referral Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Description of Concern or Service Need",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Date of Referral",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Referral Details",
+      "endNode": "Urgency Level",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
