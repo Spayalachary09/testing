@@ -1,0 +1,1092 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Applicant Personal Information Entry",
+      "description": "On this screen, you will enter your personal details as the applicant. Please provide accurate information including your full name, date of birth, Social Security Number, contact details, and current address. Instructions are provided for each field, and required fields are clearly marked. This information is used to identify you and process your application. Review your entries carefully before proceeding.",
+      "details": [
+        {
+          "label": "Personal Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Full Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn/phone/address",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "ssn/phone/address",
+              "required": false,
+              "error_message": "Phone number format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email format is invalid.",
+              "readOnly": false
+            },
+            {
+              "label": "Current Address",
+              "type": "ssn/phone/address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique.",
+        "Phone number must be valid format.",
+        "Email address must be valid format."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Household Details",
+          "actor": "Applicant",
+          "description": "Proceed to enter household details.",
+          "action_ids": [
+            "ACTION_1B"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1A",
+          "name": "Initialize Applicant Information Entry",
+          "implementation": "On screen load, initialize form state. If applicant is returning, pre-fill fields with saved data. If new, present empty form. Handle any initialization errors by displaying a generic error message.",
+          "trigger": "screen_load",
+          "triggerCondition": "STEP_1 is loaded.",
+          "sequence": 1,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_1B",
+          "name": "Validate Applicant Personal Information",
+          "implementation": "Invokes STEP_5 validation for required applicant fields (Full Name, Date of Birth, SSN, Current Address). If validation passes, navigates to STEP_2. If validation fails, navigates to STEP_7 with context of missing/invalid fields.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Next: Household Details'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_2",
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Household Composition Entry",
+      "description": "On this screen, you will provide information about your household. Enter the total number of people living in your household, and add details for each member. This helps determine eligibility and benefits. You can add, edit, or remove household members as needed. Please ensure all information is accurate.",
+      "details": [
+        {
+          "label": "Household Size",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Total Household Members",
+              "type": "number/currency",
+              "required": true,
+              "error_message": "Household size is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Household Member Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Member Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Member name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Sibling",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Is Member Disabled?",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Invalid selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot have duplicate household member names.",
+        "Date of Birth for household members cannot be in the future.",
+        "Total number of household members must match the number of member entries.",
+        "Cannot have more than one 'Self' relationship."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Income Information",
+          "actor": "Applicant",
+          "description": "Proceed to enter income details for your household.",
+          "action_ids": [
+            "ACTION_2B"
+          ]
+        },
+        {
+          "label": "Back: Applicant Information",
+          "actor": "Applicant",
+          "description": "Return to previous screen to edit applicant information.",
+          "action_ids": [
+            "ACTION_2C"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_2A",
+          "name": "Initialize Household Details Entry",
+          "implementation": "On screen load, initialize household form state. If returning, pre-fill with saved data. Handle initialization errors by displaying a generic error message.",
+          "trigger": "screen_load",
+          "triggerCondition": "STEP_2 is loaded.",
+          "sequence": 1,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_2B",
+          "name": "Validate Household Details",
+          "implementation": "Invokes STEP_5 validation for required household fields (Total Household Members, Member Full Name, Relationship, Date of Birth). If validation passes, navigates to STEP_3. If validation fails, navigates to STEP_7 with context of missing/invalid fields.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Next: Income Information'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_3",
+            "STEP_7"
+          ]
+        },
+        {
+          "id": "ACTION_2C",
+          "name": "Navigate Back to Applicant Information Entry",
+          "implementation": "Navigates back to STEP_1 for editing applicant information.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Back: Applicant Information'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Household Income Information Entry",
+      "description": "On this screen, you will enter income details for your household. For each member with income, specify the source, type, and amount. This information is used to assess eligibility for benefits. You can add multiple income sources per member. Please ensure all amounts are accurate and up to date.",
+      "details": [
+        {
+          "label": "Income Sources",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Select a household member.",
+              "options": [
+                "Applicant",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Income Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Income type is required.",
+              "options": [
+                "Employment",
+                "Self-Employment",
+                "Social Security",
+                "Disability",
+                "Child Support",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Income Source Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Income source name is required for 'Other' type.",
+              "readOnly": false,
+              "visible_if": "Income Type: Other"
+            },
+            {
+              "label": "Monthly Income Amount",
+              "type": "number/currency",
+              "required": true,
+              "error_message": "Monthly income amount is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Income amount cannot be negative.",
+        "If Income Type is 'Other', Income Source Name is required.",
+        "Total household income must be calculated and displayed.",
+        "Cannot have duplicate income entries for the same source and member."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Review Application",
+          "actor": "Applicant",
+          "description": "Proceed to review all entered information before submitting.",
+          "action_ids": [
+            "ACTION_3B"
+          ]
+        },
+        {
+          "label": "Back: Household Details",
+          "actor": "Applicant",
+          "description": "Return to previous screen to edit household details.",
+          "action_ids": [
+            "ACTION_3C"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_3A",
+          "name": "Initialize Income Information Entry",
+          "implementation": "On screen load, initialize income form state. If returning, pre-fill with saved data. Handle initialization errors by displaying a generic error message.",
+          "trigger": "screen_load",
+          "triggerCondition": "STEP_3 is loaded.",
+          "sequence": 1,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_3B",
+          "name": "Validate Income Information",
+          "implementation": "Invokes STEP_5 validation for required income fields (Household Member, Income Type, Monthly Income Amount). If validation passes, navigates to STEP_4. If validation fails, navigates to STEP_7 with context of missing/invalid fields.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Next: Review Application'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_4",
+            "STEP_7"
+          ]
+        },
+        {
+          "id": "ACTION_3C",
+          "name": "Navigate Back to Household Details Entry",
+          "implementation": "Navigates back to STEP_2 for editing household details.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Back: Household Details'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Application Review and Submission",
+      "description": "This screen allows you to review all the information you have entered for your application, including personal details, household composition, and income information. Carefully check each section for accuracy. You may go back to previous screens to make corrections. Once you are satisfied, submit your application. A summary of your entries is displayed for confirmation.",
+      "details": [
+        {
+          "label": "Applicant Information Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Full Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn/phone/address",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Phone Number",
+              "type": "ssn/phone/address",
+              "required": false,
+              "error_message": "Phone number format is invalid.",
+              "readOnly": true
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email format is invalid.",
+              "readOnly": true
+            },
+            {
+              "label": "Current Address",
+              "type": "ssn/phone/address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Household Members Summary",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Member Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Member name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Sibling",
+                "Other"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Is Member Disabled?",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Invalid selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Income Summary",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Select a household member.",
+              "options": [
+                "Applicant",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Income Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Income type is required.",
+              "options": [
+                "Employment",
+                "Self-Employment",
+                "Social Security",
+                "Disability",
+                "Child Support",
+                "Other"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Income Source Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Income source name is required for 'Other' type.",
+              "readOnly": true,
+              "visible_if": "Income Type: Other"
+            },
+            {
+              "label": "Monthly Income Amount",
+              "type": "number/currency",
+              "required": true,
+              "error_message": "Monthly income amount is required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required fields must be completed before submission.",
+        "Review for accuracy and completeness.",
+        "If any required field is missing, submission is blocked."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "actor": "Applicant",
+          "description": "Submit your completed application for processing.",
+          "action_ids": [
+            "ACTION_4B"
+          ]
+        },
+        {
+          "label": "Back: Edit Information",
+          "actor": "Applicant",
+          "description": "Return to previous screens to make corrections.",
+          "action_ids": [
+            "ACTION_4C"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_4A",
+          "name": "Initialize Application Review",
+          "implementation": "On screen load, aggregate and display all entered data for applicant, household, and income. If returning, ensure data is up to date. Handle initialization errors by displaying a generic error message.",
+          "trigger": "screen_load",
+          "triggerCondition": "STEP_4 is loaded.",
+          "sequence": 1,
+          "linkedWidgetIds": []
+        },
+        {
+          "id": "ACTION_4B",
+          "name": "Validate Application Before Submission",
+          "implementation": "Invokes STEP_5 to validate all required fields across applicant, household, and income sections. If validation passes, triggers ACTION_6A (Save and Assign Application). If validation fails, navigates to STEP_7 with context of missing/invalid fields.",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Submit Application'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_7"
+          ]
+        },
+        {
+          "id": "ACTION_4C",
+          "name": "Navigate Back for Editing",
+          "implementation": "Allows applicant to select which section to return to for correction. Uses context from previous validation or error to determine whether to navigate to STEP_1 (applicant info), STEP_2 (household), or STEP_3 (income).",
+          "trigger": "button",
+          "triggerCondition": "Applicant clicks 'Back: Edit Information'.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_1",
+            "STEP_2",
+            "STEP_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Check Required Fields Completion",
+      "description": "System must verify that all required fields\u2014Name, Date of Birth, Address, Household Size, and Income\u2014are completed (not empty) before allowing the applicant to submit the application. If any of these fields are empty, submission is blocked and an error is triggered.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Required Fields Not Empty",
+            "logic": "If status is 'error' and message contains information about missing required fields, then block submission and display an error message. Required fields are: Name, Date of Birth, Address, Household Size, Income."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_5A",
+          "name": "Check Required Fields Completion",
+          "implementation": "At each step where validation is triggered (STEP_1, STEP_2, STEP_3, STEP_4), check for completeness and validity of required fields. If any required field is missing or invalid, return a structured error object with the list of missing/invalid fields and their locations. If all required fields are present and valid, return success.",
+          "trigger": "validation",
+          "triggerCondition": "Validation required at any step.",
+          "sequence": 1,
+          "linkedWidgetIds": []
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Assignment",
+      "label": "Submit Application",
+      "description": "When the applicant clicks the 'Submit Application' button, the system must save the complete application record to the database and trigger the assignment workflow to route the application to a SNAP caseworker for review.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Save Application Record",
+            "logic": "On 'Submit Application' button click, validate all required fields. If validation passes, persist the application data to the database. Handle any database errors, such as transaction closure or out-of-scope results, and return appropriate error messages if saving fails."
+          },
+          {
+            "label": "Trigger Assignment to SNAP Caseworker",
+            "logic": "After successful saving of the application record, initiate the assignment process to route the application to a SNAP caseworker. Ensure the assignment is only triggered if the application is saved without errors."
+          }
+        ]
+      },
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_6A",
+          "name": "Save and Assign Application",
+          "implementation": "On successful validation from STEP_4, persist the application data to the database. If saving succeeds, trigger assignment to a SNAP caseworker (ACTION_8A). If saving fails (e.g., database error), log the error and navigate to STEP_7 with error details.",
+          "trigger": "assignment",
+          "triggerCondition": "STEP_5 validation passes and applicant clicks 'Submit Application'.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_8",
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Screen",
+      "label": "Incomplete Fields Error Notification",
+      "description": "This screen displays an error message indicating that some required fields are incomplete. You will see a list of missing or invalid fields, along with instructions to return and complete them before submitting your application. Guidance is provided to help you correct the errors and proceed.",
+      "details": [
+        {
+          "label": "Error Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Error Message",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Please complete all required fields before submitting.",
+              "readOnly": true
+            },
+            {
+              "label": "Missing Fields List",
+              "type": "textarea",
+              "required": true,
+              "error_message": "List of missing or invalid fields.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Display all required fields that are incomplete.",
+        "Prevent submission until all required fields are completed."
+      ],
+      "buttons": [
+        {
+          "label": "Back: Complete Missing Fields",
+          "actor": "Applicant",
+          "description": "Return to previous screens to complete missing information.",
+          "action_ids": [
+            "ACTION_7A"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "id": "ACTION_7A",
+          "name": "Display Error Message and Guide Correction",
+          "implementation": "Display error message and list of missing/invalid fields. Use error context to highlight which section(s) need correction. Provide navigation options to return directly to the relevant screen (STEP_1, STEP_2, or STEP_3) based on the error context. Log all errors for audit.",
+          "trigger": "error",
+          "triggerCondition": "Triggered by validation or assignment error from any step.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1",
+            "STEP_2",
+            "STEP_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Assignment",
+      "label": "Assign to SNAP Caseworker",
+      "description": "The system automatically assigns the submitted application record to a SNAP caseworker for review and further processing. This step is triggered after the application is successfully saved.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign Application to Caseworker",
+            "logic": "Upon successful persistence of the application record, select an available SNAP caseworker based on workload or predefined assignment rules. Link the application record to the selected caseworker and update the application status to 'Assigned'. Handle any errors in the assignment process, such as database transaction issues, and log or report them as needed."
+          }
+        ]
+      },
+      "step_number": 8,
+      "node_id": "STEP_8",
+      "actions": [
+        {
+          "id": "ACTION_8A",
+          "name": "Assign Application to Caseworker",
+          "implementation": "Select an available SNAP caseworker based on workload or assignment rules. Link the application to the selected caseworker and update status to 'Assigned'. If assignment succeeds, navigate to STEP_9 for caseworker review. If assignment fails, log the error and navigate to STEP_7 with error details.",
+          "trigger": "assignment",
+          "triggerCondition": "Application record saved successfully.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_9",
+            "STEP_7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Screen",
+      "label": "SNAP Caseworker Review Task",
+      "description": "This screen is for SNAP caseworkers to review submitted applications. You will see all applicant, household, and income details, along with any system-generated notes or flags. Use this screen to verify eligibility, check for completeness, and initiate further processing or follow-up as needed.",
+      "details": [
+        {
+          "label": "Application Review",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Applicant Information",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Applicant information is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Household Composition",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Household composition is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Income Information",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Income information is required.",
+              "readOnly": true
+            },
+            {
+              "label": "System Notes/Flags",
+              "type": "textarea",
+              "required": false,
+              "error_message": "System notes are required if present.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required applicant, household, and income fields must be present.",
+        "Caseworker must verify completeness and eligibility before proceeding.",
+        "System flags must be reviewed and addressed."
+      ],
+      "buttons": [
+        {
+          "label": "Mark as Reviewed",
+          "actor": "SNAP Caseworker",
+          "description": "Confirm that the application has been reviewed for eligibility and completeness.",
+          "action_ids": [
+            "ACTION_9A"
+          ]
+        },
+        {
+          "label": "Request Additional Information",
+          "actor": "SNAP Caseworker",
+          "description": "Request further details from applicant if information is incomplete or unclear.",
+          "action_ids": [
+            "ACTION_9B"
+          ]
+        }
+      ],
+      "owner": "SNAP Caseworker",
+      "step_number": 9,
+      "node_id": "STEP_9",
+      "actions": [
+        {
+          "id": "ACTION_9A",
+          "name": "Mark Application as Reviewed",
+          "implementation": "Update application status to 'Reviewed' and log review completion. Notify applicant of review completion. If update succeeds, display confirmation message. If update fails, log error and navigate to STEP_7 with error details.",
+          "trigger": "button",
+          "triggerCondition": "Caseworker clicks 'Mark as Reviewed'.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_9",
+            "STEP_7"
+          ]
+        },
+        {
+          "id": "ACTION_9B",
+          "name": "Request Additional Information from Applicant",
+          "implementation": "Update application status to 'Pending Additional Info', send notification to applicant with requested details, and log the request. If update succeeds, display confirmation message. If update fails, log error and navigate to STEP_7 with error details.",
+          "trigger": "button",
+          "triggerCondition": "Caseworker clicks 'Request Additional Information'.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_9",
+            "STEP_7"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Personal Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Personal Details",
+      "endNode": "Current Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Household Size",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Size",
+      "endNode": "Total Household Members",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Household Member Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Member Details",
+      "endNode": "Member Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Details",
+      "endNode": "Relationship to Applicant",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Details",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Details",
+      "endNode": "Is Member Disabled?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Income Sources",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Household Member",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Income Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Income Source Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Sources",
+      "endNode": "Monthly Income Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Applicant Information Summary",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Applicant Information Summary",
+      "endNode": "Current Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Household Members Summary",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Members Summary",
+      "endNode": "Member Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Members Summary",
+      "endNode": "Relationship to Applicant",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Members Summary",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Members Summary",
+      "endNode": "Is Member Disabled?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Income Summary",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Income Summary",
+      "endNode": "Household Member",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Summary",
+      "endNode": "Income Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Summary",
+      "endNode": "Income Source Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Income Summary",
+      "endNode": "Monthly Income Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "Error Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Error Details",
+      "endNode": "Error Message",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Error Details",
+      "endNode": "Missing Fields List",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "Application Review",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Application Review",
+      "endNode": "Applicant Information",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Review",
+      "endNode": "Household Composition",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Review",
+      "endNode": "Income Information",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Review",
+      "endNode": "System Notes/Flags",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

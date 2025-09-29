@@ -1,0 +1,1429 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Application Type and Contact Information",
+      "description": "On this screen, you will begin your application by selecting the type of application you wish to submit and providing your contact information. Please choose whether you are starting a new application or recertifying an existing one. Enter your full name, select your preferred language, and provide your email address and phone number. This information will be used to contact you regarding your application status and updates.",
+      "details": [
+        {
+          "label": "Application Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an application type.",
+              "options": [
+                "New Application",
+                "Recertification"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Full name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Preferred Language",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select your preferred language.",
+              "options": [
+                "English",
+                "Spanish"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": true,
+              "error_message": "Please enter a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Please enter a valid phone number.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Email address must be in valid format",
+        "Phone number must be in valid format",
+        "Full name cannot be empty",
+        "Application type must be selected"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to consent to notifications.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "ACTION_1": {
+            "id": "ACTION_1",
+            "name": "Trigger Notification Consent Screen",
+            "implementation": "Upon clicking 'Next', validate input and navigate to STEP_2 (Notification Consent).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next' and all required fields are valid.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_2"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Notification Consent",
+      "description": "On this screen, you will be asked to provide your consent to receive notifications and updates about your application via email or text message. Please review the options and select your preferred methods of communication. Your consent allows us to keep you informed about important updates and next steps.",
+      "details": [
+        {
+          "label": "Consent Preferences",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Consent to Email Notifications",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Unable to process consent selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Consent to Text Message Notifications",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Unable to process consent selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "At least one consent option should be selected if applicant wishes to receive notifications"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to enter household member details.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "ACTION_2": {
+            "id": "ACTION_2",
+            "name": "Trigger Household Member Details Screen",
+            "implementation": "Upon clicking 'Next', validate consent selection and navigate to STEP_3 (Household Member Information).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Household Member Information",
+      "description": "On this screen, you will enter details for each member of your household. For each person, provide their name, age, and relationship to you. Use the 'Add Household Member' button to include additional members. This information helps determine eligibility and benefits for your household.",
+      "details": [
+        {
+          "label": "Household Members",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Member Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Member name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Age",
+              "type": "number",
+              "required": true,
+              "error_message": "Please enter a valid age.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select relationship.",
+              "options": [
+                "Self",
+                "Daughter",
+                "Son",
+                "Spouse",
+                "Mother",
+                "Father",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Age must be a positive number",
+        "Cannot have more than one 'Self' in household",
+        "Cannot have duplicate spouse entries",
+        "Relationship must be selected for each member",
+        "Birth date cannot be in the future if age is derived from birth date"
+      ],
+      "buttons": [
+        {
+          "label": "Add Household Member",
+          "actor": "Applicant",
+          "description": "Add another household member to the list.",
+          "action_ids": [
+            "ACTION_3"
+          ]
+        },
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to confirm household composition.",
+          "action_ids": [
+            "ACTION_4"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "ACTION_3": {
+            "id": "ACTION_3",
+            "name": "Add Household Member",
+            "implementation": "Adds a new household member entry to the list.",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Add Household Member'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_3"
+            ]
+          },
+          "ACTION_4": {
+            "id": "ACTION_4",
+            "name": "Trigger Household Composition Confirmation",
+            "implementation": "Upon clicking 'Next', validate household member entries and navigate to STEP_4 (Confirm Household Composition).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 2,
+            "linkedWidgetIds": [
+              "STEP_4"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Confirm Household Composition",
+      "description": "If the applicant confirms that only Jane and Lily are in the household, the application process proceeds to the next step. If the applicant indicates any other household composition, the application process is ended and the applicant is notified that they are not eligible to proceed.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Proceed if household is only Jane and Lily",
+            "logic": "If the applicant confirms that the household members are only Jane and Lily, allow the application to proceed to the next step."
+          },
+          {
+            "label": "End application if household composition differs",
+            "logic": "If the applicant indicates any household composition other than only Jane and Lily, terminate the application process and display an ineligibility message."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "ACTION_5": {
+            "id": "ACTION_5",
+            "name": "Evaluate Household Composition and Route",
+            "implementation": "Checks if household is only Jane and Lily. If true, proceeds to STEP_5. If false, routes to STEP_16 (Not Eligible Notification).",
+            "trigger": "Rule",
+            "triggerCondition": "Household member validation complete.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_5",
+              "STEP_16"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Living Arrangement Selection",
+      "description": "On this screen, specify your current living arrangement. Select the option that best describes your household's living situation. This information is used to assess your eligibility and determine the appropriate benefits.",
+      "details": [
+        {
+          "label": "Living Arrangement",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Living Arrangement",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select your living arrangement.",
+              "options": [
+                "Own apartment",
+                "With others",
+                "Shelter",
+                "Temporary housing",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Living arrangement must be selected"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to indicate household income.",
+          "action_ids": [
+            "ACTION_7"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "ACTION_6": {
+            "id": "ACTION_6",
+            "name": "Return to Application Type Screen",
+            "implementation": "Allows applicant to return to STEP_1 (Application Type and Contact Information) via 'Return' button.",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Return'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_1"
+            ]
+          },
+          "ACTION_7": {
+            "id": "ACTION_7",
+            "name": "Trigger Household Income Indication Screen",
+            "implementation": "Upon clicking 'Next', validate living arrangement and navigate to STEP_6 (Household Income Indication).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 2,
+            "linkedWidgetIds": [
+              "STEP_6"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Household Income Indication",
+      "description": "On this screen, indicate whether any member of your household receives income. Select 'Yes' if anyone in your household has income, or 'No' if no one does. This information will determine if you need to provide further income details.",
+      "details": [
+        {
+          "label": "Income Status",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Does any household member receive income?",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please indicate if any household member receives income.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Selection required for income status"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to enter income details if applicable.",
+          "action_ids": [
+            "ACTION_8"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "ACTION_8": {
+            "id": "ACTION_8",
+            "name": "Trigger Income Details Entry Screen",
+            "implementation": "Upon clicking 'Next', validate income indication and navigate to STEP_7 (Income Details Entry) if 'Yes' is selected, otherwise skip to STEP_9 (Household Expenses Entry).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_7",
+              "STEP_9"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Screen",
+      "label": "Income Details Entry",
+      "description": "On this screen, provide details about household income. For each income source, enter the employer name, monthly amount, and pay frequency. You can upload pay stubs to verify income. Use the 'Add Income Source' button to enter multiple sources if needed.",
+      "details": [
+        {
+          "label": "Income Sources",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Employer Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Employer name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Monthly Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Please enter a valid monthly amount.",
+              "readOnly": false
+            },
+            {
+              "label": "Pay Frequency",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select pay frequency.",
+              "options": [
+                "Weekly",
+                "Biweekly",
+                "Monthly",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Upload Pay Stubs",
+              "type": "file",
+              "required": false,
+              "error_message": "Unable to upload pay stubs.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Monthly amount must be a positive number",
+        "Employer name cannot be empty",
+        "Pay frequency must be selected",
+        "Income cannot be negative",
+        "If pay stubs are uploaded, file type must be PDF, JPG, or PNG"
+      ],
+      "buttons": [
+        {
+          "label": "Add Income Source",
+          "actor": "Applicant",
+          "description": "Add another income source.",
+          "action_ids": [
+            "ACTION_9"
+          ]
+        },
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to upload income verification.",
+          "action_ids": [
+            "ACTION_10"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "ACTION_9": {
+            "id": "ACTION_9",
+            "name": "Add Income Source",
+            "implementation": "Adds a new income source entry to the list.",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Add Income Source'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_7"
+            ]
+          },
+          "ACTION_10": {
+            "id": "ACTION_10",
+            "name": "Trigger Income Verification Upload Screen",
+            "implementation": "Upon clicking 'Next', validate income details and navigate to STEP_8 (Income Verification Upload).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 2,
+            "linkedWidgetIds": [
+              "STEP_8"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Screen",
+      "label": "Income Verification Upload",
+      "description": "On this screen, upload documents that verify your household income, such as pay stubs or employer letters. These documents will be securely stored and linked to your income entries. Please ensure that your uploads are clear and legible.",
+      "details": [
+        {
+          "label": "Income Verification Documents",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Upload Income Verification Document",
+              "type": "file",
+              "required": true,
+              "error_message": "Please upload an income verification document.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "File type must be PDF, JPG, or PNG",
+        "File size must not exceed 10MB"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to enter household expenses.",
+          "action_ids": [
+            "ACTION_11"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 8,
+      "node_id": "STEP_8",
+      "actions": [
+        {
+          "ACTION_11": {
+            "id": "ACTION_11",
+            "name": "Trigger Household Expenses Entry Screen",
+            "implementation": "Upon clicking 'Next', validate income verification upload and navigate to STEP_9 (Household Expenses Entry).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_9"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Screen",
+      "label": "Household Expenses Entry",
+      "description": "On this screen, enter your household's monthly expenses. Provide the amount for each expense type, including rent, electricity, gas, and childcare. This information helps determine your eligibility and benefit amount.",
+      "details": [
+        {
+          "label": "Monthly Expenses",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Rent",
+              "type": "currency",
+              "required": true,
+              "error_message": "Please enter your monthly rent amount.",
+              "readOnly": false
+            },
+            {
+              "label": "Electricity",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly electricity expense.",
+              "readOnly": false
+            },
+            {
+              "label": "Gas",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly gas expense.",
+              "readOnly": false
+            },
+            {
+              "label": "Childcare",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly childcare expense.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Rent amount must be a positive number",
+        "Expense amounts cannot be negative",
+        "Total expenses should not exceed reasonable household income"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to confirm citizenship and provide SSNs.",
+          "action_ids": [
+            "ACTION_12"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 9,
+      "node_id": "STEP_9",
+      "actions": [
+        {
+          "ACTION_12": {
+            "id": "ACTION_12",
+            "name": "Trigger Citizenship Confirmation and SSN Entry Screen",
+            "implementation": "Upon clicking 'Next', validate household expenses and navigate to STEP_10 (Citizenship Confirmation and SSN Entry).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_10"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_10",
+      "step": 10,
+      "type": "Screen",
+      "label": "Citizenship Confirmation and SSN Entry",
+      "description": "On this screen, confirm U.S. citizenship for yourself and your daughter. Enter Social Security numbers for both, and upload proof of residence such as a lease agreement. This information is required to verify eligibility for benefits.",
+      "details": [
+        {
+          "label": "Citizenship and Identification",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Applicant is U.S. Citizen",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Please confirm citizenship status.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Daughter is U.S. Citizen",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Please confirm daughter's citizenship status.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Applicant SSN",
+              "type": "ssn",
+              "required": true,
+              "error_message": "Please enter a valid SSN.",
+              "readOnly": false
+            },
+            {
+              "label": "Daughter SSN",
+              "type": "ssn",
+              "required": true,
+              "error_message": "Please enter a valid SSN.",
+              "readOnly": false
+            },
+            {
+              "label": "Upload Proof of Residence",
+              "type": "file",
+              "required": true,
+              "error_message": "Please upload proof of residence.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "SSN must be in valid format",
+        "SSN must be unique for each household member",
+        "Proof of residence file type must be PDF, JPG, or PNG",
+        "Citizenship must be confirmed for both applicant and daughter"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to indicate current and prior benefit receipt.",
+          "action_ids": [
+            "ACTION_13"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 10,
+      "node_id": "STEP_10",
+      "actions": [
+        {
+          "ACTION_13": {
+            "id": "ACTION_13",
+            "name": "Trigger Benefit Receipt Indication Screen",
+            "implementation": "Upon clicking 'Next', validate citizenship and SSN entries and navigate to STEP_11 (Benefit Receipt Indication).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_11"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_11",
+      "step": 11,
+      "type": "Screen",
+      "label": "Benefit Receipt Indication",
+      "description": "On this screen, indicate if you or any household member currently receive TANF, SSI, or have received SNAP benefits in another county. Select the applicable benefits and provide additional details as needed. This information helps determine your eligibility and benefit history.",
+      "details": [
+        {
+          "label": "Benefit Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Currently Receiving TANF",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Unable to process TANF selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Currently Receiving SSI",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "Unable to process SSI selection.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Received SNAP in Another County",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Please select county if applicable.",
+              "options": [
+                "None",
+                "County A",
+                "County B",
+                "County C",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If 'Received SNAP in Another County' is selected, county must be specified",
+        "Cannot select both 'None' and another county"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to review application summary.",
+          "action_ids": [
+            "ACTION_14"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 11,
+      "node_id": "STEP_11",
+      "actions": [
+        {
+          "ACTION_14": {
+            "id": "ACTION_14",
+            "name": "Trigger Application Summary Review Screen",
+            "implementation": "Upon clicking 'Next', validate benefit receipt indication and navigate to STEP_12 (Application Summary Review).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_12"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_12",
+      "step": 12,
+      "type": "Screen",
+      "label": "Application Summary Review",
+      "description": "On this screen, review a summary of all the information you have entered throughout your application. Carefully check each section for accuracy. You must read the terms and conditions before signing and submitting your application. Use the provided buttons to read the terms and sign electronically.",
+      "details": [
+        {
+          "label": "Application Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Summary of Entered Information",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Unable to display summary.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Acknowledgment and Signature",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Read Terms and Conditions",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "You must read and accept the terms.",
+              "options": [
+                "I have read and accept the terms and conditions"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Electronic Signature",
+              "type": "signature",
+              "required": true,
+              "error_message": "Signature is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Terms and conditions must be read and accepted before signing",
+        "Signature must be provided before submission"
+      ],
+      "buttons": [
+        {
+          "label": "Read Terms",
+          "actor": "Applicant",
+          "description": "View the terms and conditions.",
+          "action_ids": [
+            "ACTION_15"
+          ]
+        },
+        {
+          "label": "Sign Application",
+          "actor": "Applicant",
+          "description": "Sign and submit your application.",
+          "action_ids": [
+            "ACTION_16"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 12,
+      "node_id": "STEP_12",
+      "actions": [
+        {
+          "ACTION_15": {
+            "id": "ACTION_15",
+            "name": "Read Terms and Conditions",
+            "implementation": "Displays the terms and conditions for applicant review.",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Read Terms'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_12"
+            ]
+          },
+          "ACTION_16": {
+            "id": "ACTION_16",
+            "name": "Sign and Submit Application",
+            "implementation": "Validates acceptance of terms and signature, then triggers application submission (STEP_13).",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks 'Sign Application' and all validations pass.",
+            "sequence": 2,
+            "linkedWidgetIds": [
+              "STEP_13"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_13",
+      "step": 13,
+      "type": "Rule",
+      "label": "Submit Application",
+      "description": "Upon submission, the system records the application, stores the applicant's electronic signature, and generates a confirmation message to acknowledge successful submission.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Record submission and store signature",
+            "logic": "When the applicant submits the application, the system must record the submission event and securely store the electronic signature provided by the applicant."
+          },
+          {
+            "label": "Generate confirmation message",
+            "logic": "After successful submission and signature storage, the system generates and displays a confirmation message to the applicant indicating that the application has been submitted."
+          }
+        ]
+      },
+      "step_number": 13,
+      "node_id": "STEP_13",
+      "actions": [
+        {
+          "ACTION_17": {
+            "id": "ACTION_17",
+            "name": "Record Submission and Store Signature",
+            "implementation": "Records the application submission, stores the electronic signature, and generates confirmation message. Navigates to STEP_14 (Eligibility Specialist Assignment) and STEP_15 (Submission Confirmation).",
+            "trigger": "Assignment",
+            "triggerCondition": "Application is signed and submitted.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_14",
+              "STEP_15"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_14",
+      "step": 14,
+      "type": "Screen",
+      "label": "Eligibility Specialist Assignment",
+      "description": "After you submit your application, the system will automatically route your application record to the queue of an eligibility specialist for review. You do not need to take any action on this screen. The specialist will review your information and contact you if additional details are needed.",
+      "details": [
+        {
+          "label": "System Routing",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application Status",
+              "type": "text",
+              "required": false,
+              "error_message": "Unable to display application status.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Application must be complete before routing",
+        "Electronic signature must be present"
+      ],
+      "buttons": [],
+      "owner": "System",
+      "step_number": 14,
+      "node_id": "STEP_14",
+      "actions": [
+        {
+          "ACTION_18": {
+            "id": "ACTION_18",
+            "name": "Assign Application to Eligibility Specialist",
+            "implementation": "Routes the application record to the eligibility specialist queue for review.",
+            "trigger": "Assignment",
+            "triggerCondition": "Application submission is complete and electronic signature is present.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_14"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_15",
+      "step": 15,
+      "type": "Screen",
+      "label": "Application Submission Confirmation",
+      "description": "This screen confirms that your application has been successfully submitted. You will see the submission date and information about the next steps in the process. Please review the confirmation and keep a record for your reference. You may be contacted by an eligibility specialist for further information.",
+      "details": [
+        {
+          "label": "Submission Confirmation",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Submission Date",
+              "type": "date/time",
+              "required": false,
+              "error_message": "Unable to display submission date.",
+              "readOnly": true
+            },
+            {
+              "label": "Next Steps",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Unable to display next steps.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Submission date must be recorded",
+        "Confirmation message must be displayed"
+      ],
+      "buttons": [
+        {
+          "label": "Finish",
+          "actor": "Applicant",
+          "description": "Complete the application process."
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 15,
+      "node_id": "STEP_15",
+      "actions": []
+    },
+    {
+      "id": "STEP_16",
+      "step": 16,
+      "type": "Screen",
+      "label": "Application Not Eligible Notification",
+      "description": "This screen notifies you that your application cannot proceed because your household composition does not meet the eligibility criteria. Please review the message for details and contact support if you have questions or believe this is an error.",
+      "details": [
+        {
+          "label": "Eligibility Notification",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Eligibility Message",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Unable to display eligibility message.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Eligibility criteria must be checked before displaying this message"
+      ],
+      "buttons": [
+        {
+          "label": "Contact Support",
+          "actor": "Applicant",
+          "description": "Get help or ask questions about eligibility."
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 16,
+      "node_id": "STEP_16",
+      "actions": []
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "STEP_11",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "STEP_12",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "STEP_13",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "STEP_14",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_14",
+      "endNode": "STEP_15",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_15",
+      "endNode": "STEP_16",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "SECTION_3_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "SECTION_5_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "SECTION_6_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "SECTION_7_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "SECTION_8_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "SECTION_9_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "SECTION_10_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "SECTION_11_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "SECTION_12_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "SECTION_12_2",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_14",
+      "endNode": "SECTION_14_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_15",
+      "endNode": "SECTION_15_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_16",
+      "endNode": "SECTION_16_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_4",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_5",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_1",
+      "endNode": "FIELD_2_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_1",
+      "endNode": "FIELD_2_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_3_1",
+      "endNode": "FIELD_3_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_3_1",
+      "endNode": "FIELD_3_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_3_1",
+      "endNode": "FIELD_3_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_5_1",
+      "endNode": "FIELD_5_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_6_1",
+      "endNode": "FIELD_6_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_7_1",
+      "endNode": "FIELD_7_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_7_1",
+      "endNode": "FIELD_7_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_7_1",
+      "endNode": "FIELD_7_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_7_1",
+      "endNode": "FIELD_7_1_4",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_8_1",
+      "endNode": "FIELD_8_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_9_1",
+      "endNode": "FIELD_9_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_9_1",
+      "endNode": "FIELD_9_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_9_1",
+      "endNode": "FIELD_9_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_9_1",
+      "endNode": "FIELD_9_1_4",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_10_1",
+      "endNode": "FIELD_10_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_10_1",
+      "endNode": "FIELD_10_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_10_1",
+      "endNode": "FIELD_10_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_10_1",
+      "endNode": "FIELD_10_1_4",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_10_1",
+      "endNode": "FIELD_10_1_5",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_11_1",
+      "endNode": "FIELD_11_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_11_1",
+      "endNode": "FIELD_11_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_11_1",
+      "endNode": "FIELD_11_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_12_1",
+      "endNode": "FIELD_12_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_12_2",
+      "endNode": "FIELD_12_2_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_12_2",
+      "endNode": "FIELD_12_2_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_14_1",
+      "endNode": "FIELD_14_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_15_1",
+      "endNode": "FIELD_15_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_15_1",
+      "endNode": "FIELD_15_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_16_1",
+      "endNode": "FIELD_16_1_1",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

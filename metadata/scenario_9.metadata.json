@@ -1,0 +1,631 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Household Member Information Entry",
+      "description": "On this screen, you will enter details for each member of your household. Please provide accurate information for all individuals living at your address. Instructions are provided for each field, and you may add multiple household members. This information helps determine eligibility and ensures your application is processed correctly.",
+      "details": [
+        {
+          "label": "Household Member Details",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name is optional.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Age",
+              "type": "number",
+              "required": true,
+              "error_message": "Age is required and must be a valid number.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship to Applicant is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot have duplicate spouse entries.",
+        "Cannot have more than one 'Self' entry.",
+        "Age must be a positive number.",
+        "Address must be a valid format.",
+        "If 'Child' is selected, age must be less than 18.",
+        "If 'Parent' is selected, age must be at least 18.",
+        "No duplicate household members (same first and last name, age, and relationship)."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to enter household income information.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "ACTION_1": {
+            "id": "ACTION_1",
+            "name": "Trigger Household Income Entry",
+            "implementation": "Navigates to the Household Income Entry screen upon clicking the Next button.",
+            "trigger": "Rule",
+            "triggerCondition": "Button click event on 'Next'.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_2"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Household Income Entry",
+      "description": "On this screen, you will enter your household's total monthly income. Please provide accurate financial information, as this will be used to determine your eligibility for SNAP benefits. Instructions are provided for each field, and you may review your entries before proceeding.",
+      "details": [
+        {
+          "label": "Income Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Total Household Income",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Total Household Income is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Monthly Income",
+              "type": "currency",
+              "required": true,
+              "error_message": "Monthly Income is required and must be a valid amount.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Monthly Income must be a positive currency value.",
+        "Total Household Income must equal the sum of all monthly incomes entered.",
+        "Income cannot be negative.",
+        "Currency format must be valid (e.g., $1,000.00)."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to review and submit your application.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "ACTION_2": {
+            "id": "ACTION_2",
+            "name": "Trigger Income Eligibility Check",
+            "implementation": "Initiates the income eligibility check process after completing the Household Income Entry screen.",
+            "trigger": "Rule",
+            "triggerCondition": "Completion of income entry validation.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Check Income Eligibility",
+      "description": "System compares the entered total household income against the current SNAP eligibility threshold to determine if the applicant is eligible for SNAP benefits.",
+      "Input Parameter": [
+        "Total Household Income",
+        "Monthly Income"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Income Eligibility Comparison",
+            "logic": "If Total Household Income (or Monthly Income) is less than or equal to the current SNAP eligibility threshold, then the applicant is eligible to proceed. If Total Household Income (or Monthly Income) exceeds the threshold, the applicant is ineligible and should be notified."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "ACTION_3": {
+            "id": "ACTION_3",
+            "name": "Trigger Application Review Screen",
+            "implementation": "Navigates to the Application Review and Submission screen if income eligibility validation passes.",
+            "trigger": "Rule",
+            "triggerCondition": "Income is within the eligibility threshold.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_4"
+            ]
+          }
+        },
+        {
+          "ACTION_4": {
+            "id": "ACTION_4",
+            "name": "Trigger Income Ineligibility Notification",
+            "implementation": "Navigates to the Income Ineligibility Notification screen if income eligibility validation fails.",
+            "trigger": "Rule",
+            "triggerCondition": "Income exceeds the eligibility threshold.",
+            "sequence": 2,
+            "linkedWidgetIds": [
+              "STEP_6"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Application Review and Submission",
+      "description": "This screen allows you to review all the information you have entered for your SNAP application, including household member details and income information. Please carefully check all entries for accuracy. You may go back to edit any section if needed. Once you are satisfied, submit your application for processing.",
+      "details": [
+        {
+          "label": "Review Household Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Display: Household Information",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Household Information must be displayed.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Review Income Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Display: Income Information",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Income Information must be displayed.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required fields must be completed before submission.",
+        "Household and income information must be reviewed and confirmed.",
+        "No missing or invalid data in displayed sections."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "actor": "Applicant",
+          "description": "Submit your completed application for SNAP eligibility review.",
+          "action_ids": [
+            "ACTION_5"
+          ]
+        },
+        {
+          "label": "Edit Household Information",
+          "actor": "Applicant",
+          "description": "Return to the household information entry screen to make changes.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        },
+        {
+          "label": "Edit Income Information",
+          "actor": "Applicant",
+          "description": "Return to the income entry screen to make changes.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "ACTION_5": {
+            "id": "ACTION_5",
+            "name": "Mark Workflow Completion",
+            "implementation": "Marks the workflow as completed after the application is reviewed and submitted.",
+            "trigger": "Assignment",
+            "triggerCondition": "Application submission is confirmed.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_5"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Submit Application",
+      "description": "System validates the application data entered by the applicant, saves the application record, generates an audit log entry, and prepares the record for assignment to a caseworker.",
+      "Input Parameter": [
+        "Display: Household Information",
+        "Display: Income Information"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Application Data Validation",
+            "logic": "Validate that all required fields in Display: Household Information and Display: Income Information are present and correctly formatted before submission."
+          },
+          {
+            "label": "Save Application Record",
+            "logic": "Persist the validated application data to the system database."
+          },
+          {
+            "label": "Generate Audit Log",
+            "logic": "Create an audit log entry capturing the submission event, including timestamp, applicant identifier, and summary of submitted data."
+          },
+          {
+            "label": "Prepare Record for Assignment",
+            "logic": "Mark the application record as ready for assignment to a caseworker for further processing."
+          }
+        ]
+      },
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "ACTION_6": {
+            "id": "ACTION_6",
+            "name": "Return to Household Information Entry",
+            "implementation": "Navigates back to the Household Information Entry screen for corrections.",
+            "trigger": "Rule",
+            "triggerCondition": "Applicant clicks the Return button.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_1"
+            ]
+          }
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Return to Application",
+          "action_ids": [
+            "ACTION_6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Income Ineligibility Notification",
+      "description": "This screen notifies you that your household income exceeds the current SNAP eligibility threshold. You will see a clear message explaining the reason for ineligibility and guidance on next steps, including information about other resources or how to appeal if you believe this is an error.",
+      "details": [
+        {
+          "label": "Ineligibility Message",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Display: Ineligibility Message",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Ineligibility message must be displayed.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Display message only if household income exceeds eligibility threshold.",
+        "Ensure message is clear and actionable."
+      ],
+      "buttons": [
+        {
+          "label": "Return to Application",
+          "actor": "Applicant",
+          "description": "Go back to review or update your application.",
+          "action_ids": [
+            "ACTION_6"
+          ]
+        },
+        {
+          "label": "Exit",
+          "actor": "Applicant",
+          "description": "Exit the application process."
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": []
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Assignment",
+      "label": "Assign to Caseworker",
+      "description": "System assigns the submitted SNAP application record to a designated caseworker for further processing. The assignment is based on predefined caseworker allocation logic, which may include workload balancing, specialization, or geographic region. The system ensures the application record is flagged as 'Assigned' and updates the caseworker's queue. Audit logs are generated for traceability.",
+      "Input Parameter": [
+        "Address",
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Age",
+        "Relationship to Applicant",
+        "Total Household Income",
+        "Monthly Income"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to Caseworker",
+            "logic": "Upon successful submission and validation of the application, the system evaluates available caseworkers based on assignment rules (e.g., workload, region, specialization) and assigns the application record to the selected caseworker. The assignment is recorded in the system, and the caseworker's queue is updated. An audit log entry is created to document the assignment event."
+          }
+        ]
+      },
+      "step_number": 7,
+      "node_id": "STEP_7",
+      "actions": [
+        {
+          "ACTION_7": {
+            "id": "ACTION_7",
+            "name": "Assign Application to Caseworker",
+            "implementation": "Assigns the application record to a designated caseworker based on predefined allocation logic.",
+            "trigger": "Assignment",
+            "triggerCondition": "Application submission is validated and marked ready for assignment.",
+            "sequence": 1,
+            "linkedWidgetIds": [
+              "STEP_8"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Screen",
+      "label": "Caseworker Application Processing Task",
+      "description": "As a caseworker, you are assigned this application for further review and action. On this screen, you will see all submitted household and income information, along with any system-generated notes or audit logs. You may update the application status, request additional information, or proceed with eligibility determination. Guidance and instructions are provided for each action.",
+      "details": [
+        {
+          "label": "Assigned Application Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Display: Household Information",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Household Information must be displayed.",
+              "readOnly": true
+            },
+            {
+              "label": "Display: Income Information",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Income Information must be displayed.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Caseworker must review all displayed information before taking action.",
+        "Application status updates must be logged.",
+        "Any requests for additional information must be documented."
+      ],
+      "buttons": [
+        {
+          "label": "Mark as Reviewed",
+          "actor": "Caseworker",
+          "description": "Confirm that you have reviewed the application."
+        },
+        {
+          "label": "Request More Information",
+          "actor": "Caseworker",
+          "description": "Send a request to the applicant for additional details."
+        },
+        {
+          "label": "Proceed with Eligibility Determination",
+          "actor": "Caseworker",
+          "description": "Continue with the eligibility review process."
+        }
+      ],
+      "owner": "Caseworker",
+      "step_number": 8,
+      "node_id": "STEP_8",
+      "actions": []
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "SECTION_4_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "SECTION_4_2",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "SECTION_6_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "SECTION_8_1",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_3",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_4",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_5",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_1",
+      "endNode": "FIELD_1_1_6",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_1",
+      "endNode": "FIELD_2_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_1",
+      "endNode": "FIELD_2_1_2",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_4_1",
+      "endNode": "FIELD_4_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_4_2",
+      "endNode": "FIELD_4_2_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_6_1",
+      "endNode": "FIELD_6_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_8_1",
+      "endNode": "FIELD_8_1_1",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_8_1",
+      "endNode": "FIELD_8_1_2",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
