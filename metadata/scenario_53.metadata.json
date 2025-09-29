@@ -1,0 +1,574 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Fraud Alert Notification List",
+      "description": "On this screen, you will see a list of new fraud alerts that have been triggered by transactions matching predefined fraud patterns. Each alert provides key information such as Transaction ID, Date/Time, Alert Type, Amount, and Account Holder. You can review the summary of each alert and click 'View Details' to investigate further. Use this screen to quickly identify and prioritize alerts requiring immediate attention.",
+      "details": [
+        {
+          "label": "Fraud Alert Summary",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Transaction ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Transaction ID is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Date/Time",
+              "type": "date",
+              "required": true,
+              "error_message": "Date/Time is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Alert Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Alert Type is required.",
+              "options": [
+                "Large Transfer",
+                "Failed Logins",
+                "Blacklisted Country"
+              ],
+              "readOnly": true
+            },
+            {
+              "label": "Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Amount is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Account Holder",
+              "type": "autosuggest",
+              "required": true,
+              "error_message": "Account Holder is required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Transaction ID must be unique for each alert.",
+        "Date/Time cannot be in the future.",
+        "Amount must be greater than zero.",
+        "Account Holder must exist in the system.",
+        "Alert Type must be selected from the predefined options."
+      ],
+      "buttons": [
+        {
+          "label": "View Details",
+          "actor": "Fraud Investigator",
+          "description": "Click to view detailed information about the selected fraud alert.",
+          "actions": [
+            "Navigate to View Fraud Alert Details Screen"
+          ]
+        }
+      ],
+      "owner": "Fraud Investigator"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Fraud Alert Details and Investigation",
+      "description": "This screen provides comprehensive details for the selected fraud alert. You will see transaction information, the matched fraud pattern, and account holder details. Previous alerts related to the account holder are displayed for context. Use the 'Search Prior History' button to retrieve additional historical alerts and investigations. If you determine that further action is needed, click 'Initiate Investigation' to start a formal investigation process. This screen guides you through reviewing, searching, and initiating investigations for suspicious activity.",
+      "details": [
+        {
+          "label": "Transaction Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Transaction ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Transaction ID is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Amount is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Date/Time",
+              "type": "date",
+              "required": true,
+              "error_message": "Date/Time is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Origin Account",
+              "type": "text",
+              "required": true,
+              "error_message": "Origin Account is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Destination Account",
+              "type": "text",
+              "required": true,
+              "error_message": "Destination Account is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Pattern Matched",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Pattern Matched is required.",
+              "options": [
+                "Large Transfer",
+                "Failed Logins",
+                "Blacklisted Country"
+              ],
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Account Holder Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Account Holder First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Account Holder Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": true
+            },
+            {
+              "label": "Account Holder Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Account Holder Email",
+              "type": "email",
+              "required": false,
+              "error_message": "Email must be valid format.",
+              "readOnly": true
+            },
+            {
+              "label": "Account Holder Phone",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number must be valid format.",
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "label": "Previous Alerts",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Previous Alert ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Previous Alert ID is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Previous Alert Date/Time",
+              "type": "date",
+              "required": true,
+              "error_message": "Previous Alert Date/Time is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Previous Alert Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Previous Alert Type is required.",
+              "options": [
+                "Large Transfer",
+                "Failed Logins",
+                "Blacklisted Country"
+              ],
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Transaction ID must be unique.",
+        "Date/Time cannot be in the future.",
+        "Amount must be greater than zero.",
+        "Origin and Destination Accounts must be different.",
+        "Pattern Matched must be selected from the predefined options.",
+        "Account Holder Email must be valid format if provided.",
+        "Account Holder Phone must be valid format if provided.",
+        "Previous Alert IDs must be unique for each alert.",
+        "Previous Alert Date/Time cannot be in the future."
+      ],
+      "buttons": [
+        {
+          "label": "Search Prior History",
+          "actor": "Fraud Investigator",
+          "description": "Click to retrieve and display all previous fraud alerts and investigations related to the account holder.",
+          "actions": [
+            "Trigger Search Prior History"
+          ]
+        },
+        {
+          "label": "Initiate Investigation",
+          "actor": "Fraud Investigator",
+          "description": "Click to create a new investigation record pre-filled with transaction and alert details.",
+          "actions": [
+            "Trigger Initiate Investigation",
+            "Trigger Assign to Senior Investigator"
+          ]
+        }
+      ],
+      "owner": "Fraud Investigator"
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Search Prior History",
+      "description": "When the 'Search Prior History' button is clicked on the View Fraud Alert Details screen, the system must query the fraud alert and investigation database for all records linked to the current account holder. The results must be displayed in a modal or expandable section on the same screen, showing previous alert IDs, dates/times, and alert types.",
+      "Input Parameter": [
+        "Account Holder First Name",
+        "Account Holder Middle Name",
+        "Account Holder Last Name",
+        "Account Holder Email",
+        "Account Holder Phone",
+        "Search Prior History"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger Search on Button Click",
+            "logic": "If the 'Search Prior History' button is clicked, use the account holder's identifying information (First Name, Middle Name, Last Name, Email, Phone) to query the fraud alert and investigation database for all records associated with the account holder."
+          },
+          {
+            "label": "Display Results",
+            "logic": "Display the retrieved previous alerts and investigations in a modal or expandable section on the same screen, showing at minimum: Previous Alert ID, Previous Alert Date/Time, and Previous Alert Type."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Initiate Investigation",
+      "description": "When the 'Initiate Investigation' button is clicked on the View Fraud Alert Details screen, the system must generate a new investigation record. The record must be auto-populated with the current alert and transaction data, set the investigation status to 'Open', and attach the current alert as the investigation trigger.",
+      "Input Parameter": [
+        "Transaction ID",
+        "Amount",
+        "Date/Time",
+        "Origin Account",
+        "Destination Account",
+        "Pattern Matched",
+        "Account Holder First Name",
+        "Account Holder Middle Name",
+        "Account Holder Last Name",
+        "Account Holder Email",
+        "Account Holder Phone",
+        "Initiate Investigation"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create Investigation Record",
+            "logic": "If the 'Initiate Investigation' button is clicked, create a new investigation record in the system."
+          },
+          {
+            "label": "Auto-populate Investigation Data",
+            "logic": "Populate the new investigation record with the current alert's transaction details (Transaction ID, Amount, Date/Time, Origin Account, Destination Account, Pattern Matched) and account holder information (First Name, Middle Name, Last Name, Email, Phone)."
+          },
+          {
+            "label": "Set Status and Attach Trigger",
+            "logic": "Set the status of the new investigation to 'Open' and attach the current alert as the investigation trigger."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Fraud Alert Summary",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Fraud Alert Summary",
+      "endNode": "Transaction ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Fraud Alert Summary",
+      "endNode": "Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Fraud Alert Summary",
+      "endNode": "Alert Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Fraud Alert Summary",
+      "endNode": "Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Fraud Alert Summary",
+      "endNode": "Account Holder",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Transaction Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Transaction ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Origin Account",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Destination Account",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Transaction Details",
+      "endNode": "Pattern Matched",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Account Holder Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Account Holder Information",
+      "endNode": "Account Holder First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Account Holder Information",
+      "endNode": "Account Holder Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Account Holder Information",
+      "endNode": "Account Holder Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Account Holder Information",
+      "endNode": "Account Holder Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Account Holder Information",
+      "endNode": "Account Holder Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Previous Alerts",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Previous Alerts",
+      "endNode": "Previous Alert ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Previous Alerts",
+      "endNode": "Previous Alert Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Previous Alerts",
+      "endNode": "Previous Alert Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Trigger Search on Button Click",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Display Results",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Account Holder First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Account Holder Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Account Holder Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Account Holder Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Account Holder Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Trigger Search on Button Click",
+      "endNode": "Search Prior History",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Display Results",
+      "endNode": "Previous Alert ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Display Results",
+      "endNode": "Previous Alert Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Display Results",
+      "endNode": "Previous Alert Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Create Investigation Record",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Auto-populate Investigation Data",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Set Status and Attach Trigger",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Create Investigation Record",
+      "endNode": "Initiate Investigation",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Transaction ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Date/Time",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Origin Account",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Destination Account",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Pattern Matched",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Account Holder First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Account Holder Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Account Holder Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Account Holder Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Auto-populate Investigation Data",
+      "endNode": "Account Holder Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Set Status and Attach Trigger",
+      "endNode": "Transaction ID",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

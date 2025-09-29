@@ -1,0 +1,331 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Intake Initiation and Member Demographics",
+      "description": "On this screen, you will begin a new intake process and enter demographic and contact information for each member involved. Please carefully fill out all required fields to ensure accurate client identification and communication. Guidance is provided for each field, and you will be prompted to select notification preferences and consent. This is the first step in creating a record for the intake process. Review all information before proceeding.",
+      "details": [
+        {
+          "label": "Intake Details and Member Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an application type.",
+              "options": [
+                "New",
+                "Recertification"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle name is optional.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Preferred Language",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Preferred language is optional.",
+              "options": [
+                "English",
+                "Spanish",
+                "Other"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Email Address",
+              "type": "email",
+              "required": true,
+              "error_message": "A valid email address is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "A valid phone number is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Consent to Receive Notifications",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Consent to receive notifications is required.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Preferred Notification Method",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select a preferred notification method.",
+              "options": [
+                "Email",
+                "Text Message",
+                "Both"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Email address must be in valid format.",
+        "Phone number must be in valid format.",
+        "Consent to receive notifications must be checked before selecting notification method.",
+        "If 'Preferred Notification Method' is 'Text Message' or 'Both', phone number must be provided.",
+        "First and last name are required.",
+        "Application type must be selected."
+      ],
+      "buttons": [
+        {
+          "label": "Search Master Client Index (MCI)",
+          "actor": "Intake Worker",
+          "description": "Proceed to search for existing client records in the Master Client Index using the entered information.",
+          "actions": [
+            "Trigger Search Master Client Index (MCI)"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search Master Client Index (MCI)",
+      "description": "Use entered Name, Date of Birth, and Social Security Number to query the Master Client Index (MCI). If a match is found, display match details for confirmation. If no match, allow creation of a new client record.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "MCI Search Query",
+            "logic": "When the Intake Worker initiates a search, use the entered First Name, Middle Name (if provided), and Last Name to query the Master Client Index (MCI) for existing client records."
+          },
+          {
+            "label": "Match Found",
+            "logic": "If the MCI returns one or more matching records based on the search criteria, display the details of the matched client(s) to the Intake Worker for confirmation."
+          },
+          {
+            "label": "No Match Found",
+            "logic": "If the MCI does not return any matching records, prompt the Intake Worker to proceed with the creation of a new client record."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Client Record Review and Confirmation",
+      "description": "On this screen, you will review the details of any matched client records found in the Master Client Index (MCI). If a match is found, confirm the details before proceeding. If no match is found, you will be prompted to create a new client record. Carefully verify all displayed information to prevent duplicate records and ensure data accuracy. You may choose to confirm the match or initiate the creation of a new record.",
+      "details": [
+        {
+          "label": "Matched Client Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First name is required.",
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle name is optional.",
+              "readOnly": true,
+              "visible_if": ""
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last name is required.",
+              "readOnly": true,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If a match is found, confirm that the client details are correct before proceeding.",
+        "If no match is found, ensure all required fields are present before creating a new client record.",
+        "Prevent duplicate client records by verifying matched details.",
+        "First and last name must be present in matched record."
+      ],
+      "buttons": [
+        {
+          "label": "Confirm Match",
+          "actor": "Intake Worker",
+          "description": "Confirm the matched client record and proceed with the intake process.",
+          "actions": [
+            "Trigger Assign to Intake Supervisor"
+          ]
+        },
+        {
+          "label": "Create New Client Record",
+          "actor": "Intake Worker",
+          "description": "Initiate the creation of a new client record if no match is found.",
+          "actions": [
+            "Trigger Create New Client Record",
+            "Trigger Assign to Intake Supervisor"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Create New Client Record",
+      "description": "Persist all entered demographic and domain-specific information as a new client record in the database. Log the creation event.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Persist Client Data",
+            "logic": "When the Intake Worker confirms creation of a new client record, save all entered demographic and domain-specific information (First Name, Middle Name, Last Name) to the client database."
+          },
+          {
+            "label": "Log Creation Event",
+            "logic": "Record an event in the system audit log indicating that a new client record has been created, including timestamp and Intake Worker identifier."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Intake Details and Member Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Application Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Preferred Language",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Consent to Receive Notifications",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Details and Member Information",
+      "endNode": "Preferred Notification Method",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Matched Client Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Matched Client Details",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matched Client Details",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Matched Client Details",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

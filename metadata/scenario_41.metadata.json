@@ -1,0 +1,311 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Participant Demographic and Intake Details Entry",
+      "description": "On this screen, you will enter all required demographic and domain-specific information for each individual participating in the intake process. Please carefully fill out each field, ensuring accuracy and completeness. Guidance is provided for each field, and you will be prompted to search the Master Client Index (MCI) to check for existing records before proceeding. This step helps prevent duplicate entries and ensures all relevant data is captured for intake. Review instructions and confirm all mandatory fields are completed before continuing.",
+      "details": [
+        {
+          "label": "Demographic and Intake Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "First Name is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": "false",
+              "error_message": "Middle Name must be valid text.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "Last Name is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date",
+              "required": "true",
+              "error_message": "Date of Birth is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": "true",
+              "error_message": "Gender selection is required.",
+              "options": [
+                "M",
+                "F",
+                "O"
+              ],
+              "readOnly": "false"
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": "true",
+              "error_message": "Address is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Relationship to Client",
+              "type": "dropdown",
+              "required": "true",
+              "error_message": "Relationship to Client is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": "false"
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": "false",
+              "error_message": "Phone Number must be valid format.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Email",
+              "type": "email",
+              "required": "false",
+              "error_message": "Email must be valid format.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Language Preference",
+              "type": "dropdown",
+              "required": "false",
+              "error_message": "Language Preference must be selected from the list.",
+              "options": [
+                "EN",
+                "ES",
+                "ZH",
+                "HI",
+                "Other"
+              ],
+              "readOnly": "false"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Birth date cannot be in the future",
+        "Phone number must be valid format",
+        "Email must be valid format",
+        "Cannot have duplicate spouse entries",
+        "If Relationship to Client is 'Child', Date of Birth must indicate minor status",
+        "If Relationship to Client is 'Spouse', only one spouse allowed per client",
+        "Address must be complete and valid",
+        "If Language Preference is 'Other', additional details may be required"
+      ],
+      "buttons": [
+        {
+          "label": "Search Master Client Index",
+          "actor": "Intake Specialist",
+          "description": "Initiate a search in the Master Client Index using the entered demographic information to check for existing records.",
+          "actions": [
+            "Trigger Search Master Client Index"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search Master Client Index",
+      "description": "When the Intake Specialist clicks the 'Search Master Client Index' button, the system must search the Master Client Index (MCI) using the entered Name (First Name, Middle Name, Last Name), Date of Birth, and Social Security Number (if available). If one or more matches are found, display a list of matching individuals for selection. If no match is found, prompt the Intake Specialist to create a new client record.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Date of Birth",
+        "Search Master Client Index"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "On clicking 'Search Master Client Index', initiate a search in the MCI using the values entered for First Name, Middle Name, Last Name, and Date of Birth. If Social Security Number is available in the system, include it in the search criteria."
+          },
+          {
+            "label": "Display Search Results",
+            "logic": "If the search returns one or more matches, display a list of matching individuals to the Intake Specialist for selection."
+          },
+          {
+            "label": "Prompt for New Record",
+            "logic": "If the search returns no matches, prompt the Intake Specialist to proceed to create a new client record."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Select Existing Individual or Create New Client Record",
+      "description": "After searching the Master Client Index, you will see a list of possible matches based on the information you entered. Select the correct individual from the list if they already exist, or choose to create a new client record if no match is found. This step ensures that duplicate records are not created and that all new clients are properly registered. Review the search results carefully before making your selection.",
+      "details": [
+        {
+          "label": "Client Selection",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Select Individual",
+              "type": "autosuggest",
+              "required": "true",
+              "error_message": "You must select an individual or choose to create a new client record.",
+              "readOnly": "false"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If no individual is selected, user must proceed to create a new client record",
+        "Cannot select more than one individual",
+        "Selected individual must match entered demographic data"
+      ],
+      "buttons": [
+        {
+          "label": "Create New Client Record",
+          "actor": "Intake Specialist",
+          "description": "Proceed to create a new client record in the Master Client Index if no suitable match is found.",
+          "actions": [
+            "Trigger Create New Client Record"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Create New Client Record",
+      "description": "When the Intake Specialist chooses to create a new client record, the system must create a new entry in the Master Client Index (MCI) with the required fields: Name (First Name, Middle Name, Last Name), Date of Birth, Gender, and Address. Additionally, link domain-specific data such as Relationship to Client, Phone Number, Email, and Language Preference to the new record.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Date of Birth",
+        "Gender",
+        "Address",
+        "Relationship to Client",
+        "Phone Number",
+        "Email",
+        "Language Preference",
+        "Create New Client Record"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create MCI Record",
+            "logic": "On clicking 'Create New Client Record', validate that all required fields (First Name, Last Name, Date of Birth, Gender, Address, Relationship to Client) are provided. If validation passes, create a new client record in the MCI with these details."
+          },
+          {
+            "label": "Link Domain-Specific Data",
+            "logic": "Associate additional domain-specific data (Middle Name, Phone Number, Email, Language Preference) with the newly created client record."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Demographic and Intake Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Relationship to Client",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Demographic and Intake Information",
+      "endNode": "Language Preference",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Client Selection",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Client Selection",
+      "endNode": "Select Individual",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

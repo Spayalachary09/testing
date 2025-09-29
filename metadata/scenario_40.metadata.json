@@ -1,0 +1,427 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Participant Intake Information Entry",
+      "description": "On this screen, you will enter or search for participant information as part of the intake process. Please provide all required details about the individual being registered. The system will use this information to search for existing records and prevent duplicates. Guidance is provided for each field, and you will be prompted to search the Master Client Index (MCI) before proceeding. Ensure all mandatory fields are completed accurately. If you are unsure about any field, hover over the info icon for additional help.",
+      "details": [
+        {
+          "label": "Participant Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name must be valid text.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Gender selection is required.",
+              "options": [
+                "M",
+                "F",
+                "O",
+                "U"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Street Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Street Address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "City",
+              "type": "text",
+              "required": true,
+              "error_message": "City is required.",
+              "readOnly": false
+            },
+            {
+              "label": "State",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "State selection is required.",
+              "options": [
+                "AL",
+                "AK",
+                "AZ",
+                "AR",
+                "CA",
+                "CO",
+                "CT",
+                "DE",
+                "FL",
+                "GA",
+                "HI",
+                "ID",
+                "IL",
+                "IN",
+                "IA",
+                "KS",
+                "KY",
+                "LA",
+                "ME",
+                "MD",
+                "MA",
+                "MI",
+                "MN",
+                "MS",
+                "MO",
+                "MT",
+                "NE",
+                "NV",
+                "NH",
+                "NJ",
+                "NM",
+                "NY",
+                "NC",
+                "ND",
+                "OH",
+                "OK",
+                "OR",
+                "PA",
+                "RI",
+                "SC",
+                "SD",
+                "TN",
+                "TX",
+                "UT",
+                "VT",
+                "VA",
+                "WA",
+                "WV",
+                "WI",
+                "WY"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Zip Code",
+              "type": "text",
+              "required": true,
+              "error_message": "Zip Code is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Primary Client",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship selection is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Phone",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone number is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Email",
+              "type": "email",
+              "required": false,
+              "error_message": "Email must be a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Language Preference",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Language Preference selection is required.",
+              "options": [
+                "EN",
+                "ES",
+                "ZH",
+                "HI",
+                "AR",
+                "FR",
+                "RU",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn",
+              "required": false,
+              "error_message": "SSN must be a valid format.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Birth date cannot be in the future.",
+        "Phone number must be valid format.",
+        "SSN must be unique if provided.",
+        "Zip Code must be 5 digits.",
+        "If Relationship is 'Spouse', cannot have duplicate spouse entries.",
+        "If Relationship is 'Child', age must be less than 18.",
+        "If Relationship is 'Parent', age must be at least 18.",
+        "Email must be valid format if provided."
+      ],
+      "buttons": [
+        {
+          "label": "Search in MCI",
+          "actor": "Intake Specialist",
+          "description": "Click to search the Master Client Index for existing records matching the entered information.",
+          "actions": [
+            "Trigger Search Master Client Index (MCI)"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Search Master Client Index (MCI)",
+      "description": "Upon clicking the 'Search in MCI' button, the system queries the Master Client Index (MCI) using the entered Name (First Name, Middle Name, Last Name), Date of Birth, and Social Security Number (if provided). The system returns a list of potential matches or indicates that no match was found. If matches are found, they are displayed for user selection. If no match is found, the system prompts the user to create a new client record.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Date of Birth",
+        "Social Security Number",
+        "Search in MCI"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Trigger MCI Search",
+            "logic": "When the 'Search in MCI' button is clicked, validate that required fields (First Name, Last Name, Date of Birth) are populated. If validation passes, construct a search query using First Name, Middle Name (if provided), Last Name, Date of Birth, and Social Security Number (if provided) to query the Master Client Index (MCI)."
+          },
+          {
+            "label": "Return Search Results",
+            "logic": "If the MCI returns one or more matches, display the list of matching individuals to the Intake Specialist for review and selection."
+          },
+          {
+            "label": "Handle No Match",
+            "logic": "If the MCI returns no matches, display a prompt to the Intake Specialist to create a new client record."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Review MCI Search Results and Client Selection",
+      "description": "After searching the Master Client Index, you will see a list of potential matches based on the information you entered. Review the results carefully to determine if the participant already exists in the system. Select an existing individual if a match is found, or choose to create a new client record if no match is appropriate. This step helps prevent duplicate records and ensures accurate client tracking. You will be guided to either link the intake to an existing client or initiate a new client creation process.",
+      "details": [
+        {
+          "label": "Client Selection",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Select Existing Individual",
+              "type": "radio",
+              "required": false,
+              "error_message": "Please select an individual if a match is found.",
+              "options": [],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "If an existing individual is selected, must confirm selection before proceeding.",
+        "Cannot proceed without either selecting an individual or choosing to create a new client record."
+      ],
+      "buttons": [
+        {
+          "label": "Create New Client Record",
+          "actor": "Intake Specialist",
+          "description": "Click to create a new client record if no suitable match is found in the search results.",
+          "actions": [
+            "Trigger Create New Client Record"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Create New Client Record",
+      "description": "Upon clicking the 'Create New Client Record' button, the system creates a new client record using the entered required fields: Name (First Name, Middle Name, Last Name), Date of Birth, Gender, Address (Street Address, City, State, Zip Code). Additional domain-specific fields such as Relationship to Primary Client, Phone, Email (if provided), and Language Preference are also saved. The system assigns a unique client identifier and links the new record to the current intake session.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Date of Birth",
+        "Gender",
+        "Street Address",
+        "City",
+        "State",
+        "Zip Code",
+        "Relationship to Primary Client",
+        "Phone",
+        "Email",
+        "Language Preference",
+        "Create New Client Record"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Validate Required Fields",
+            "logic": "On 'Create New Client Record' button click, validate that all required fields (First Name, Last Name, Date of Birth, Gender, Street Address, City, State, Zip Code, Relationship to Primary Client, Phone, Language Preference) are populated. Middle Name and Email are optional."
+          },
+          {
+            "label": "Create Client Record",
+            "logic": "If validation passes, create a new client record in the system using all provided field values."
+          },
+          {
+            "label": "Assign Unique Identifier",
+            "logic": "Generate and assign a unique client identifier to the new client record."
+          },
+          {
+            "label": "Link to Intake Session",
+            "logic": "Associate the newly created client record with the current intake session for tracking and audit purposes."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_Participant Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Gender",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Street Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_City",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_State",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Zip Code",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Relationship to Primary Client",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Language Preference",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Participant Details",
+      "endNode": "STEP_1_Participant Details_Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_3_Client Selection",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3_Client Selection",
+      "endNode": "STEP_3_Client Selection_Select Existing Individual",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

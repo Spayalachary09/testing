@@ -1,0 +1,442 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Court Order and Custodian Information Entry",
+      "description": "On this screen, you will enter all required demographic and domain-specific details for each individual involved in the intake process. The screen guides you through entering court order information, custodian details, judge information, and any special conditions. Clear instructions are provided for each field, and you will be prompted to start the court order entry. Please review all information for accuracy before proceeding. If you need help, hover over the field labels for additional guidance.",
+      "details": [
+        {
+          "label": "Court Order Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Start Court Order",
+              "type": "button",
+              "required": true,
+              "error_message": "Please click to start entering court order details.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Court Order Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Court Order Type is required.",
+              "options": [
+                "Temporary",
+                "Permanent",
+                "Emergency",
+                "Guardianship"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Custodian First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Custodian First Name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Custodian Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Custodian Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Custodian Last Name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Custodian Relationship",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Custodian Relationship is required.",
+              "options": [
+                "Parent",
+                "Relative",
+                "Foster Parent",
+                "Court-Appointed Guardian"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Judge First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Judge First Name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Judge Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Judge Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Judge Last Name is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Court Hearing/Order Date",
+              "type": "date",
+              "required": true,
+              "error_message": "Court Hearing/Order Date is required.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Special Conditions",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot have more than one custodian with the same relationship type for a single individual.",
+        "Court Hearing/Order Date cannot be in the future.",
+        "Custodian First Name, Last Name, and Relationship are required.",
+        "If Custodian Relationship is 'Court-Appointed Guardian', ensure legal documentation is attached.",
+        "Judge First Name and Last Name are required.",
+        "Special Conditions must be provided if any restrictions are noted in the court order."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Capture Financial Detail",
+          "actor": "Intake Specialist",
+          "description": "Proceed to enter financial information for the individual.",
+          "actions": [
+            "Navigate to Capture Financial Detail"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Individual Financial Information Entry",
+      "description": "This screen allows you to enter financial details for the individual, including income, employment status, and source of income. Please provide accurate and up-to-date information. If the individual is employed, specify the source of income. Use the dropdown to select employment status. All fields are optional unless required by business rules. Review the information before proceeding.",
+      "details": [
+        {
+          "label": "Financial Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Income",
+              "type": "number",
+              "required": false,
+              "error_message": "Income must be a valid number.",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Employment Status",
+              "type": "dropdown",
+              "required": false,
+              "error_message": "Select a valid employment status.",
+              "options": [
+                "Employed",
+                "Unemployed",
+                "Retired",
+                "Student",
+                "Other"
+              ],
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Source of Income",
+              "type": "text",
+              "required": false,
+              "error_message": "Source of Income must be provided if employed.",
+              "readOnly": false,
+              "visible_if": "Employment Status: Employed"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Income cannot be negative.",
+        "If Employment Status is 'Employed', Source of Income is required.",
+        "Income must be a valid number.",
+        "If Employment Status is 'Retired', Source of Income should reflect retirement benefits.",
+        "If Employment Status is 'Student', Source of Income should reflect scholarships or grants if applicable."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Select or Create Client Record",
+          "actor": "Intake Specialist",
+          "description": "Proceed to select an existing client record or create a new one.",
+          "actions": [
+            "Navigate to Select or Create Client Record"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Search Master Client Index (MCI)",
+      "description": "System uses entered identifiers (Full Name, Date of Birth, Social Security Number if provided) to search the Master Client Index (MCI) for potential matches. If matches are found, display a list of possible existing records for user selection. If no match is found, allow user to proceed to create a new client record.",
+      "Input Parameter": [
+        "Custodian First Name",
+        "Custodian Middle Name",
+        "Custodian Last Name"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Search MCI by Identifiers",
+            "logic": "When the Intake Specialist triggers the 'Search MCI' process, the system uses the entered Custodian First Name, Custodian Middle Name (if provided), and Custodian Last Name as search criteria to query the Master Client Index (MCI) for potential matches."
+          },
+          {
+            "label": "Display Search Results",
+            "logic": "If one or more matches are found in the MCI, the system displays a list of possible existing client records for user selection."
+          },
+          {
+            "label": "No Match Found",
+            "logic": "If no match is found in the MCI, the system allows the user to proceed to create a new client record."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Client Record Selection and Additional Arrangements",
+      "description": "On this screen, you can review and select an existing client record from search results or choose to create a new record if no match is found. You will also enter any visitation arrangements and ongoing supervision requirements. Carefully review the information and ensure all arrangements are documented. If you need to create a new client record, follow the prompts after selection.",
+      "details": [
+        {
+          "label": "Client Record Selection and Arrangements",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Visitation Arrangements",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": ""
+            },
+            {
+              "label": "Ongoing Supervision Requirements",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": ""
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Visitation Arrangements must be specified if court order includes visitation.",
+        "Ongoing Supervision Requirements must be provided if supervision is mandated.",
+        "Cannot have conflicting visitation arrangements for the same individual.",
+        "If Ongoing Supervision Requirements are entered, ensure responsible party is documented."
+      ],
+      "buttons": [
+        {
+          "label": "Search Master Client Index",
+          "actor": "Intake Specialist",
+          "description": "Search for existing client records in the Master Client Index using entered identifiers.",
+          "actions": [
+            "Trigger Search Master Client Index"
+          ]
+        },
+        {
+          "label": "Create New Client Record",
+          "actor": "Intake Specialist",
+          "description": "Create a new client record if no match is found or if a new record is required.",
+          "actions": [
+            "Trigger Create New Client Record"
+          ]
+        }
+      ],
+      "owner": "Intake Specialist"
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Rule",
+      "label": "Create New Client Record",
+      "description": "System creates a new client record in the MCI using the entered demographic and domain-specific information. The record is saved and assigned a unique client identifier. System logs the creation event and links the new record to the current Intake.",
+      "Input Parameter": [
+        "Court Order Type",
+        "Custodian First Name",
+        "Custodian Middle Name",
+        "Custodian Last Name",
+        "Custodian Relationship",
+        "Judge First Name",
+        "Judge Middle Name",
+        "Judge Last Name",
+        "Court Hearing/Order Date",
+        "Special Conditions"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create Client Record in MCI",
+            "logic": "If the Intake Specialist chooses to create a new client record, the system uses all entered demographic and domain-specific information to create a new record in the Master Client Index (MCI)."
+          },
+          {
+            "label": "Assign Unique Client Identifier",
+            "logic": "Upon successful creation, the system assigns a unique client identifier to the new record."
+          },
+          {
+            "label": "Log Creation Event",
+            "logic": "The system logs the creation event, capturing relevant metadata such as timestamp, user ID, and source of creation."
+          },
+          {
+            "label": "Link Record to Intake",
+            "logic": "The newly created client record is linked to the current Intake process for traceability and future reference."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Court Order Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Start Court Order",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Court Order Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Custodian First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Custodian Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Custodian Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Custodian Relationship",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Judge First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Judge Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Judge Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Court Hearing/Order Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Court Order Details",
+      "endNode": "Special Conditions",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Financial Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Income",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Employment Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Source of Income",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Client Record Selection and Arrangements",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Client Record Selection and Arrangements",
+      "endNode": "Visitation Arrangements",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Client Record Selection and Arrangements",
+      "endNode": "Ongoing Supervision Requirements",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

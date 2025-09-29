@@ -1,0 +1,1391 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Application Type Selection",
+      "description": "On this screen, you will select the type of application you are processing. You will also specify the disaster event, application site, and the date of application. Clear instructions are provided to help you choose the correct application type for the household. All fields are required to ensure proper categorization and routing of the application. Please review the options carefully before proceeding.",
+      "details": [
+        {
+          "label": "Application Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an application type.",
+              "options": [
+                "New D-SNAP",
+                "Supplemental",
+                "Replacement",
+                "Employee"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Disaster Event",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a disaster event.",
+              "options": [
+                "Event1",
+                "Event2",
+                "Event3"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Application Site",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an application site.",
+              "options": [
+                "Site1",
+                "Site2",
+                "Site3"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Date of Application",
+              "type": "date",
+              "required": true,
+              "error_message": "Please enter the date of application.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Application cannot be in the future.",
+        "All fields must be completed before proceeding."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Enter Household Information",
+          "actor": "Intake Worker",
+          "description": "Proceed to enter household composition and demographic details.",
+          "actions": [
+            "Navigate to Enter Household Information"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Household Composition and Demographics",
+      "description": "This screen allows you to enter detailed information about the household, including the primary applicant and all household members. You will provide names, dates of birth, addresses, contact information, and demographic details. Instructions are provided to ensure accurate entry and to help you avoid common errors such as duplicate entries or missing required information. Please add all household members and verify their relationships.",
+      "details": [
+        {
+          "label": "Primary Applicant Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Primary Applicant First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Applicant Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Applicant Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Applicant Date of Birth",
+              "type": "date",
+              "required": true,
+              "error_message": "Date of birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Applicant SSN",
+              "type": "ssn",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            },
+            {
+              "label": "Address at Disaster Date",
+              "type": "address",
+              "required": true,
+              "error_message": "Address at disaster date is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Current Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Current address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone number is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Email",
+              "type": "email",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            },
+            {
+              "label": "Primary Language",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a primary language.",
+              "options": [
+                "EN",
+                "ES",
+                "FR",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Elderly Status",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": false
+            },
+            {
+              "label": "Disabled Status",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Household Member Information",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First name is required for each household member.",
+              "readOnly": false
+            },
+            {
+              "label": "Household Member Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            },
+            {
+              "label": "Household Member Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last name is required for each household member.",
+              "readOnly": false
+            },
+            {
+              "label": "Household Member Date of Birth",
+              "type": "date",
+              "required": true,
+              "error_message": "Date of birth is required for each household member.",
+              "readOnly": false
+            },
+            {
+              "label": "Household Member Relationship",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select relationship for each household member.",
+              "options": [
+                "Spouse",
+                "Child",
+                "Parent",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Household Member SSN",
+              "type": "ssn",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Birth date cannot be in the future.",
+        "SSN must be unique within household.",
+        "Cannot have duplicate spouse entries.",
+        "Cannot have more than one mother or father.",
+        "Phone number must be valid format.",
+        "If elderly or disabled status is checked, age and/or disability details must be consistent.",
+        "If minor, guardian information is mandatory."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Enter Disaster Impact Details",
+          "actor": "Intake Worker",
+          "description": "Proceed to enter disaster impact and residency verification details.",
+          "actions": [
+            "Navigate to Enter Disaster Impact Details"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Search Prior History",
+      "description": "On 'Search Prior History' button click, the system queries eligibility and EBT databases for all household members entered in the application. The system flags any duplicate participation or prior D-SNAP/SNAP records for each household member and displays the results on screen for the Intake Worker.",
+      "Input Parameter": [
+        "Primary Applicant First Name",
+        "Primary Applicant Middle Name",
+        "Primary Applicant Last Name",
+        "Primary Applicant Date of Birth",
+        "Primary Applicant SSN",
+        "Household Member First Name",
+        "Household Member Middle Name",
+        "Household Member Last Name",
+        "Household Member Date of Birth",
+        "Household Member SSN"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Duplicate Participation Check",
+            "logic": "For each household member (including primary applicant), use First Name, Middle Name, Last Name, Date of Birth, and SSN (if provided) to query eligibility and EBT databases. If a matching record is found for prior D-SNAP/SNAP participation in the current disaster event, flag as duplicate and display to Intake Worker."
+          },
+          {
+            "label": "Prior History Display",
+            "logic": "Display all prior D-SNAP/SNAP participation records found for each household member, including program type, benefit period, and status, on the results screen."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Disaster Impact and Residency Verification",
+      "description": "On this screen, you will capture details about the household's residency in the disaster area and the adverse effects experienced due to the disaster. You will also document the type of impact and upload supporting documentation. Clear instructions are provided to help you select all applicable adverse effects and ensure residency verification. Please provide a detailed description of the impact and select the documentation provided.",
+      "details": [
+        {
+          "label": "Disaster Impact Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Disaster Area Residency",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Residency confirmation is required.",
+              "options": [],
+              "readOnly": false
+            },
+            {
+              "label": "Date of Disaster",
+              "type": "date",
+              "required": true,
+              "error_message": "Date of disaster is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Type of Adverse Effect",
+              "type": "multiselect",
+              "required": true,
+              "error_message": "Please select at least one adverse effect.",
+              "options": [
+                "Loss of Income",
+                "Inaccessible Resources",
+                "Disaster Expenses",
+                "Food Loss"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Description of Impact",
+              "type": "textarea",
+              "required": true,
+              "error_message": "Description of impact is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Documentation Provided",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select documentation provided.",
+              "options": [
+                "Photo ID",
+                "Utility Bill",
+                "Employer Letter",
+                "Affidavit"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Disaster cannot be in the future.",
+        "At least one adverse effect must be selected.",
+        "Documentation must be provided for residency verification.",
+        "Description of impact must be sufficiently detailed."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Enter Financial Information",
+          "actor": "Intake Worker",
+          "description": "Proceed to enter financial information including income, resources, and disaster-related expenses.",
+          "actions": [
+            "Navigate to Enter Financial Information"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Financial Information and Disaster Expenses",
+      "description": "This screen is for entering the household's financial information, including income during the benefit period, accessible resources, and disaster-related expenses. You will also indicate if any standard expense deductions apply. Instructions are provided to help you accurately report all financial details and select the correct expense types. Please ensure all amounts are entered correctly and that no negative values are submitted.",
+      "details": [
+        {
+          "label": "Financial Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Take-home Income During Benefit Period",
+              "type": "currency",
+              "required": true,
+              "error_message": "Income during benefit period is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Accessible Liquid Resources",
+              "type": "currency",
+              "required": true,
+              "error_message": "Accessible liquid resources are required.",
+              "readOnly": false
+            },
+            {
+              "label": "Excluded Resources",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "",
+              "options": [
+                "Retirement",
+                "Vehicle",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Total Unreimbursed Expenses",
+              "type": "currency",
+              "required": true,
+              "error_message": "Total unreimbursed expenses are required.",
+              "readOnly": false
+            },
+            {
+              "label": "Apply Disaster Standard Expense Deduction",
+              "type": "checkbox",
+              "required": false,
+              "error_message": "",
+              "options": [],
+              "readOnly": false
+            },
+            {
+              "label": "Disaster-Related Expense Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select disaster-related expense type.",
+              "options": [
+                "Home Repairs",
+                "Evacuation",
+                "Medical",
+                "Funeral",
+                "Pet Boarding",
+                "Personal Item Replacement",
+                "Fuel",
+                "Clean-up",
+                "Vehicle Repairs",
+                "Storage Fees"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Disaster-Related Expense Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Disaster-related expense amount is required.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Income and resource amounts cannot be negative.",
+        "Total unreimbursed expenses must be greater than or equal to zero.",
+        "If disaster standard expense deduction is applied, ensure eligibility.",
+        "Disaster-related expense amount must match the selected expense type.",
+        "Currency fields must be valid numbers."
+      ],
+      "buttons": [
+        {
+          "label": "Next: Review and Certify Application",
+          "actor": "Intake Worker",
+          "description": "Proceed to review all entered data and certify the application.",
+          "actions": [
+            "Navigate to Review and Certify Application"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Application Review and Certification",
+      "description": "On this screen, you will review all previously entered information for the household, disaster impact, and financials. You must verify that all eligibility criteria are met and upload required documents. You will also certify the applicant's identity, residency, and adverse effect. Instructions are provided to guide you through the review and certification process. Please ensure all checkboxes are marked and documents are uploaded before submitting.",
+      "details": [
+        {
+          "label": "Application Summary and Certification",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Summary of Household",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Household summary is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Summary of Disaster Impact",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Disaster impact summary is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Summary of Financials",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Financial summary is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Eligibility Criteria Met",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Eligibility criteria must be met.",
+              "readOnly": true
+            },
+            {
+              "label": "Required Documents Uploaded",
+              "type": "file",
+              "required": true,
+              "error_message": "Required documents must be uploaded.",
+              "readOnly": false
+            },
+            {
+              "label": "Applicant Identity Verified",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Applicant identity must be verified.",
+              "options": [],
+              "readOnly": false
+            },
+            {
+              "label": "Residency Verified",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Residency must be verified.",
+              "options": [],
+              "readOnly": false
+            },
+            {
+              "label": "Adverse Effect Verified",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "Adverse effect must be verified.",
+              "options": [],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All summaries must be reviewed before certification.",
+        "Required documents must be uploaded.",
+        "All verification checkboxes must be checked before submission.",
+        "Eligibility criteria must be met to proceed."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "actor": "Intake Worker",
+          "description": "Submit the completed application for eligibility determination.",
+          "actions": [
+            "Trigger Submit Application"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Rule",
+      "label": "Submit Application",
+      "description": "On 'Submit Application' button click, the system saves the application data, triggers eligibility calculation using the entered household, disaster impact, and financial information, and routes the record for eligibility review.",
+      "Input Parameter": [
+        "Summary of Household",
+        "Summary of Disaster Impact",
+        "Summary of Financials",
+        "Eligibility Criteria Met",
+        "Required Documents Uploaded",
+        "Applicant Identity Verified",
+        "Residency Verified",
+        "Adverse Effect Verified"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Application Save",
+            "logic": "Upon button click, persist all entered and calculated data fields to the application record in the system."
+          },
+          {
+            "label": "Eligibility Calculation Trigger",
+            "logic": "Initiate eligibility calculation using the summary fields and verification checkboxes. If 'Eligibility Criteria Met' is true and all required verifications are checked, mark application as ready for review."
+          },
+          {
+            "label": "Route for Eligibility Review",
+            "logic": "Assign the saved application record to the eligibility review queue for processing by an Eligibility Specialist."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Screen",
+      "label": "Eligibility Review and Decision",
+      "description": "As an Eligibility Specialist, you will review all application details, supporting documents, and eligibility calculations on this screen. You can approve, deny, or pend the application for more information. Instructions are provided to help you make an informed decision and add any necessary comments. Please ensure all documentation is reviewed before making a decision.",
+      "details": [
+        {
+          "label": "Eligibility Review",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Eligibility Decision",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an eligibility decision.",
+              "options": [
+                "Approve",
+                "Deny",
+                "Pend for More Info"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Comments",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Eligibility decision must be selected before proceeding.",
+        "If 'Pend for More Info' is selected, comments are recommended.",
+        "All supporting documents must be reviewed before approval."
+      ],
+      "buttons": [
+        {
+          "label": "Approve Application",
+          "actor": "Eligibility Specialist",
+          "description": "Approve the application and initiate benefit issuance.",
+          "actions": [
+            "Trigger Approve Application"
+          ]
+        },
+        {
+          "label": "Deny Application",
+          "actor": "Eligibility Specialist",
+          "description": "Deny the application and record the decision.",
+          "actions": [
+            "Trigger Deny Application"
+          ]
+        },
+        {
+          "label": "Pend for More Info",
+          "actor": "Eligibility Specialist",
+          "description": "Pend the application and request additional information.",
+          "actions": [
+            "Trigger Pend for More Info"
+          ]
+        }
+      ],
+      "owner": "Eligibility Specialist"
+    },
+    {
+      "id": "STEP_10",
+      "step": 10,
+      "type": "Rule",
+      "label": "Approve Application",
+      "description": "On 'Approve' button click, the system marks the application as approved, calculates the benefit amount based on the household size (maximum monthly allotment), and routes the record for benefit issuance.",
+      "Input Parameter": [
+        "Eligibility Decision",
+        "Comments"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Approval Status Update",
+            "logic": "If 'Eligibility Decision' is 'Approve', update application status to 'Approved'."
+          },
+          {
+            "label": "Benefit Calculation",
+            "logic": "Calculate benefit amount as the maximum monthly allotment for the household size, referencing the program's allotment table."
+          },
+          {
+            "label": "Route for Benefit Issuance",
+            "logic": "Send the approved application record to the benefit issuance queue for processing by an Issuance Worker."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_12",
+      "step": 12,
+      "type": "Screen",
+      "label": "Benefit Issuance via EBT System",
+      "description": "As an Issuance Worker, you will issue D-SNAP benefits to the approved household via the EBT system. This screen displays the application ID, benefit amount, EBT card status, and card stock availability. You will confirm the card status and enter the card number if applicable. Instructions are provided to ensure accurate benefit issuance and card management.",
+      "details": [
+        {
+          "label": "Benefit Issuance Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application ID",
+              "type": "text",
+              "required": true,
+              "error_message": "Application ID is required.",
+              "readOnly": true
+            },
+            {
+              "label": "Benefit Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Benefit amount is required.",
+              "readOnly": true
+            },
+            {
+              "label": "EBT Card Status",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select EBT card status.",
+              "options": [
+                "Existing",
+                "New Issuance"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Card Number",
+              "type": "text",
+              "required": false,
+              "error_message": "",
+              "readOnly": false,
+              "visible_if": "EBT Card Status: Existing"
+            },
+            {
+              "label": "Card Stock Available",
+              "type": "calculated",
+              "required": true,
+              "error_message": "Card stock availability is required.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Benefit amount must match approved amount.",
+        "Card number must be entered if EBT Card Status is 'Existing'.",
+        "Card stock must be available for new issuance.",
+        "Application ID must be valid."
+      ],
+      "buttons": [
+        {
+          "label": "Issue Benefit",
+          "actor": "Issuance Worker",
+          "description": "Post benefit to EBT account and update issuance records.",
+          "actions": [
+            "Trigger Issue Benefit"
+          ]
+        }
+      ],
+      "owner": "Issuance Worker"
+    },
+    {
+      "id": "STEP_13",
+      "step": 13,
+      "type": "Rule",
+      "label": "Issue Benefit",
+      "description": "On 'Issue Benefit' button click, the system posts the calculated benefit amount to the household's EBT account, updates issuance records, and reconciles with the eligibility system. If a new EBT card is required, the system triggers card printing and distribution.",
+      "Input Parameter": [
+        "Application ID",
+        "Benefit Amount",
+        "EBT Card Status",
+        "Card Number",
+        "Card Stock Available"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Benefit Posting",
+            "logic": "Post the 'Benefit Amount' to the EBT account associated with 'Application ID'."
+          },
+          {
+            "label": "Issuance Record Update",
+            "logic": "Update issuance records with 'Application ID', 'Benefit Amount', 'EBT Card Status', and 'Card Number' (if applicable)."
+          },
+          {
+            "label": "Eligibility System Reconciliation",
+            "logic": "Mark the benefit as issued in the eligibility system for the corresponding application."
+          },
+          {
+            "label": "Card Printing and Distribution",
+            "logic": "If 'EBT Card Status' is 'New Issuance' and 'Card Stock Available' is true, trigger card printing and initiate distribution process."
+          }
+        ]
+      }
+    },
+    {
+      "id": "STEP_15",
+      "step": 15,
+      "type": "Screen",
+      "label": "Daily D-SNAP Reporting",
+      "description": "As a Reporting Specialist, you will compile and submit the daily D-SNAP report to the FNS Regional Office. This screen displays all required reporting fields, including counts of households approved, persons served, benefits issued, and denials. Instructions are provided to ensure accurate and complete reporting. Please review all data before submitting the report.",
+      "details": [
+        {
+          "label": "Daily Report Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Date",
+              "type": "date",
+              "required": true,
+              "error_message": "Report date is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Disaster Event",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select disaster event.",
+              "options": [
+                "Event1",
+                "Event2",
+                "Event3"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Number of New Households Approved",
+              "type": "number",
+              "required": true,
+              "error_message": "Number of new households approved is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Number of Ongoing Households Approved",
+              "type": "number",
+              "required": true,
+              "error_message": "Number of ongoing households approved is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Persons Served",
+              "type": "number",
+              "required": true,
+              "error_message": "Number of persons served is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Benefits Issued Total",
+              "type": "currency",
+              "required": true,
+              "error_message": "Total benefits issued is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Benefits Issued Average",
+              "type": "currency",
+              "required": true,
+              "error_message": "Average benefits issued is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Denials",
+              "type": "number",
+              "required": true,
+              "error_message": "Number of denials is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Comments",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date cannot be in the future.",
+        "All numeric fields must be zero or positive.",
+        "Benefits issued total must be greater than or equal to average.",
+        "Disaster event must be selected.",
+        "All required fields must be completed before submission."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Daily Report",
+          "actor": "Reporting Specialist",
+          "description": "Transmit the daily D-SNAP report to FNS Regional Office and archive for program monitoring.",
+          "actions": [
+            "Trigger Submit Daily Report"
+          ]
+        }
+      ],
+      "owner": "Reporting Specialist"
+    },
+    {
+      "id": "STEP_16",
+      "step": 16,
+      "type": "Rule",
+      "label": "Submit Daily Report",
+      "description": "On 'Submit Report' button click, the system transmits the compiled daily D-SNAP report to the FNS Regional Office and archives the report for program monitoring.",
+      "Input Parameter": [
+        "Date",
+        "Disaster Event",
+        "Number of New Households Approved",
+        "Number of Ongoing Households Approved",
+        "Persons Served",
+        "Benefits Issued Total",
+        "Benefits Issued Average",
+        "Denials",
+        "Comments"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Report Transmission",
+            "logic": "Transmit all entered report fields to the FNS Regional Office via secure electronic submission."
+          },
+          {
+            "label": "Report Archival",
+            "logic": "Archive the submitted report in the system for program monitoring and audit purposes."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "STEP_12",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "STEP_13",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "STEP_15",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_15",
+      "endNode": "STEP_16",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Application Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Application Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Disaster Event",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Application Site",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Date of Application",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Primary Applicant Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Applicant First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Applicant Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Applicant Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Applicant Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Applicant SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Address at Disaster Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Current Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Primary Language",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Elderly Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Primary Applicant Information",
+      "endNode": "Disabled Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Household Member Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member Date of Birth",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member Relationship",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Member Information",
+      "endNode": "Household Member SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Duplicate Participation Check",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Prior History Display",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Disaster Impact Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Disaster Impact Details",
+      "endNode": "Disaster Area Residency",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Disaster Impact Details",
+      "endNode": "Date of Disaster",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Disaster Impact Details",
+      "endNode": "Type of Adverse Effect",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Disaster Impact Details",
+      "endNode": "Description of Impact",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Disaster Impact Details",
+      "endNode": "Documentation Provided",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "Financial Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Take-home Income During Benefit Period",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Accessible Liquid Resources",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Excluded Resources",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Total Unreimbursed Expenses",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Apply Disaster Standard Expense Deduction",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Disaster-Related Expense Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Financial Details",
+      "endNode": "Disaster-Related Expense Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Application Summary and Certification",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Summary of Household",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Summary of Disaster Impact",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Summary of Financials",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Eligibility Criteria Met",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Required Documents Uploaded",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Applicant Identity Verified",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Residency Verified",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Summary and Certification",
+      "endNode": "Adverse Effect Verified",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "Application Save",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "Eligibility Calculation Trigger",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "Route for Eligibility Review",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "Eligibility Review",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Eligibility Review",
+      "endNode": "Eligibility Decision",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Eligibility Review",
+      "endNode": "Comments",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "Approval Status Update",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "Benefit Calculation",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "Route for Benefit Issuance",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_12",
+      "endNode": "Benefit Issuance Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Benefit Issuance Details",
+      "endNode": "Application ID",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit Issuance Details",
+      "endNode": "Benefit Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit Issuance Details",
+      "endNode": "EBT Card Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit Issuance Details",
+      "endNode": "Card Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit Issuance Details",
+      "endNode": "Card Stock Available",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "Benefit Posting",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "Issuance Record Update",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "Eligibility System Reconciliation",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_13",
+      "endNode": "Card Printing and Distribution",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_15",
+      "endNode": "Daily Report Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Disaster Event",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Number of New Households Approved",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Number of Ongoing Households Approved",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Persons Served",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Benefits Issued Total",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Benefits Issued Average",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Denials",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Daily Report Details",
+      "endNode": "Comments",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_16",
+      "endNode": "Report Transmission",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_16",
+      "endNode": "Report Archival",
+      "relationship": "HAS_SECTION"
+    }
+  ]
+}

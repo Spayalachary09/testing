@@ -1,0 +1,140 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Intake Record Entry",
+      "description": "On this screen, Intake Workers can create a new intake record by entering all required details. You will see fields for intake date, type, and needs. Please select the appropriate intake type and specify all needs relevant to the case. If 'Other' is selected under Intake Needs, provide a description in the additional field. Review all information for accuracy before submitting. This process initiates intake documentation and compliance logging. Guidance and instructions are provided for each field to ensure correct data entry. Once submitted, the record will be routed to the Intake Supervisor for review.",
+      "details": [
+        {
+          "label": "Intake Record Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Intake Date",
+              "type": "date",
+              "required": true,
+              "error_message": "Intake Date is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Intake Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Intake Type is required.",
+              "options": [
+                "Emergency",
+                "Routine",
+                "Referral"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Intake Needs",
+              "type": "multiselect",
+              "required": true,
+              "error_message": "At least one Intake Need must be selected.",
+              "options": [
+                "Housing",
+                "Medical Assistance",
+                "Food Support",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Intake Needs - Other Description",
+              "type": "text",
+              "required": false,
+              "error_message": "Description is required if 'Other' is selected in Intake Needs.",
+              "readOnly": false,
+              "visible_if": "Intake Needs: Other"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Intake Date cannot be in the future.",
+        "Intake Type must be selected.",
+        "At least one Intake Need must be selected.",
+        "If 'Other' is selected in Intake Needs, Intake Needs - Other Description is required.",
+        "Intake Date must be a valid date format.",
+        "Duplicate Intake Needs selections are not allowed."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Intake Record",
+          "actor": "Intake Worker",
+          "description": "Click to create the intake record and initiate compliance documentation.",
+          "actions": [
+            "Trigger Create Intake Record",
+            "Trigger Assign to Intake Supervisor"
+          ]
+        }
+      ],
+      "owner": "Intake Worker"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Create Intake Record",
+      "description": "When the Intake Worker clicks the 'Submit Intake Record' button, the system must create a new intake record in the database using the entered details. The system must also generate audit logs capturing the creation event and produce compliance documentation associated with the new intake record.",
+      "Input Parameter": [
+        "Intake Date",
+        "Intake Type",
+        "Intake Needs",
+        "Intake Needs - Other Description"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Create Intake Record in Database",
+            "logic": "Upon button click, validate all required fields ('Intake Date', 'Intake Type', 'Intake Needs'). If validation passes, create a new intake record in the database with the provided field values, including 'Intake Needs - Other Description' if applicable."
+          },
+          {
+            "label": "Generate Audit Log",
+            "logic": "Record an audit log entry indicating the creation of a new intake record, including timestamp, Intake Worker ID, and all input field values."
+          },
+          {
+            "label": "Generate Compliance Documentation",
+            "logic": "Automatically generate compliance documentation for the new intake record, referencing all entered details and associating it with the created record's unique identifier."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Intake Record Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Intake Record Details",
+      "endNode": "Intake Date",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Record Details",
+      "endNode": "Intake Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Record Details",
+      "endNode": "Intake Needs",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Intake Record Details",
+      "endNode": "Intake Needs - Other Description",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
