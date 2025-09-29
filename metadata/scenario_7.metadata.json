@@ -1,0 +1,1192 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Application Type Selection and Contact Information",
+      "description": "On this screen, you will begin your application by selecting whether you are starting a new application or recertifying. You will also provide your contact information, including your full name, preferred language, email address, and phone number. Please ensure all information is accurate, as it will be used for future communications regarding your application.",
+      "details": [
+        {
+          "label": "Application Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Application Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an application type.",
+              "options": [
+                "New Application",
+                "Recertification"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Full name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Preferred Language",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select your preferred language.",
+              "options": [
+                "English",
+                "Spanish",
+                "Chinese",
+                "Vietnamese",
+                "Russian",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": true,
+              "error_message": "Please enter a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Please enter a valid phone number.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Email address must be in valid format",
+        "Phone number must be in valid format",
+        "Full name cannot be blank",
+        "Application type must be selected"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to consent for electronic communications"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Rule: Validate and Save Application Type & Contact Info",
+          "implementation": "Upon system evaluation of STEP_1, validate all required fields (application type, full name, preferred language, email, phone) according to data validation rules. If all fields are valid, save the data to the applicant record and trigger transition to STEP_2. If any field is invalid, display specific error messages to the applicant, prevent progression, and log validation errors for audit.",
+          "trigger": "rule",
+          "triggerCondition": "All required fields on STEP_1 are present and valid.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1",
+            "STEP_2"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Consent for Electronic Communications",
+      "description": "On this screen, you are asked to provide your consent to receive communications electronically via email or SMS. Please read the information carefully and select your preference. If you do not consent, you will receive paper-based communications and instructions will be provided.",
+      "details": [
+        {
+          "label": "Electronic Communication Consent",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Do you consent to receive communications electronically (email/SMS)?",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select Yes or No.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Consent selection is required"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to household member information or paper-based instructions"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_2",
+          "name": "Rule: Validate Consent Selection and Branch",
+          "implementation": "Upon system evaluation of STEP_2, validate that the applicant has selected either 'Yes' or 'No' for electronic communication consent. If valid, trigger STEP_2 to determine the next step. If invalid, display an error message and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "Consent selection is present and valid on STEP_2.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_2"
+          ],
+          "errorHandling": "If consent selection is missing, display an error message and log the error. If a system error occurs, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Decision: Electronic Communication Consent",
+      "description": "System evaluates the applicant's consent for electronic communications. If consent is 'Yes', the application process continues with electronic communication enabled. If consent is 'No', the system provides instructions for paper-based communication and disables electronic communication options for the applicant.",
+      "Input Parameter": [
+        "electronic_communication_consent"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Consent is Yes",
+            "logic": "If electronic_communication_consent == 'Yes', proceed to the next application step with electronic communication enabled."
+          },
+          {
+            "label": "Consent is No",
+            "logic": "If electronic_communication_consent == 'No', display paper-based communication instructions and disable electronic communication options for the applicant."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_3",
+          "name": "Rule: Branch to Household Member Information or Paper Instructions",
+          "implementation": "System evaluates the applicant's consent for electronic communications. If consent is 'Yes', enable electronic communication and proceed to STEP_3. If consent is 'No', disable electronic communication options, display STEP_2_PAPER with paper-based instructions, and provide contact details for further assistance.",
+          "trigger": "rule",
+          "triggerCondition": "Consent for electronic communication is evaluated.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_3",
+            "STEP_2_PAPER"
+          ],
+          "errorHandling": "If system fails to branch, log the error, display a generic error message, and provide fallback contact information."
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Screen",
+      "label": "Household Member Information Entry",
+      "description": "On this screen, you will enter information for all household members who live and eat together. Please provide each member's name, age, and relationship to you. You may add multiple household members as needed.",
+      "details": [
+        {
+          "label": "Household Members",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Name is required for each household member.",
+              "readOnly": false
+            },
+            {
+              "label": "Age",
+              "type": "number",
+              "required": true,
+              "error_message": "Age is required and must be a valid number.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select the relationship.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Sibling",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Cannot have duplicate names",
+        "Age must be a positive number",
+        "Relationship logic: Cannot have more than one 'Self'",
+        "Birth date (if entered) cannot be in the future"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to confirm household composition"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_5",
+          "name": "Rule: Validate and Save Household Member Information",
+          "implementation": "System validates all household member entries (name, age, relationship, no duplicates, only one 'Self', age positive, birth date not in future). If valid, save data to applicant record and proceed to STEP_4. If invalid, display specific error messages and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "All household member fields are present and valid on STEP_3.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3",
+            "STEP_4"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Confirm Household Composition",
+      "description": "Review the list of household members you have entered. Confirm that only Jane Doe and her daughter Lily are in the household and that no one else shares food expenses. If you need to make changes, you can go back and edit the household member list.",
+      "details": [
+        {
+          "label": "Household Composition Confirmation",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "I confirm that only the listed members live and eat together, and no one else shares food expenses.",
+              "type": "checkbox",
+              "required": true,
+              "error_message": "You must confirm the household composition.",
+              "options": [
+                "Confirmed"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Confirmation checkbox must be checked"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to specify living arrangement"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_6",
+          "name": "Rule: Confirm Household Composition and Save",
+          "implementation": "System validates that the confirmation checkbox is checked. If valid, save confirmation to applicant record and proceed to STEP_5. If invalid, display an error message and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "Confirmation checkbox is checked on STEP_4.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4",
+            "STEP_5"
+          ],
+          "errorHandling": "If confirmation is not checked, display an error message and log the error. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Specify Living Arrangement",
+      "description": "Please specify your current living arrangement. Select the option that best describes where you live. This information helps determine your eligibility and benefits.",
+      "details": [
+        {
+          "label": "Living Arrangement",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Living Arrangement",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select your living arrangement.",
+              "options": [
+                "Own apartment",
+                "Renting a room",
+                "Living with relatives",
+                "Shelter",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Living arrangement must be selected"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to income and expense entry"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_7",
+          "name": "Rule: Validate and Save Living Arrangement, Trigger Income Decision",
+          "implementation": "System validates that a living arrangement is selected. If valid, save the selection to the applicant record and trigger STEP_6 to determine whether to proceed to income entry (STEP_6) or skip to expense entry (STEP_7). If invalid, display an error message and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "Living arrangement is selected on STEP_5.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_5",
+            "STEP_6"
+          ],
+          "errorHandling": "If selection is missing, display an error message and log the error. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Screen",
+      "label": "Income Details and Verification",
+      "description": "Enter income details for each household member who receives income. For each entry, provide the member's name, income type, amount, frequency, and upload verification documents. You may add multiple income sources as needed.",
+      "details": [
+        {
+          "label": "Household Income",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member Name",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a household member.",
+              "options": [
+                "Jane Doe",
+                "Lily Doe"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Income Type",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select an income type.",
+              "options": [
+                "Employment",
+                "Self-Employment",
+                "Social Security",
+                "Child Support",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Income Amount",
+              "type": "currency",
+              "required": true,
+              "error_message": "Please enter a valid income amount.",
+              "readOnly": false
+            },
+            {
+              "label": "Income Frequency",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select income frequency.",
+              "options": [
+                "Weekly",
+                "Biweekly",
+                "Monthly",
+                "Annually",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Upload Income Verification Document",
+              "type": "file",
+              "required": true,
+              "error_message": "Please upload a verification document.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Income amount must be positive",
+        "Verification document must be uploaded for each income entry",
+        "Cannot have duplicate income entries for the same member and type"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to enter monthly household expenses"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Rule: Validate and Save Income Details",
+          "implementation": "System validates all income entries (member, type, amount, frequency, document; amount positive; no duplicate member/type; document uploaded). If valid, save income data and uploaded files to applicant record and proceed to STEP_7. If invalid, display specific error messages and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "All income fields are present and valid on STEP_6.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_7"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Rule",
+      "label": "Decision: Any Household Member Receives Income",
+      "description": "System checks if any household member receives income. If 'Yes', the applicant is prompted to enter income details and upload verification documents. If 'No', the system skips the income entry step and proceeds directly to the household expense entry step.",
+      "Input Parameter": [
+        "household_member_receives_income"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Income Received",
+            "logic": "If household_member_receives_income == 'Yes', prompt applicant to enter income details and upload verification documents."
+          },
+          {
+            "label": "No Income Received",
+            "logic": "If household_member_receives_income == 'No', skip income entry and proceed to household expense entry."
+          }
+        ]
+      },
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_8",
+          "name": "Rule: Branch to Income or Expense Entry",
+          "implementation": "System evaluates if any household member receives income. If 'Yes', proceed to STEP_6 for income details. If 'No', skip to STEP_7 for expense entry.",
+          "trigger": "rule",
+          "triggerCondition": "Household member income status is determined.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_6",
+            "STEP_6",
+            "STEP_7"
+          ],
+          "errorHandling": "If branching fails, log the error, display a generic error message, and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_7",
+      "step": 7,
+      "type": "Screen",
+      "label": "Monthly Household Expenses Entry",
+      "description": "Enter your household's monthly expenses. Please provide the amounts for rent, electricity, gas, and childcare. Accurate expense information helps determine your eligibility and benefit amount.",
+      "details": [
+        {
+          "label": "Monthly Expenses",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Rent",
+              "type": "currency",
+              "required": true,
+              "error_message": "Please enter your monthly rent amount.",
+              "readOnly": false
+            },
+            {
+              "label": "Electricity",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly electricity expense.",
+              "readOnly": false
+            },
+            {
+              "label": "Gas",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly gas expense.",
+              "readOnly": false
+            },
+            {
+              "label": "Childcare",
+              "type": "currency",
+              "required": false,
+              "error_message": "Please enter your monthly childcare expense.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Rent must be a positive value",
+        "Electricity, gas, and childcare must be zero or positive",
+        "Total expenses cannot exceed reasonable household income"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to citizenship and social security information"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_10",
+          "name": "Rule: Validate and Save Expense Details",
+          "implementation": "System validates all expense fields (rent required and positive, others optional but non-negative, total expenses reasonable compared to income). If valid, save expense data to applicant record and proceed to STEP_8. If invalid, display specific error messages and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "All expense fields are present and valid on STEP_7.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_7",
+            "STEP_8"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_8",
+      "step": 8,
+      "type": "Screen",
+      "label": "Citizenship and Social Security Information",
+      "description": "Confirm the citizenship status of each household member, enter their Social Security numbers, and upload proof of residence. This information is required to verify eligibility for benefits.",
+      "details": [
+        {
+          "label": "Citizenship and SSN",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member Name",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a household member.",
+              "options": [
+                "Jane Doe",
+                "Lily Doe"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Citizenship Status",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select citizenship status.",
+              "options": [
+                "US Citizen",
+                "Permanent Resident",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn",
+              "required": true,
+              "error_message": "Please enter a valid SSN.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Proof of Residence",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Upload Proof of Residence",
+              "type": "file",
+              "required": true,
+              "error_message": "Please upload proof of residence.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "SSN must be unique for each member",
+        "Citizenship status must be selected",
+        "Proof of residence document must be uploaded",
+        "SSN must be in valid format"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to benefit history"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_11",
+          "name": "Rule: Validate and Save Citizenship & SSN Information",
+          "implementation": "System validates all citizenship/SSN entries for each household member (unique SSN, valid format, citizenship status selected, proof of residence uploaded). If valid, save data and uploaded files to applicant record and proceed to STEP_9. If invalid, display specific error messages and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "All citizenship/SSN fields are present and valid on STEP_8.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_8",
+            "STEP_9"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_9",
+      "step": 9,
+      "type": "Screen",
+      "label": "Benefit History Entry",
+      "description": "Indicate if you or any household member is currently receiving TANF, SSI, or has previously received SNAP. Select all that apply. This information helps determine your eligibility and may affect your application process.",
+      "details": [
+        {
+          "label": "Benefit History",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Currently receiving TANF?",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select Yes or No.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Currently receiving SSI?",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select Yes or No.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Previously received SNAP?",
+              "type": "radio",
+              "required": true,
+              "error_message": "Please select Yes or No.",
+              "options": [
+                "Yes",
+                "No"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Selection required for each benefit type",
+        "If 'Previously received SNAP' is Yes, prior county details required"
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to prior county details or application summary"
+        }
+      ],
+      "owner": "Applicant",
+      "actions": [
+        {
+          "id": "ACTION_12",
+          "name": "Rule: Validate and Save Benefit History, Trigger Prior SNAP Rule",
+          "implementation": "System validates all benefit history selections (TANF, SSI, SNAP; all required). If valid, save benefit history to applicant record and trigger STEP_10 to determine whether to proceed to prior county details (STEP_11) or application summary (STEP_10). If invalid, display specific error messages and prevent progression.",
+          "trigger": "rule",
+          "triggerCondition": "All benefit history fields are present and valid on STEP_9.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_9",
+            "STEP_10"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_10",
+      "step": 10,
+      "type": "Rule",
+      "label": "Decision: Prior SNAP Receipt",
+      "description": "System determines if the applicant or any household member has previously received SNAP benefits. If 'Yes', the system prompts the applicant to enter prior county details. If 'No', the system proceeds to the application summary step.",
+      "Input Parameter": [
+        "prior_snap_receipt"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Prior SNAP Receipt Yes",
+            "logic": "If prior_snap_receipt == 'Yes', prompt applicant to enter prior county details."
+          },
+          {
+            "label": "Prior SNAP Receipt No",
+            "logic": "If prior_snap_receipt == 'No', proceed to application summary step."
+          }
+        ]
+      },
+      "step_number": 10,
+      "node_id": "STEP_10",
+      "actions": [
+        {
+          "id": "ACTION_13",
+          "name": "Rule: Branch to Prior County Details or Application Summary",
+          "implementation": "System evaluates if the applicant or any household member has previously received SNAP. If 'Yes', proceed to STEP_11 for prior county details. If 'No', proceed to STEP_10 for application summary.",
+          "trigger": "rule",
+          "triggerCondition": "Prior SNAP receipt status is determined.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_10",
+            "STEP_11",
+            "STEP_10"
+          ],
+          "errorHandling": "If branching fails, log the error, display a generic error message, and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_11",
+      "step": 11,
+      "type": "Screen",
+      "label": "Prior County Details Entry",
+      "description": "If you have previously received SNAP, please enter the details of the prior county where you received benefits. Provide the county name, state, and the dates of prior receipt. You may add multiple prior counties if applicable.",
+      "details": [
+        {
+          "label": "Prior County Information",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "County Name",
+              "type": "text",
+              "required": true,
+              "error_message": "County name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "State",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Please select a state.",
+              "options": [
+                "Alabama",
+                "Alaska",
+                "Arizona",
+                "Arkansas",
+                "California",
+                "Colorado",
+                "Connecticut",
+                "Delaware",
+                "Florida",
+                "Georgia",
+                "Hawaii",
+                "Idaho",
+                "Illinois",
+                "Indiana",
+                "Iowa",
+                "Kansas",
+                "Kentucky",
+                "Louisiana",
+                "Maine",
+                "Maryland",
+                "Massachusetts",
+                "Michigan",
+                "Minnesota",
+                "Mississippi",
+                "Missouri",
+                "Montana",
+                "Nebraska",
+                "Nevada",
+                "New Hampshire",
+                "New Jersey",
+                "New Mexico",
+                "New York",
+                "North Carolina",
+                "North Dakota",
+                "Ohio",
+                "Oklahoma",
+                "Oregon",
+                "Pennsylvania",
+                "Rhode Island",
+                "South Carolina",
+                "South Dakota",
+                "Tennessee"
+              ]
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION_14",
+          "name": "Rule: Validate and Save Prior County Details",
+          "implementation": "System validates all prior county entries (county name, state, dates if present; all required fields). If valid, save data to applicant record and proceed to STEP_10. If invalid, display specific error messages and prevent progression. If multiple prior counties are entered, validate each entry and allow applicant to indicate completion.",
+          "trigger": "rule",
+          "triggerCondition": "All prior county fields are present and valid on STEP_11.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_11",
+            "STEP_10"
+          ],
+          "errorHandling": "If validation fails, display field-specific error messages, prevent navigation, and log errors for audit. If a system error occurs during save, display a generic error message and provide a retry option."
+        }
+      ]
+    },
+    {
+      "id": "STEP_14",
+      "step": 14,
+      "type": "Rule",
+      "label": "Process: Submit Application",
+      "description": "When the applicant clicks the 'Submit Application' button, the system records the date and time of submission, stores all entered data and uploaded files, and marks the application status as complete.",
+      "Input Parameter": [
+        "submit_application_button_click",
+        "application_data",
+        "uploaded_files"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Submit Application",
+            "logic": "On submit_application_button_click, record submission date and time, store application_data and uploaded_files, and set application status to complete."
+          }
+        ]
+      },
+      "step_number": 14,
+      "node_id": "STEP_14"
+    },
+    {
+      "id": "STEP_15",
+      "step": 15,
+      "type": "Assignment",
+      "label": "Assign to Eligibility Worker",
+      "description": "System automatically routes the completed application record to the appropriate Eligibility Worker queue based on predefined assignment rules (e.g., workload balancing, applicant's county, or program type). The assignment must ensure that the application is visible in the assigned worker's queue for timely review and processing.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to Eligibility Worker",
+            "logic": "Upon successful submission and completion of the application, the system evaluates assignment criteria (such as applicant's county, program type, and current worker workload) and routes the application record to the corresponding Eligibility Worker queue. The system must log the assignment action and ensure the application is accessible to the assigned worker. If an error occurs (e.g., database transaction error as indicated by the 'message' field), the system must log the error and trigger an alert for administrative review."
+          }
+        ]
+      },
+      "step_number": 15,
+      "node_id": "STEP_15"
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "Application Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Application Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Preferred Language",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Email Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Application Details",
+      "endNode": "Phone Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "Electronic Communication Consent",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Electronic Communication Consent",
+      "endNode": "Do you consent to receive communications electronically (email/SMS)?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_2_PAPER",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "Household Members",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Members",
+      "endNode": "Full Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Members",
+      "endNode": "Age",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Members",
+      "endNode": "Relationship to Applicant",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "Household Composition Confirmation",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Composition Confirmation",
+      "endNode": "I confirm that only the listed members live and eat together, and no one else shares food expenses.",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "Living Arrangement",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Living Arrangement",
+      "endNode": "Living Arrangement",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "STEP_7",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_6",
+      "endNode": "Household Income",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Household Income",
+      "endNode": "Household Member Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Income",
+      "endNode": "Income Type",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Income",
+      "endNode": "Income Amount",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Income",
+      "endNode": "Income Frequency",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Household Income",
+      "endNode": "Upload Income Verification Document",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "STEP_8",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_7",
+      "endNode": "Monthly Expenses",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Monthly Expenses",
+      "endNode": "Rent",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Monthly Expenses",
+      "endNode": "Electricity",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Monthly Expenses",
+      "endNode": "Gas",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Monthly Expenses",
+      "endNode": "Childcare",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "STEP_9",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "Citizenship and SSN",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Citizenship and SSN",
+      "endNode": "Household Member Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Citizenship and SSN",
+      "endNode": "Citizenship Status",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Citizenship and SSN",
+      "endNode": "Social Security Number",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_8",
+      "endNode": "Proof of Residence",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Proof of Residence",
+      "endNode": "Upload Proof of Residence",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_9",
+      "endNode": "Benefit History",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Benefit History",
+      "endNode": "Currently receiving TANF?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit History",
+      "endNode": "Currently receiving SSI?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Benefit History",
+      "endNode": "Previously received SNAP?",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "STEP_11",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_10",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "STEP_10",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_11",
+      "endNode": "Prior County Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "Prior County Information",
+      "endNode": "County Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "Prior County Information",
+      "endNode": "State",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_14",
+      "endNode": "STEP_15",
+      "relationship": "HAS_NEXT_STEP"
+    }
+  ]
+}
