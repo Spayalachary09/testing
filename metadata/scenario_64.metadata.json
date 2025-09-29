@@ -1,0 +1,213 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Referral Information Entry",
+      "description": "On this screen, you will enter all the necessary details to initiate a new referral. Please provide accurate information about the individual being referred, including their contact details and the nature and urgency of the concern. Fields marked with an asterisk (*) are required. Use the 'Additional Notes' section to provide any extra context or information that may help the intake specialist. Once all required fields are completed, click 'Submit Referral' to proceed. Your submission will be timestamped and logged for compliance and audit purposes.",
+      "details": [
+        {
+          "label": "Referral Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": true,
+              "error_message": "First Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Middle Name",
+              "type": "text",
+              "required": false,
+              "error_message": "Middle Name must be valid text.",
+              "readOnly": false
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Last Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone",
+              "type": "phone",
+              "required": false,
+              "error_message": "Phone number must be valid format.",
+              "readOnly": false
+            },
+            {
+              "label": "Email",
+              "type": "email",
+              "required": false,
+              "error_message": "Email must be a valid email address.",
+              "readOnly": false
+            },
+            {
+              "label": "Address",
+              "type": "address",
+              "required": false,
+              "error_message": "Address must be valid.",
+              "readOnly": false
+            },
+            {
+              "label": "Nature of Concern",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Nature of Concern is required.",
+              "options": [
+                "Child Safety",
+                "Housing Need",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Urgency Level",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Urgency Level is required.",
+              "options": [
+                "Low",
+                "Medium",
+                "High"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Additional Notes",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Additional Notes must be valid text.",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "First Name and Last Name are required fields.",
+        "Phone number must be in valid format (e.g., 10 digits, no letters).",
+        "Email must be a valid email address format.",
+        "If Nature of Concern is 'Other', details should be provided in Additional Notes.",
+        "Urgency Level must be selected before submission.",
+        "No duplicate referral allowed for the same person within 24 hours.",
+        "Address, if provided, must be a valid postal address."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Referral",
+          "actor": "Referral Worker",
+          "description": "Click to submit the referral details for processing. The system will validate your entries, create a new referral record, timestamp the submission, and log the action for audit and compliance.",
+          "actions": [
+            "Trigger Submit Referral",
+            "Trigger Assign to Agency Intake Specialist"
+          ]
+        }
+      ],
+      "owner": "Referral Worker"
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Submit Referral",
+      "description": "When the 'Submit Referral' button is clicked by the Referral Worker, the system performs the following: (1) Validates that all required fields are completed; (2) Creates a new referral record with the entered details; (3) Timestamps the submission; (4) Logs the action for audit and compliance purposes; (5) Stores the referral record in the referral database. If any required field is missing, the submission is rejected and an error is displayed.",
+      "Input Parameter": [
+        "First Name",
+        "Middle Name",
+        "Last Name",
+        "Phone",
+        "Email",
+        "Address",
+        "Nature of Concern",
+        "Urgency Level",
+        "Additional Notes",
+        "Submit Referral"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Required Field Validation",
+            "logic": "System checks that 'First Name', 'Last Name', 'Nature of Concern', 'Urgency Level', and 'Submit Referral' are present and not empty. If any required field is missing, prevent submission and display an error message."
+          },
+          {
+            "label": "Create Referral Record",
+            "logic": "Upon successful validation, system creates a new referral record using all entered field values."
+          },
+          {
+            "label": "Timestamp Submission",
+            "logic": "System records the current date and time as the submission timestamp for the referral record."
+          },
+          {
+            "label": "Audit Logging",
+            "logic": "System logs the submission event, including user ID, timestamp, and entered data, for audit and compliance tracking."
+          },
+          {
+            "label": "Store in Referral Database",
+            "logic": "System saves the new referral record in the referral database."
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_1_Referral Details",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_First Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Middle Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Last Name",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Phone",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Email",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Address",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Nature of Concern",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Urgency Level",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_1_Referral Details",
+      "endNode": "STEP_1_Referral Details_Additional Notes",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
