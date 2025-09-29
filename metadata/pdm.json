@@ -1,0 +1,2199 @@
+{
+  "entities": [
+    {
+      "name": "ReferenceData",
+      "description": "Stores reference/lookup data used throughout the application, supporting hierarchical structures and temporal validity",
+      "fields": [
+        {
+          "name": "reference_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "reference_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "reference_code",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "reference_value",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "parent_reference_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "ReferenceData"
+        },
+        {
+          "name": "sort_order",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "effective_date",
+          "data_type": "DATE",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "expiration_date",
+          "data_type": "DATE",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "description": "User entity representing system users with authentication, authorization, and organizational information",
+      "fields": [
+        {
+          "name": "user_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "username",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": true,
+          "primary_key": false
+        },
+        {
+          "name": "full_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "email",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": true,
+          "primary_key": false
+        },
+        {
+          "name": "user_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "role_assignments",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "permission_level",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "assigned_jurisdictions",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "supervisor_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "department",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "last_login_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "password_hash",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "security_questions",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        }
+      ]
+    },
+    {
+      "name": "Application",
+      "description": "Core entity representing SNAP enrollment applications with complete lifecycle management including data entry, validation, workflow processing, and reviewer assignment",
+      "fields": [
+        {
+          "name": "application_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "application_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "jurisdiction_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "Jurisdiction"
+        },
+        {
+          "name": "reporting_period_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "ReportingPeriod"
+        },
+        {
+          "name": "applicant_information",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "program_data",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "financial_data",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "demographic_data",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "calculated_values",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "derived_metrics",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "application_status",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "workflow_state",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "priority_level",
+          "data_type": "VARCHAR(20)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "created_date",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "updated_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "submitted_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "due_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "state_name",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "fiscal_year",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "total_snap_participants",
+          "data_type": "NUMERIC(15,2)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "eligible_but_not_enrolled",
+          "data_type": "NUMERIC(15,2)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "state_total_population",
+          "data_type": "NUMERIC(15,2)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "average_monthly_snap_issuance",
+          "data_type": "NUMERIC(15,2)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "yearly_total_snap_issuance",
+          "data_type": "NUMERIC(15,2)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "snap_enrollment_rate",
+          "data_type": "NUMERIC(5,2)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "assigned_reviewer_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "assignment_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "SNAPEnrollmentData",
+      "description": "Physical data model for SNAP enrollment and issuance data tracking, including validation, calculation, and review workflow status",
+      "fields": [
+        {
+          "name": "enrollment_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "application_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "Application"
+        },
+        {
+          "name": "state_id",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "reporting_period",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "total_snap_participants",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "eligible_but_not_enrolled",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "snap_enrollment_rate",
+          "data_type": "NUMERIC(5,2)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "data_entry_complete",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "all_required_fields_filled",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "calculation_timestamp",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "enrollment_data_status",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "submitted_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "submitted_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "reviewed_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "review_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "review_status",
+          "data_type": "VARCHAR(50)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "review_comments",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "WorkflowProcess",
+      "description": "Defines workflow processes with their states, transitions, and business rules for application processing",
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "process_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "process_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "application_types",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "workflow_states",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "state_transitions",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "required_roles",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "auto_transition_rules",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "escalation_rules",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "WorkflowInstance",
+      "description": "Represents an active instance of a workflow process with current state tracking and assignment information",
+      "fields": [
+        {
+          "name": "instance_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true,
+          "foreign_key": null
+        },
+        {
+          "name": "application_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "Application"
+        },
+        {
+          "name": "process_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "WorkflowProcess"
+        },
+        {
+          "name": "current_state",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "assigned_user_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "state_history",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "pending_actions",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "escalation_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "sla_deadline",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": null
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "assignment_rule_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "AssignmentRule"
+        }
+      ]
+    },
+    {
+      "name": "BusinessRule",
+      "description": "Entity that defines business rules, validation logic, and constraints that govern data processing and workflow behavior within the system",
+      "fields": [
+        {
+          "name": "rule_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "rule_category",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "rule_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "application_types",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "trigger_conditions",
+          "data_type": "TEXT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "rule_logic",
+          "data_type": "TEXT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "target_fields",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_messages",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "severity_level",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "effective_date",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "expiration_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "FieldValidation",
+      "description": "Stores validation rules and configuration for entity fields, supporting data entry validation and form field management",
+      "fields": [
+        {
+          "name": "validation_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "entity_name",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "field_name",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_type",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_required",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_rule",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_message",
+          "data_type": "VARCHAR(255)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "field_order",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "field_group",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "CalculationRule",
+      "description": "Stores calculation rules and formulas used for computing derived values in various entities, including SNAP enrollment rate calculations",
+      "fields": [
+        {
+          "name": "calculation_rule_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "calculation_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "entity_name",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "target_field",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "calculation_formula",
+          "data_type": "TEXT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "input_fields",
+          "data_type": "JSON",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "rounding_precision",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_rules",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_handling",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "AssignmentRule",
+      "description": "Defines rules for automatically assigning workflow instances to specific users or roles based on various criteria such as entity type, state, jurisdiction, and priority level",
+      "fields": [
+        {
+          "name": "assignment_rule_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "rule_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "entity_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "assignment_criteria",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "target_role",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "target_user_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "state_criteria",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "jurisdiction_criteria",
+          "data_type": "VARCHAR(255)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "priority_level",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "Document",
+      "description": "Physical data model for document management system storing file metadata and content information",
+      "fields": [
+        {
+          "name": "document_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "application_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "Application"
+        },
+        {
+          "name": "document_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "document_category",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "file_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "file_path",
+          "data_type": "VARCHAR(500)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "file_size",
+          "data_type": "BIGINT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "mime_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "document_status",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "security_classification",
+          "data_type": "VARCHAR(50)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "uploaded_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "upload_date",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "version_number",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "retention_date",
+          "data_type": "DATE",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "Audit",
+      "description": "Tracks all system changes and user actions for compliance and debugging purposes",
+      "fields": [
+        {
+          "name": "audit_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "entity_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "entity_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "action_type",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "field_changes",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "old_values",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "new_values",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "change_reason",
+          "data_type": "VARCHAR(500)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "user_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "session_id",
+          "data_type": "VARCHAR(255)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "ip_address",
+          "data_type": "VARCHAR(45)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "timestamp",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "system_generated",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "description": "Entity to manage system notifications for users including delivery tracking and action requirements",
+      "fields": [
+        {
+          "name": "notification_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "notification_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "recipient_user_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "recipient_role",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "subject",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "message_body",
+          "data_type": "TEXT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "priority_level",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "delivery_method",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "sent_date",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "read_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "action_required",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "related_entity_type",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "related_entity_id",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "Report",
+      "description": "Entity for managing report definitions including data sources, parameters, scheduling, and distribution settings",
+      "fields": [
+        {
+          "name": "report_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "report_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "report_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "report_category",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "data_source_query",
+          "data_type": "TEXT",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "parameter_definitions",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "output_format",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "schedule_pattern",
+          "data_type": "VARCHAR(255)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "recipients",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "last_generated",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "SystemConfiguration",
+      "description": "Stores system configuration settings with support for different environments, data types, and security features",
+      "fields": [
+        {
+          "name": "config_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "config_category",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "config_key",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "config_value",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "config_description",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "data_type",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_rules",
+          "data_type": "JSON",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "environment",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "effective_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_encrypted",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "requires_restart",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "DataValidation",
+      "description": "Entity to track validation results for application data fields against business rules, including error details and resolution information",
+      "fields": [
+        {
+          "name": "validation_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "application_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "Application"
+        },
+        {
+          "name": "rule_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "BusinessRule"
+        },
+        {
+          "name": "field_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_status",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_message",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_severity",
+          "data_type": "VARCHAR(20)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "validation_date",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "resolved_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "resolved_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "resolution_notes",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "description": "Stores contact information for various entities in the system, supporting multiple contact types and methods",
+      "fields": [
+        {
+          "name": "contact_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "entity_type",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "entity_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "contact_type",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "contact_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "title",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "phone_number",
+          "data_type": "VARCHAR(20)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "email_address",
+          "data_type": "VARCHAR(100)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "mailing_address",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "preferred_contact_method",
+          "data_type": "VARCHAR(20)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_primary",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        },
+        {
+          "name": "updated_by",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false,
+          "foreign_key": "User"
+        }
+      ]
+    },
+    {
+      "name": "Integration",
+      "description": "Stores configuration and status information for external system integrations and data synchronization processes",
+      "fields": [
+        {
+          "name": "integration_id",
+          "data_type": "INTEGER",
+          "required": true,
+          "unique": true,
+          "primary_key": true
+        },
+        {
+          "name": "system_name",
+          "data_type": "VARCHAR(255)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "integration_type",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "endpoint_url",
+          "data_type": "VARCHAR(500)",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "authentication_method",
+          "data_type": "VARCHAR(100)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "last_sync_date",
+          "data_type": "TIMESTAMP",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "sync_status",
+          "data_type": "VARCHAR(50)",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "error_log",
+          "data_type": "TEXT",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "retry_count",
+          "data_type": "INTEGER",
+          "required": false,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "is_active",
+          "data_type": "BOOLEAN",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "created_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        },
+        {
+          "name": "updated_at",
+          "data_type": "TIMESTAMP",
+          "required": true,
+          "unique": false,
+          "primary_key": false
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "ReferenceData",
+      "to": "Application",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "Application",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Application",
+      "to": "SNAPEnrollmentData",
+      "type": "one_to_one"
+    },
+    {
+      "from": "Application",
+      "to": "WorkflowInstance",
+      "type": "one_to_one"
+    },
+    {
+      "from": "WorkflowProcess",
+      "to": "WorkflowInstance",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "WorkflowInstance",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Application",
+      "to": "DataValidation",
+      "type": "one_to_many"
+    },
+    {
+      "from": "BusinessRule",
+      "to": "DataValidation",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "DataValidation",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Application",
+      "to": "Document",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "Document",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "Audit",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "Notification",
+      "type": "one_to_many"
+    },
+    {
+      "from": "Application",
+      "to": "Contact",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "Contact",
+      "type": "one_to_many"
+    },
+    {
+      "from": "ReferenceData",
+      "to": "ReferenceData",
+      "type": "one_to_many"
+    },
+    {
+      "from": "User",
+      "to": "User",
+      "type": "one_to_many"
+    },
+    {
+      "from": "SNAPEnrollmentData",
+      "to": "User",
+      "type": "many_to_one"
+    },
+    {
+      "from": "FieldValidation",
+      "to": "DataValidation",
+      "type": "one_to_many"
+    },
+    {
+      "from": "CalculationRule",
+      "to": "SNAPEnrollmentData",
+      "type": "one_to_many"
+    },
+    {
+      "from": "AssignmentRule",
+      "to": "WorkflowInstance",
+      "type": "one_to_many"
+    }
+  ],
+  "metadata": {
+    "name": "PDM",
+    "description": "Physical Data Model",
+    "version": 1
+  },
+  "updated_at": "2025-09-25T06:49:12.594189"
+}

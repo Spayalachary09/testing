@@ -1,0 +1,844 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Child Intake Information Entry",
+      "description": "On this screen, you will enter all required details about the child being referred for intake. Please provide accurate and complete information, as this will be used for case assignment and compliance documentation. Fields marked with an asterisk (*) are mandatory. Review the instructions for each section and ensure all data is correct before proceeding. If you need to add multiple addresses or contacts, use the 'Add Another' option in those sections.",
+      "details": [
+        {
+          "label": "Basic Child Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "First Name is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "Last Name is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": "true",
+              "error_message": "Date of Birth is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": "true",
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": "false"
+            },
+            {
+              "label": "SSN",
+              "type": "ssn/phone/address",
+              "required": "false",
+              "error_message": "SSN must be valid format.",
+              "readOnly": "false"
+            }
+          ]
+        },
+        {
+          "label": "Contact Information",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Address",
+              "type": "ssn/phone/address",
+              "required": "true",
+              "error_message": "Address is required.",
+              "readOnly": "false"
+            },
+            {
+              "label": "Phone Number",
+              "type": "ssn/phone/address",
+              "required": "false",
+              "error_message": "Phone number must be valid format.",
+              "readOnly": "false"
+            }
+          ]
+        },
+        {
+          "label": "Demographic Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Ethnicity",
+              "type": "dropdown",
+              "required": "false",
+              "error_message": "Ethnicity selection is required.",
+              "options": [
+                "Hispanic or Latino",
+                "Not Hispanic or Latino",
+                "Unknown",
+                "Prefer not to say"
+              ],
+              "readOnly": "false"
+            },
+            {
+              "label": "Race",
+              "type": "multiselect",
+              "required": "false",
+              "error_message": "Select at least one race.",
+              "options": [
+                "American Indian or Alaska Native",
+                "Asian",
+                "Black or African American",
+                "Native Hawaiian or Other Pacific Islander",
+                "White",
+                "Other"
+              ],
+              "readOnly": "false"
+            }
+          ]
+        },
+        {
+          "label": "Special Needs",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Disability Status",
+              "type": "dropdown",
+              "required": "false",
+              "error_message": "Disability status is required.",
+              "options": [
+                "None",
+                "Physical",
+                "Developmental",
+                "Emotional",
+                "Other"
+              ],
+              "readOnly": "false"
+            },
+            {
+              "label": "Disability Details",
+              "type": "textarea",
+              "required": "false",
+              "error_message": "Disability details required if status is not 'None'.",
+              "readOnly": "false",
+              "visible_if": "Disability Status: Physical, Developmental, Emotional, Other"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Birth date cannot be in the future",
+        "SSN must be unique",
+        "Phone number must be valid format",
+        "If disability status is not 'None', disability details are required",
+        "Cannot have duplicate addresses or phone numbers"
+      ],
+      "buttons": [
+        {
+          "icon": "arrow-right",
+          "position": "bottom-right",
+          "button_type": "screen button",
+          "label": "Review Details",
+          "actor": "Intake Worker",
+          "description": "Proceed to review the entered child details before submission.",
+          "actions": [
+            "Navigate to Review Entered Details Screen"
+          ],
+          "action_ids": [
+            "ACTION_1",
+            "ACTION_1A",
+            "ACTION_2"
+          ]
+        }
+      ],
+      "owner": "Intake Worker",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Validate Child Details Entry",
+          "implementation": "Performs comprehensive data validation on all entered child details, including mandatory fields, unique SSN, valid phone number format, no duplicate addresses or phone numbers, and conditional requirements (e.g., disability details if status is not 'None'). If validation fails, collects specific error messages for each failed field and prevents navigation to the next step.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Worker clicks 'Review Details' button on STEP_1",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1A",
+          "name": "Display Validation Error Notification on Entry Screen",
+          "implementation": "If the 'Validate Child Details Entry' action (ACTION_1) fails (status == 'error'), displays a clear error notification to the Intake Worker on STEP_1, listing all validation errors and providing guidance for correction. Ensures the user cannot proceed until all errors are resolved.",
+          "trigger": "Rule",
+          "triggerCondition": "Validation action (ACTION_1) on STEP_1 fails (status == 'error')",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Navigate to Review Entered Details Screen",
+          "implementation": "Navigates the user from the Capture Child Details screen (STEP_1) to the Review and Confirm Child Details screen (STEP_2) for review before submission. Navigation only occurs if the 'Validate Child Details Entry' action (ACTION_1) completes successfully (status == 'success'). If navigation fails due to a system error, displays an error notification and logs the event for support review.",
+          "trigger": "Rule",
+          "triggerCondition": "Validation action (ACTION_1) on STEP_1 completes successfully (status == 'success')",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_1B",
+          "name": "Handle System-Level Errors on Entry Screen",
+          "implementation": "If a system-level error (e.g., network failure, unexpected exception) occurs during validation or navigation, displays a generic error notification to the Intake Worker on STEP_1, logs the error for support, and prevents further action until the issue is resolved.",
+          "trigger": "System",
+          "triggerCondition": "System-level error occurs during validation or navigation on STEP_1",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_1C",
+          "name": "Handle User Cancellation on Entry Screen",
+          "implementation": "If the Intake Worker cancels or abandons the workflow on STEP_1, logs the cancellation event for audit purposes, displays a confirmation message, and navigates the user to a safe landing page or dashboard.",
+          "trigger": "User",
+          "triggerCondition": "Intake Worker clicks 'Cancel' or closes STEP_1 before completion",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Review and Confirm Child Details",
+      "description": "This screen displays all the child details you have entered for your review. Please carefully check each section for accuracy and completeness. If you need to make changes, use the 'Back' button to return to the previous screen. Once you confirm that all information is correct, click 'Submit' to store the child details and initiate the assignment process. You will also be prompted to acknowledge that the information is accurate to the best of your knowledge.",
+      "details": [
+        {
+          "label": "Child Information Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "First Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "First Name is required.",
+              "readOnly": "true"
+            },
+            {
+              "label": "Last Name",
+              "type": "text",
+              "required": "true",
+              "error_message": "Last Name is required.",
+              "readOnly": "true"
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": "true",
+              "error_message": "Date of Birth is required.",
+              "readOnly": "true"
+            },
+            {
+              "label": "Gender",
+              "type": "dropdown",
+              "required": "true",
+              "error_message": "Gender is required.",
+              "options": [
+                "Male",
+                "Female",
+                "Other",
+                "Prefer not to say"
+              ],
+              "readOnly": "true"
+            },
+            {
+              "label": "SSN",
+              "type": "ssn/phone/address",
+              "required": "false",
+              "error_message": "SSN must be valid format.",
+              "readOnly": "true"
+            }
+          ]
+        },
+        {
+          "label": "Contact Information Summary",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Address",
+              "type": "ssn/phone/address",
+              "required": "true",
+              "error_message": "Address is required.",
+              "readOnly": "true"
+            },
+            {
+              "label": "Phone Number",
+              "type": "ssn/phone/address",
+              "required": "false",
+              "error_message": "Phone number must be valid format.",
+              "readOnly": "true"
+            }
+          ]
+        },
+        {
+          "label": "Demographic Details Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Ethnicity",
+              "type": "dropdown",
+              "required": "false",
+              "error_message": "Ethnicity selection is required.",
+              "options": [
+                "Hispanic or Latino",
+                "Not Hispanic or Latino",
+                "Unknown",
+                "Prefer not to say"
+              ],
+              "readOnly": "true"
+            },
+            {
+              "label": "Race",
+              "type": "multiselect",
+              "required": "false",
+              "error_message": "Select at least one race.",
+              "options": [
+                "American Indian or Alaska Native",
+                "Asian",
+                "Black or African American",
+                "Native Hawaiian or Other Pacific Islander",
+                "White",
+                "Other"
+              ],
+              "readOnly": "true"
+            }
+          ]
+        },
+        {
+          "label": "Special Needs Summary",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Disability Status",
+              "type": "dropdown",
+              "required": "false",
+              "error_message": "Disability status is required.",
+              "options": [
+                "None",
+                "Physical",
+                "Developmental",
+                "Emotional",
+                "Other"
+              ],
+              "readOnly": "true"
+            },
+            {
+              "label": "Disability Details",
+              "type": "textarea",
+              "required": "false",
+              "error_message": "Disability details required if status is not 'None'.",
+              "readOnly": "true",
+              "visible_if": "Disability Status: Physical, Developmental, Emotional, Other"
+            }
+          ]
+        },
+        {
+          "label": "Acknowledgment",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "I confirm that the above information is accurate to the best of my knowledge.",
+              "type": "checkbox",
+              "required": "true",
+              "error_message": "You must confirm the accuracy of the information.",
+              "options": [
+                "Yes"
+              ],
+              "readOnly": "false"
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required fields must be completed before submission",
+        "Birth date cannot be in the future",
+        "SSN must be unique",
+        "Phone number must be valid format",
+        "If disability status is not 'None', disability details are required",
+        "Cannot have duplicate addresses or phone numbers",
+        "Acknowledgment checkbox must be checked before submission"
+      ],
+      "buttons": [
+        {
+          "icon": "arrow-left",
+          "position": "bottom-left",
+          "button_type": "screen button",
+          "label": "Back",
+          "actor": "Intake Worker",
+          "description": "Return to the previous screen to edit child details.",
+          "actions": [
+            "Navigate to Capture Child Details Screen"
+          ],
+          "action_ids": [
+            "ACTION_3"
+          ]
+        },
+        {
+          "icon": "check-circle",
+          "position": "bottom-right",
+          "button_type": "screen button",
+          "label": "Submit",
+          "actor": "Intake Worker",
+          "description": "Submit the child details for storage and assignment.",
+          "actions": [
+            "Trigger Submit Child Details",
+            "Trigger Assign to Case Worker"
+          ],
+          "action_ids": [
+            "ACTION_4",
+            "ACTION_4A",
+            "ACTION_5"
+          ]
+        }
+      ],
+      "owner": "Intake Worker",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_3",
+          "name": "Navigate to Capture Child Details Screen",
+          "implementation": "Returns the user from the Review and Confirm Child Details screen (STEP_2) to the Capture Child Details screen (STEP_1) to edit information. If navigation fails due to a system error, displays an error notification and logs the event for support review.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Worker clicks 'Back' button on STEP_2",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_4",
+          "name": "Validate Review and Submission",
+          "implementation": "Performs all required data validation on the reviewed child details, including mandatory fields, unique SSN, valid phone number format, no duplicate addresses or phone numbers, conditional requirements (e.g., disability details if status is not 'None'), and ensures the acknowledgment checkbox is checked. If validation fails, collects error messages and prevents submission.",
+          "trigger": "Rule",
+          "triggerCondition": "Intake Worker clicks 'Submit' button on STEP_2",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_4A",
+          "name": "Display Validation Error Notification on Review Screen",
+          "implementation": "If the 'Validate Review and Submission' action (ACTION_4) fails (status == 'error'), displays a clear error notification to the Intake Worker on STEP_2, listing all validation errors and providing guidance for correction. Ensures the user cannot proceed until all errors are resolved.",
+          "trigger": "Rule",
+          "triggerCondition": "Validation action (ACTION_4) on STEP_2 fails (status == 'error')",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_5",
+          "name": "Trigger Submit Child Details Rule",
+          "implementation": "Explicitly triggers the 'Submit Child Details' rule (STEP_3) to initiate the process of storing child details in the database, generating an audit log entry, and creating compliance documentation. This action is only executed if the 'Validate Review and Submission' action (ACTION_4) completes successfully (status == 'success').",
+          "trigger": "Rule",
+          "triggerCondition": "Validation action (ACTION_4) on STEP_2 completes successfully (status == 'success')",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_4B",
+          "name": "Handle System-Level Errors on Review Screen",
+          "implementation": "If a system-level error (e.g., network failure, unexpected exception) occurs during validation or navigation, displays a generic error notification to the Intake Worker on STEP_2, logs the error for support, and prevents further action until the issue is resolved.",
+          "trigger": "System",
+          "triggerCondition": "System-level error occurs during validation or navigation on STEP_2",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_4C",
+          "name": "Handle User Cancellation on Review Screen",
+          "implementation": "If the Intake Worker cancels or abandons the workflow on STEP_2, logs the cancellation event for audit purposes, displays a confirmation message, and navigates the user to a safe landing page or dashboard.",
+          "trigger": "User",
+          "triggerCondition": "Intake Worker clicks 'Cancel' or closes STEP_2 before completion",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Submit Child Details",
+      "description": "When the Intake Worker clicks 'Submit', the system must store the entered child details in the database. The process must also generate an audit log entry capturing the submission event, including relevant metadata (e.g., timestamp, user ID, action performed). Additionally, compliance documentation must be generated and stored according to regulatory requirements. If any error occurs during database storage (such as a transaction closure or unexpected Neo4j error), the system must return an error status and message, and no data should be committed.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Store Child Details",
+            "logic": "On 'Submit', persist all entered child details to the database. If the database transaction fails (e.g., due to a Neo4j error or closed transaction), return an error status and message, and do not commit any data."
+          },
+          {
+            "label": "Audit Logging",
+            "logic": "Generate an audit log entry for the submission event, including the Intake Worker's user ID, timestamp, and action details. Ensure the log is stored securely and is retrievable for compliance purposes."
+          },
+          {
+            "label": "Compliance Documentation",
+            "logic": "Generate and store compliance documentation as required by regulatory standards upon successful submission. If an error occurs, ensure no compliance documentation is generated."
+          },
+          {
+            "label": "Error Handling",
+            "logic": "If the system encounters an error (e.g., 'Unexpected Neo4j error: The result is out of scope. The associated transaction has been closed.'), set the status to 'error' and provide the error message. Abort the submission process and do not store any child details or generate documentation."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_6",
+          "name": "Store Child Details and Generate Audit/Compliance Documentation",
+          "implementation": "Executes the 'Submit Child Details' rule logic: stores all entered child details in the database, generates an audit log entry, and creates compliance documentation as required by regulatory standards. If any error occurs during database storage (e.g., transaction failure, Neo4j error), aborts the transaction, returns status == 'error' and error message, and ensures no data or documentation is committed.",
+          "trigger": "Rule",
+          "triggerCondition": "Triggered by 'Trigger Submit Child Details Rule' action (ACTION_5) from STEP_2; all validations pass and STEP_3 logic is invoked",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_7",
+          "name": "Trigger Assign to Case Worker Assignment Step",
+          "implementation": "Initiates the 'Assign to Case Worker' assignment step (STEP_4) only if the 'Store Child Details and Generate Audit/Compliance Documentation' action (ACTION_6) completes successfully (status == 'success'). This action explicitly triggers the assignment logic in STEP_4.",
+          "trigger": "Rule",
+          "triggerCondition": "Store Child Details action (ACTION_6) in STEP_3 completes successfully (status == 'success')",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_8",
+          "name": "Notify Intake Worker of Submission Error",
+          "implementation": "If storing child details or generating documentation fails (i.e., 'Store Child Details and Generate Audit/Compliance Documentation' action (ACTION_6) returns status == 'error'), displays an error notification to the Intake Worker on STEP_2 and STEP_1 with the error message and instructions for resolution. No assignment is attempted and the workflow does not proceed.",
+          "trigger": "Rule",
+          "triggerCondition": "Store Child Details action (ACTION_6) in STEP_3 fails (status == 'error')",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_6A",
+          "name": "Notify Intake Worker of Successful Submission",
+          "implementation": "If storing child details and generating documentation succeeds (status == 'success'), displays a success notification to the Intake Worker on STEP_2, confirming that the child details have been submitted and are being assigned to a Case Worker. Optionally, navigates to a submission confirmation screen.",
+          "trigger": "Rule",
+          "triggerCondition": "Store Child Details action (ACTION_6) in STEP_3 completes successfully (status == 'success')",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_6B",
+          "name": "Handle System-Level Errors on Submission",
+          "implementation": "If a system-level error (e.g., network failure, unexpected exception) occurs during submission, displays a generic error notification to the Intake Worker on STEP_2 and STEP_1, logs the error for support, and prevents further action until the issue is resolved.",
+          "trigger": "System",
+          "triggerCondition": "System-level error occurs during submission in STEP_3",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Assignment",
+      "label": "Assign to Case Worker",
+      "description": "System automatically assigns the newly created child record to the designated Case Worker according to program rules. The assignment logic considers program-specific criteria such as workload balancing, specialization, and availability. The assignment is triggered after successful submission and storage of child details. The system must ensure that the assignment is auditable and compliant with organizational policies.",
+      "Input Parameter": [
+        "status",
+        "message"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to Case Worker",
+            "logic": "Upon successful storage of child details, the system evaluates program rules to select an appropriate Case Worker. The selection algorithm may include factors such as current caseload, Case Worker specialization, and availability. The assignment is recorded in the database, and an audit log entry is created to document the assignment event. If an error occurs (e.g., database transaction failure as indicated by the 'status' and 'message' fields), the assignment process is halted and an error notification is generated for the Intake Worker."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Assign to Case Worker",
+          "implementation": "Executes the assignment logic in STEP_4: evaluates program rules to select an appropriate Case Worker based on criteria such as caseload, specialization, and availability. Records the assignment in the database and creates an audit log entry. This action is triggered explicitly by ACTION_7 from STEP_3 after successful submission and storage.",
+          "trigger": "Assignment",
+          "triggerCondition": "Triggered by 'Trigger Assign to Case Worker Assignment Step' action (ACTION_7) from STEP_3 after successful submission and storage (status == 'success')",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_11",
+          "name": "Notify Intake Worker of Assignment Error",
+          "implementation": "If assignment to a Case Worker fails (e.g., due to database error or no eligible Case Worker found; status == 'error'), displays an error notification to the Intake Worker on STEP_2 and STEP_1 with the error message and instructions for next steps. Ensures no workflow completion is marked and the error is clearly communicated.",
+          "trigger": "Assignment",
+          "triggerCondition": "Assignment to Case Worker (ACTION_9) in STEP_4 fails (status == 'error')",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_10",
+          "name": "Mark Workflow Completion and Notify Success",
+          "implementation": "Marks the workflow as complete after successful assignment of the child record to a Case Worker (status == 'success'). Ensures all audit logs and compliance records are finalized. Displays a success notification to the Intake Worker on STEP_2, optionally navigates to a workflow completion or confirmation screen, and provides next steps or links to the assigned case.",
+          "trigger": "Assignment",
+          "triggerCondition": "Assignment to Case Worker (ACTION_9) in STEP_4 is successful (status == 'success') and audit log is created",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        },
+        {
+          "id": "ACTION_9A",
+          "name": "Handle System-Level Errors on Assignment",
+          "implementation": "If a system-level error (e.g., network failure, unexpected exception) occurs during assignment, displays a generic error notification to the Intake Worker on STEP_2 and STEP_1, logs the error for support, and prevents further action until the issue is resolved.",
+          "trigger": "System",
+          "triggerCondition": "System-level error occurs during assignment in STEP_4",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_9B",
+          "name": "Handle User Cancellation on Assignment",
+          "implementation": "If the Intake Worker cancels or abandons the workflow during or after assignment, logs the cancellation event for audit purposes, displays a confirmation message, and navigates the user to a safe landing page or dashboard.",
+          "trigger": "User",
+          "triggerCondition": "Intake Worker cancels or closes workflow during assignment step",
+          "sequence": 5,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_CONTACT_INFORMATION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_DEMOGRAPHIC_DETAILS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_SPECIAL_NEEDS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "endNode": "FIELD_1_FIRST_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "endNode": "FIELD_1_LAST_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "endNode": "FIELD_1_DATE_OF_BIRTH",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "endNode": "FIELD_1_GENDER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_BASIC_CHILD_INFORMATION",
+      "endNode": "FIELD_1_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_CONTACT_INFORMATION",
+      "endNode": "FIELD_1_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_CONTACT_INFORMATION",
+      "endNode": "FIELD_1_PHONE_NUMBER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_DEMOGRAPHIC_DETAILS",
+      "endNode": "FIELD_1_ETHNICITY",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_DEMOGRAPHIC_DETAILS",
+      "endNode": "FIELD_1_RACE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_SPECIAL_NEEDS",
+      "endNode": "FIELD_1_DISABILITY_STATUS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_SPECIAL_NEEDS",
+      "endNode": "FIELD_1_DISABILITY_DETAILS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_CONTACT_INFORMATION_SUMMARY",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_DEMOGRAPHIC_DETAILS_SUMMARY",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_SPECIAL_NEEDS_SUMMARY",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_ACKNOWLEDGMENT",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_FIRST_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_LAST_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_DATE_OF_BIRTH",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_GENDER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CHILD_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CONTACT_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_CONTACT_INFORMATION_SUMMARY",
+      "endNode": "FIELD_2_PHONE_NUMBER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_DEMOGRAPHIC_DETAILS_SUMMARY",
+      "endNode": "FIELD_2_ETHNICITY",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_DEMOGRAPHIC_DETAILS_SUMMARY",
+      "endNode": "FIELD_2_RACE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_SPECIAL_NEEDS_SUMMARY",
+      "endNode": "FIELD_2_DISABILITY_STATUS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_SPECIAL_NEEDS_SUMMARY",
+      "endNode": "FIELD_2_DISABILITY_DETAILS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_ACKNOWLEDGMENT",
+      "endNode": "FIELD_2_ACKNOWLEDGMENT_CHECKBOX",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}

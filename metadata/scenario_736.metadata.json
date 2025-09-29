@@ -1,0 +1,298 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "SNAP Enrollment Data Entry",
+      "description": "On this screen, you will enter and review SNAP enrollment and issuance data for your state and fiscal year. Please provide accurate and complete information for each required field. All fields marked with an asterisk (*) are mandatory. After entering the data, you can review your entries before submitting. The system will validate your input and calculate the SNAP Enrollment Rate automatically. If any required information is missing, you will be prompted to complete it before submission.",
+      "details": [
+        {
+          "label": "SNAP Enrollment and Issuance Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "State Name",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "State Name is required.",
+              "options": [
+                "Alabama",
+                "Alaska",
+                "Arizona",
+                "Arkansas",
+                "California",
+                "Colorado",
+                "Connecticut",
+                "Delaware",
+                "District of Columbia",
+                "Florida",
+                "Georgia",
+                "Hawaii",
+                "Idaho",
+                "Illinois",
+                "Indiana",
+                "Iowa",
+                "Kansas",
+                "Kentucky",
+                "Louisiana",
+                "Maine",
+                "Maryland",
+                "Massachusetts",
+                "Michigan",
+                "Minnesota",
+                "Mississippi",
+                "Missouri",
+                "Montana",
+                "Nebraska",
+                "Nevada",
+                "New Hampshire",
+                "New Jersey",
+                "New Mexico",
+                "New York",
+                "North Carolina"
+              ]
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Enter SNAP Enrollment Data",
+          "implementation": "On the SNAP Enrollment Data Entry screen, the user enters data into all required fields: State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled, State Total Population, Average Monthly SNAP Issuance, and Yearly Total SNAP Issuance. The system provides real-time validation for each field (e.g., required, numeric format) and highlights any errors immediately. All previously entered data is retained if the user navigates away and returns. The user can review all entries before submitting.",
+          "trigger": "user",
+          "triggerCondition": "User interacts with the SNAP Enrollment Data Entry screen.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        },
+        {
+          "id": "ACTION_2",
+          "name": "Validate Required Fields",
+          "implementation": "Upon user clicking Submit, the system checks that all required fields are filled and that numeric fields contain valid numbers. If any required field is missing or contains invalid data, prevent submission and trigger the missing fields prompt (STEP_5). The system compiles a list of missing or invalid fields and passes it to the prompt screen.",
+          "trigger": "rule",
+          "triggerCondition": "User clicks Submit button on SNAP Enrollment Data Entry screen.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_3",
+          "name": "Calculate Enrollment Rate",
+          "implementation": "If all required fields are present and valid, the system calculates the SNAP Enrollment Rate as: (Total SNAP Participants) / (Total SNAP Participants + Eligible but Not Enrolled) * 100, rounded to two decimal places. If calculation fails due to invalid numeric input (e.g., division by zero, non-numeric values), display a specific error message, prevent submission, and prompt the user to correct the input.",
+          "trigger": "rule",
+          "triggerCondition": "All required fields are validated and contain valid numeric data.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "label": "Submit",
+          "action_ids": [
+            "ACTION_2",
+            "ACTION_3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Rule",
+      "label": "Validate Required Fields and Calculate Enrollment Rate",
+      "description": "System verifies that all user-entered fields are filled. If any required field is missing, prevent submission and prompt user to complete all fields. If all required fields are present, system calculates SNAP Enrollment Rate as: (Total SNAP Participants) / (Total SNAP Participants + Eligible but Not Enrolled) * 100, rounded to two decimal places.",
+      "Input Parameter": [
+        "State Name",
+        "Fiscal Year",
+        "Total SNAP Participants",
+        "Eligible but Not Enrolled",
+        "State Total Population",
+        "Average Monthly SNAP Issuance",
+        "Yearly Total SNAP Issuance"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Required Fields Validation",
+            "logic": "Check that all required fields (State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled, State Total Population, Average Monthly SNAP Issuance, Yearly Total SNAP Issuance) are not null or empty. If any field is missing, prevent submission and prompt user to complete all fields."
+          },
+          {
+            "label": "Enrollment Rate Calculation",
+            "logic": "If all required fields are present, calculate SNAP Enrollment Rate as: (Total SNAP Participants) / (Total SNAP Participants + Eligible but Not Enrolled) * 100. Round the result to two decimal places."
+          }
+        ]
+      },
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_4",
+          "name": "Check Required Fields Completion",
+          "implementation": "After validation and calculation, the system checks if all required fields are completed and valid. If any field is missing or invalid, trigger the missing fields prompt (STEP_5) and pass the list of missing/invalid fields. If all fields are present and valid, proceed to submit the data (STEP_3).",
+          "trigger": "rule",
+          "triggerCondition": "Validation and calculation steps completed.",
+          "sequence": 4,
+          "linkedWidgetIds": [
+            "STEP_3",
+            "STEP_5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "All Required Fields Completed?",
+      "description": "System checks if State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled, State Total Population, Average Monthly SNAP Issuance, and Yearly Total SNAP Issuance are all entered.",
+      "Input Parameter": [
+        "State Name",
+        "Fiscal Year",
+        "Total SNAP Participants",
+        "Eligible but Not Enrolled",
+        "State Total Population",
+        "Average Monthly SNAP Issuance",
+        "Yearly Total SNAP Issuance"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Required Fields Completion Check",
+            "logic": "Verify that each of the following fields is entered and not null: State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled, State Total Population, Average Monthly SNAP Issuance, Yearly Total SNAP Issuance."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_7",
+          "name": "Submit SNAP Enrollment Data",
+          "implementation": "If all required fields are present and valid, the system saves all entered data and the calculated enrollment rate to the database. The record status is updated to 'submitted' for further processing or review. If database save fails (e.g., connection error, data integrity issue), display a specific error message, allow the user to retry, and provide contact information for support if the issue persists.",
+          "trigger": "rule",
+          "triggerCondition": "All required fields are completed and valid, and enrollment rate calculation succeeded.",
+          "sequence": 6,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Rule",
+      "label": "Submit SNAP Enrollment Data",
+      "description": "System saves the entered data, including the calculated enrollment rate, and marks the record as submitted for further processing or review.",
+      "Input Parameter": [
+        "State Name",
+        "Fiscal Year",
+        "Total SNAP Participants",
+        "Eligible but Not Enrolled",
+        "State Total Population",
+        "Average Monthly SNAP Issuance",
+        "Yearly Total SNAP Issuance"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Save Data and Mark as Submitted",
+            "logic": "Persist all entered fields and the calculated enrollment rate to the database. Update the record status to 'submitted' for further processing or review."
+          }
+        ]
+      },
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_8",
+          "name": "Assign to SNAP Data Reviewer",
+          "implementation": "After the record is marked as submitted, the system selects the appropriate SNAP Data Reviewer using state assignment rules (e.g., reviewer-state mapping, workload balancing). The record is updated with the assigned reviewer ID, status is set to 'Assigned', and the assignment event is logged for audit purposes. If assignment fails (e.g., no reviewer available, system error), display a specific error message, log the failure, retry assignment up to three times, and escalate to admin if unsuccessful.",
+          "trigger": "rule",
+          "triggerCondition": "Record is marked as submitted.",
+          "sequence": 7,
+          "linkedWidgetIds": [
+            "STEP_6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_6",
+      "step": 6,
+      "type": "Assignment",
+      "label": "Assign to SNAP Data Reviewer",
+      "description": "System automatically assigns the submitted SNAP enrollment record to the appropriate SNAP Data Reviewer according to state-specific assignment rules. The assignment process ensures that each record is routed to the correct reviewer based on the state associated with the record, reviewer workload balancing, and any predefined reviewer-state mapping. The system updates the record status to 'Assigned' and logs the reviewer assignment for audit purposes.",
+      "Input Parameter": [
+        "State Name",
+        "Fiscal Year",
+        "Total SNAP Participants",
+        "Eligible but Not Enrolled",
+        "State Total Population",
+        "Average Monthly SNAP Issuance",
+        "Yearly Total SNAP Issuance",
+        "Calculated Enrollment Rate"
+      ],
+      "details": {
+        "assignments": [
+          {
+            "label": "Assign to SNAP Data Reviewer",
+            "logic": "For each submitted SNAP enrollment record, determine the appropriate reviewer using state assignment rules (e.g., reviewer-state mapping, workload balancing). Update the record with the assigned reviewer ID, set status to 'Assigned', and log the assignment event for traceability."
+          }
+        ]
+      },
+      "step_number": 6,
+      "node_id": "STEP_6",
+      "actions": [
+        {
+          "id": "ACTION_9",
+          "name": "Complete Reviewer Assignment and Log Event",
+          "implementation": "After assignment to the reviewer, the system confirms the record status is 'Assigned', logs the reviewer assignment event for audit purposes, and ends the workflow for this record. If logging fails, retry up to three times and alert system admin if unsuccessful. No further user action is required.",
+          "trigger": "assignment",
+          "triggerCondition": "Record is assigned to reviewer and assignment event is logged.",
+          "sequence": 8,
+          "linkedWidgetIds": []
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_6",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SNAP Enrollment and Issuance Information",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SNAP Enrollment and Issuance Information",
+      "endNode": "State Name",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
