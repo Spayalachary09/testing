@@ -1,0 +1,615 @@
+{
+  "steps": [
+    {
+      "id": "STEP_1",
+      "step": 1,
+      "type": "Screen",
+      "label": "Applicant Information Entry",
+      "description": "On this screen, you will enter all required information to begin your SNAP eligibility determination. Please provide accurate details about yourself and your household. Instructions and field-specific guidance are provided to help you complete each section. All required fields must be filled before you can proceed.",
+      "details": [
+        {
+          "label": "Personal Details",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Full Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Full Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Social Security Number",
+              "type": "ssn",
+              "required": true,
+              "error_message": "SSN is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Phone Number",
+              "type": "phone",
+              "required": true,
+              "error_message": "Phone Number is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Email Address",
+              "type": "text",
+              "required": false,
+              "error_message": "Email Address must be valid.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Residential Address",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Street Address",
+              "type": "address",
+              "required": true,
+              "error_message": "Street Address is required.",
+              "readOnly": false
+            },
+            {
+              "label": "City",
+              "type": "text",
+              "required": true,
+              "error_message": "City is required.",
+              "readOnly": false
+            },
+            {
+              "label": "State",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "State is required.",
+              "options": [
+                "AL",
+                "AK",
+                "AZ",
+                "AR",
+                "CA",
+                "CO",
+                "CT",
+                "DE",
+                "FL",
+                "GA",
+                "HI",
+                "ID",
+                "IL",
+                "IN",
+                "IA",
+                "KS",
+                "KY",
+                "LA",
+                "ME",
+                "MD",
+                "MA",
+                "MI",
+                "MN",
+                "MS",
+                "MO",
+                "MT",
+                "NE",
+                "NV",
+                "NH",
+                "NJ",
+                "NM",
+                "NY",
+                "NC",
+                "ND",
+                "OH",
+                "OK",
+                "OR",
+                "PA",
+                "RI",
+                "SC",
+                "SD",
+                "TN",
+                "TX",
+                "UT",
+                "VT",
+                "VA",
+                "WA",
+                "WV",
+                "WI",
+                "WY"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Zip Code",
+              "type": "text",
+              "required": true,
+              "error_message": "Zip Code is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Household Members",
+          "repeatable_section": true,
+          "fields": [
+            {
+              "label": "Household Member Name",
+              "type": "text",
+              "required": true,
+              "error_message": "Household Member Name is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Relationship to Applicant",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Relationship is required.",
+              "options": [
+                "Self",
+                "Spouse",
+                "Child",
+                "Parent",
+                "Sibling",
+                "Other"
+              ],
+              "readOnly": false
+            },
+            {
+              "label": "Date of Birth",
+              "type": "date/time",
+              "required": true,
+              "error_message": "Date of Birth is required.",
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "label": "Income Information",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Monthly Household Income",
+              "type": "currency",
+              "required": true,
+              "error_message": "Monthly Household Income is required.",
+              "readOnly": false
+            },
+            {
+              "label": "Income Source",
+              "type": "dropdown",
+              "required": true,
+              "error_message": "Income Source is required.",
+              "options": [
+                "Employment",
+                "Self-Employment",
+                "Social Security",
+                "Unemployment",
+                "Child Support",
+                "Other"
+              ],
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Date of Birth cannot be in the future.",
+        "SSN must be unique.",
+        "Phone number must be valid format.",
+        "Zip Code must be valid US zip code.",
+        "Monthly Household Income cannot be negative.",
+        "Cannot have duplicate household member names.",
+        "If Relationship is 'Spouse', only one spouse allowed.",
+        "If Relationship is 'Self', only one entry allowed.",
+        "If minor household member, guardian information required."
+      ],
+      "buttons": [
+        {
+          "label": "Next",
+          "actor": "Applicant",
+          "description": "Proceed to submit your application after entering all required information.",
+          "action_ids": [
+            "ACTION_1"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 1,
+      "node_id": "STEP_1",
+      "actions": [
+        {
+          "id": "ACTION_1",
+          "name": "Validate and Save Applicant Information, Navigate to Submission Screen",
+          "implementation": "On clicking 'Next', validate all required applicant information fields. If all validations pass, persist the entered data to the application context (local storage or backend draft, as appropriate), and navigate to the Application Submission screen (STEP_2). If validation fails, display contextual error messages next to each invalid field, and a summary of errors at the top of the screen. Remain on the current screen and allow the applicant to correct errors and retry. If a system error occurs (e.g., unable to save data, network failure), display a general error message ('Unable to proceed due to a system error. Please try again.') at the top of the screen and provide a 'Retry' option. Sequence number: 1.",
+          "trigger": "Assignment",
+          "triggerCondition": "Applicant clicks 'Next' button.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_2",
+      "step": 2,
+      "type": "Screen",
+      "label": "Application Submission",
+      "description": "Review your entered information for accuracy. Once you are ready, click the Submit button to send your application for SNAP eligibility evaluation. You will receive confirmation and next steps after submission.",
+      "details": [
+        {
+          "label": "Application Review",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Review Entered Information",
+              "type": "textarea",
+              "required": false,
+              "error_message": "Please review your information before submitting.",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "All required fields must be completed before submission.",
+        "No duplicate household members.",
+        "Monthly Household Income must be a positive number."
+      ],
+      "buttons": [
+        {
+          "label": "Submit Application",
+          "actor": "Applicant",
+          "description": "Send your application data to the system for eligibility evaluation.",
+          "action_ids": [
+            "ACTION_2"
+          ]
+        },
+        {
+          "label": "Back",
+          "actor": "Applicant",
+          "description": "Return to the previous screen to edit your information.",
+          "action_ids": [
+            "ACTION_7"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 2,
+      "node_id": "STEP_2",
+      "actions": [
+        {
+          "id": "ACTION_2",
+          "name": "Re-validate, Save, and Submit Application; Trigger Income Eligibility Check",
+          "implementation": "On clicking 'Submit Application', re-validate all entered data. If all validations pass, persist the application data to the backend. If the backend call succeeds, trigger the income eligibility check rule (STEP_3). If the backend call fails (e.g., network error, server error), display a general error message ('Submission failed due to a system error. Please try again.') at the top of the screen and provide a 'Retry' option. If validation fails, display contextual error messages next to each invalid field and a summary at the top. Prevent submission and allow the applicant to correct errors and retry. Sequence number: 1.",
+          "trigger": "Assignment",
+          "triggerCondition": "Applicant clicks 'Submit Application' button.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_3"
+          ]
+        },
+        {
+          "id": "ACTION_7",
+          "name": "Navigate Back to Applicant Information Entry, Handle Unsaved Data",
+          "implementation": "On clicking 'Back', prompt the applicant to confirm navigation if there are unsaved changes. If confirmed, navigate to the Applicant Information Entry screen (STEP_1). If data was previously saved as a draft, restore the draft data for editing. If navigation fails (e.g., system error), display an error message ('Unable to navigate. Please try again.') at the top of the screen and provide a 'Retry' option. Sequence number: 2.",
+          "trigger": "Assignment",
+          "triggerCondition": "Applicant clicks 'Back' button.",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_3",
+      "step": 3,
+      "type": "Rule",
+      "label": "Check Income Eligibility",
+      "description": "The system retrieves the SNAP income threshold for the provided household size and compares the applicant's monthly income to this threshold. If the applicant's monthly income is less than or equal to the threshold, the applicant is considered income eligible for SNAP. If the income exceeds the threshold, the applicant is not eligible based on income.",
+      "Input Parameter": [
+        "household_size",
+        "monthly_income",
+        "snap_income_threshold"
+      ],
+      "details": {
+        "rules": [
+          {
+            "label": "Income Eligibility Check",
+            "logic": "If monthly_income <= snap_income_threshold for the given household_size, then applicant is income eligible; else, applicant is not income eligible."
+          }
+        ]
+      },
+      "step_number": 3,
+      "node_id": "STEP_3",
+      "actions": [
+        {
+          "id": "ACTION_3",
+          "name": "Navigate to Eligibility Success Notification",
+          "implementation": "If applicant's monthly income is less than or equal to the SNAP threshold for the provided household size, navigate to the Eligibility Success Notification screen (STEP_4). Sequence number: 1.",
+          "trigger": "Rule",
+          "triggerCondition": "monthly_income <= snap_income_threshold for household_size",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_4"
+          ]
+        },
+        {
+          "id": "ACTION_4",
+          "name": "Navigate to Ineligibility Notification",
+          "implementation": "If applicant's monthly income exceeds the SNAP threshold for the provided household size, navigate to the Ineligibility Notification screen (STEP_5). Sequence number: 2.",
+          "trigger": "Rule",
+          "triggerCondition": "monthly_income > snap_income_threshold for household_size",
+          "sequence": 2,
+          "linkedWidgetIds": [
+            "STEP_5"
+          ]
+        },
+        {
+          "id": "ACTION_3B",
+          "name": "Handle Indeterminate Eligibility and Error Display",
+          "implementation": "If eligibility cannot be determined due to missing or invalid data (e.g., household_size or monthly_income is null, not a number, or negative), display a fallback error message ('Eligibility cannot be determined. Please ensure all required information is provided and valid.') on the submission screen (STEP_2). Provide options to return to Applicant Information Entry (STEP_1) or retry submission. Sequence number: 3.",
+          "trigger": "Rule",
+          "triggerCondition": "monthly_income or household_size is missing, invalid, or negative; eligibility rule cannot be evaluated.",
+          "sequence": 3,
+          "linkedWidgetIds": [
+            "STEP_2",
+            "STEP_1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_4",
+      "step": 4,
+      "type": "Screen",
+      "label": "Eligibility Success Notification",
+      "description": "Congratulations! This screen confirms that your application meets the SNAP income eligibility criteria. You will see a success message and instructions for next steps, including how to proceed with your benefits enrollment.",
+      "details": [
+        {
+          "label": "Success Message",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Eligibility Confirmation",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Eligibility is based on income threshold for household size.",
+        "Applicant's monthly income must be less than or equal to the SNAP threshold."
+      ],
+      "buttons": [
+        {
+          "label": "Continue",
+          "actor": "Applicant",
+          "description": "Proceed to the next steps in the SNAP enrollment process.",
+          "action_ids": [
+            "ACTION_5"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 4,
+      "node_id": "STEP_4",
+      "actions": [
+        {
+          "id": "ACTION_5",
+          "name": "Complete Workflow and Redirect to Dashboard or Additional Steps",
+          "implementation": "Upon successful eligibility, when the applicant clicks 'Continue', check if additional steps are required (e.g., document upload, interview scheduling). If additional steps are required, display instructions and guide the applicant through those steps before marking the workflow as complete. If no additional steps are required, mark the workflow as complete and redirect the applicant to the benefits dashboard (SCREEN_DASHBOARD). If the dashboard screen is not available, display a message ('Next steps are currently unavailable. Please check back later or contact support.') and provide a 'Retry' option. Sequence number: 1.",
+          "trigger": "Assignment",
+          "triggerCondition": "Applicant clicks 'Continue' after eligibility confirmation.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "SCREEN_DASHBOARD"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STEP_5",
+      "step": 5,
+      "type": "Screen",
+      "label": "Ineligibility Notification",
+      "description": "This screen informs you that your income exceeds the SNAP eligibility threshold. You will see an ineligibility message and guidance on alternative resources or next steps you may consider.",
+      "details": [
+        {
+          "label": "Ineligibility Message",
+          "repeatable_section": false,
+          "fields": [
+            {
+              "label": "Income Ineligibility Notification",
+              "type": "textarea",
+              "required": false,
+              "error_message": "",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "data_validation": [
+        "Applicant's monthly income exceeds the SNAP threshold for household size."
+      ],
+      "buttons": [
+        {
+          "label": "Return to Application",
+          "actor": "Applicant",
+          "description": "Go back to your application to review or update your information.",
+          "action_ids": [
+            "ACTION_6"
+          ]
+        }
+      ],
+      "owner": "Applicant",
+      "step_number": 5,
+      "node_id": "STEP_5",
+      "actions": [
+        {
+          "id": "ACTION_6",
+          "name": "Return to Applicant Information Entry, Handle Data Persistence",
+          "implementation": "On clicking 'Return to Application', navigate back to the Applicant Information Entry screen (STEP_1). If the applicant made changes on the ineligibility screen, prompt to save or discard those changes before navigating. Restore previously entered data for editing. If navigation fails (e.g., system error), display an error message ('Unable to return to application. Please try again.') at the top of the screen and provide a 'Retry' option. Sequence number: 1.",
+          "trigger": "Assignment",
+          "triggerCondition": "Applicant clicks 'Return to Application' button.",
+          "sequence": 1,
+          "linkedWidgetIds": [
+            "STEP_1"
+          ]
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "startNode": "STEP_1",
+      "endNode": "STEP_2",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "STEP_3",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_3",
+      "endNode": "STEP_4",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "STEP_5",
+      "relationship": "HAS_NEXT_STEP"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_PERSONAL_DETAILS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_RESIDENTIAL_ADDRESS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_HOUSEHOLD_MEMBERS",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_1",
+      "endNode": "SECTION_1_INCOME_INFORMATION",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_2",
+      "endNode": "SECTION_2_APPLICATION_REVIEW",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_4",
+      "endNode": "SECTION_4_SUCCESS_MESSAGE",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "STEP_5",
+      "endNode": "SECTION_5_INELIGIBILITY_MESSAGE",
+      "relationship": "HAS_SECTION"
+    },
+    {
+      "startNode": "SECTION_1_PERSONAL_DETAILS",
+      "endNode": "FIELD_1_FULL_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_PERSONAL_DETAILS",
+      "endNode": "FIELD_1_DATE_OF_BIRTH",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_PERSONAL_DETAILS",
+      "endNode": "FIELD_1_SSN",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_PERSONAL_DETAILS",
+      "endNode": "FIELD_1_PHONE_NUMBER",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_PERSONAL_DETAILS",
+      "endNode": "FIELD_1_EMAIL_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_RESIDENTIAL_ADDRESS",
+      "endNode": "FIELD_1_STREET_ADDRESS",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_RESIDENTIAL_ADDRESS",
+      "endNode": "FIELD_1_CITY",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_RESIDENTIAL_ADDRESS",
+      "endNode": "FIELD_1_STATE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_RESIDENTIAL_ADDRESS",
+      "endNode": "FIELD_1_ZIP_CODE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_HOUSEHOLD_MEMBERS",
+      "endNode": "FIELD_1_HOUSEHOLD_MEMBER_NAME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_HOUSEHOLD_MEMBERS",
+      "endNode": "FIELD_1_RELATIONSHIP_TO_APPLICANT",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_HOUSEHOLD_MEMBERS",
+      "endNode": "FIELD_1_HOUSEHOLD_MEMBER_DOB",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_INCOME_INFORMATION",
+      "endNode": "FIELD_1_MONTHLY_HOUSEHOLD_INCOME",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_1_INCOME_INFORMATION",
+      "endNode": "FIELD_1_INCOME_SOURCE",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_2_APPLICATION_REVIEW",
+      "endNode": "FIELD_2_REVIEW_ENTERED_INFORMATION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_4_SUCCESS_MESSAGE",
+      "endNode": "FIELD_4_ELIGIBILITY_CONFIRMATION",
+      "relationship": "HAS_FIELD"
+    },
+    {
+      "startNode": "SECTION_5_INELIGIBILITY_MESSAGE",
+      "endNode": "FIELD_5_INCOME_INELIGIBILITY_NOTIFICATION",
+      "relationship": "HAS_FIELD"
+    }
+  ]
+}
