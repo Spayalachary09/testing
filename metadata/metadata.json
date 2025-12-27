@@ -1,0 +1,256 @@
+{
+  "technical_blueprint": {
+    "projectId": "43",
+    "platform": [],
+    "presentation_layer": [],
+    "business_logic_layer": [],
+    "data_access_layer": [],
+    "database_layer": []
+  },
+  "scenarios": [
+    {
+      "project_id": 43,
+      "scenario_id": "194",
+      "scenario_name": "Section 1 - STATE INFORMATION - State SNAP Quality Control (QC) staff",
+      "details": [
+        {
+          "id": "STEP_1",
+          "type": "Screen",
+          "label": "SNAP Enrollment and Issuance Data Entry",
+          "description": "On this screen, you will enter all required data for your state's SNAP enrollment and issuance reporting. Please provide accurate and complete information for each field. Required fields are marked with an asterisk (*). As you enter the number of SNAP participants and the estimate of eligible but not enrolled individuals, the system will automatically calculate and display the SNAP Enrollment Rate. Review your entries carefully before submitting. Optional contact information can be provided for follow-up. Once you are ready, click 'Submit' to send your data for review.",
+          "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4756",
+          "details": [
+            {
+              "label": "SNAP Data Entry",
+              "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4761",
+              "repeatable_section": false,
+              "fields": [
+                {
+                  "label": "State Name",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "State Name is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4762",
+                  "options": [
+                    "AL",
+                    "AK",
+                    "AZ",
+                    "AR",
+                    "CA",
+                    "CO",
+                    "CT",
+                    "DE",
+                    "DC",
+                    "FL",
+                    "GA",
+                    "HI",
+                    "ID",
+                    "IL",
+                    "IN",
+                    "IA",
+                    "KS",
+                    "KY",
+                    "LA",
+                    "ME",
+                    "MD",
+                    "MA",
+                    "MI",
+                    "MN",
+                    "MS",
+                    "MO",
+                    "MT",
+                    "NE",
+                    "NV",
+                    "NH",
+                    "NJ",
+                    "NM",
+                    "NY",
+                    "NC",
+                    "ND",
+                    "OH",
+                    "OK",
+                    "OR",
+                    "PA",
+                    "RI",
+                    "SC",
+                    "SD",
+                    "TN",
+                    "TX",
+                    "UT",
+                    "VT",
+                    "VA",
+                    "WA",
+                    "WV",
+                    "WI",
+                    "WY"
+                  ]
+                },
+                {
+                  "label": "Fiscal Year",
+                  "type": "dropdown",
+                  "required": true,
+                  "error_message": "Fiscal Year is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4763",
+                  "options": [
+                    "2022",
+                    "2023",
+                    "2024"
+                  ]
+                },
+                {
+                  "label": "Total SNAP Participants",
+                  "type": "number",
+                  "required": true,
+                  "error_message": "Total SNAP Participants is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4764"
+                },
+                {
+                  "label": "Eligible but Not Enrolled Estimate",
+                  "type": "number",
+                  "required": true,
+                  "error_message": "Eligible but Not Enrolled Estimate is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4765"
+                },
+                {
+                  "label": "State Population",
+                  "type": "number",
+                  "required": true,
+                  "error_message": "State Population is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4766"
+                },
+                {
+                  "label": "Average Monthly SNAP Issuance",
+                  "type": "currency",
+                  "required": true,
+                  "error_message": "Average Monthly SNAP Issuance is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4767"
+                },
+                {
+                  "label": "Yearly Total SNAP Issuance",
+                  "type": "currency",
+                  "required": true,
+                  "error_message": "Yearly Total SNAP Issuance is required.",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4768"
+                },
+                {
+                  "label": "Reporting Contact Name",
+                  "type": "text",
+                  "required": false,
+                  "error_message": "",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4769"
+                },
+                {
+                  "label": "Reporting Contact Email",
+                  "type": "email",
+                  "required": false,
+                  "error_message": "",
+                  "readOnly": false,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4770"
+                },
+                {
+                  "label": "SNAP Enrollment Rate",
+                  "type": "calculated",
+                  "required": false,
+                  "error_message": "",
+                  "readOnly": true,
+                  "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4771"
+                }
+              ]
+            }
+          ],
+          "buttons": [
+            {
+              "label": "Submit",
+              "actor": "State SNAP QC Staff",
+              "description": "Click to validate and submit the entered SNAP data for review.",
+              "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4772",
+              "actions": [
+                "Trigger Calculate SNAP Enrollment Rate",
+                "Trigger Validate Required Fields",
+                "Trigger Submit SNAP Data",
+                "Trigger Assign to State SNAP Supervisor"
+              ]
+            }
+          ],
+          "data_validation": [
+            "All required fields (State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled Estimate, State Population, Average Monthly SNAP Issuance, Yearly Total SNAP Issuance) must be filled before submission.",
+            "Total SNAP Participants, Eligible but Not Enrolled Estimate, State Population must be non-negative numbers.",
+            "Average Monthly SNAP Issuance and Yearly Total SNAP Issuance must be non-negative currency values.",
+            "SNAP Enrollment Rate is automatically calculated as (Total SNAP Participants / (Total SNAP Participants + Eligible but Not Enrolled Estimate)) x 100 and rounded to two decimal places.",
+            "State Population must be greater than or equal to Total SNAP Participants.",
+            "Reporting Contact Email, if provided, must be a valid email format.",
+            "Yearly Total SNAP Issuance should be greater than or equal to (Average Monthly SNAP Issuance x 12)."
+          ]
+        },
+        {
+          "id": "STEP_2",
+          "type": "Rule",
+          "label": "Calculate SNAP Enrollment Rate",
+          "description": "Upon entry of 'Total SNAP Participants' and 'Eligible but Not Enrolled Estimate', the system automatically calculates the SNAP Enrollment Rate using the formula: (Total SNAP Participants / (Total SNAP Participants + Eligible but Not Enrolled Estimate)) \u00d7 100. The result is rounded to two decimal places and displayed in the read-only 'SNAP Enrollment Rate' field.",
+          "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4757",
+          "details": {
+            "rules": [
+              {
+                "label": "Calculate SNAP Enrollment Rate",
+                "logic": "When both 'Total SNAP Participants' and 'Eligible but Not Enrolled Estimate' fields contain valid numeric values, calculate: (Total SNAP Participants / (Total SNAP Participants + Eligible but Not Enrolled Estimate)) \u00d7 100. Round the result to two decimal places. Display the result in the read-only 'SNAP Enrollment Rate' field."
+              }
+            ]
+          }
+        },
+        {
+          "id": "STEP_3",
+          "type": "Rule",
+          "label": "Validate Required Fields",
+          "description": "On 'Submit' button click, the system checks if all required fields are filled. The required fields are: State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled Estimate, State Population, Average Monthly SNAP Issuance, Yearly Total SNAP Issuance. If any required field is empty or invalid, submission is blocked and the user is prompted to complete all required fields.",
+          "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4758",
+          "details": {
+            "rules": [
+              {
+                "label": "Validate Required Fields",
+                "logic": "On 'Submit' button click, check that each required field (State Name, Fiscal Year, Total SNAP Participants, Eligible but Not Enrolled Estimate, State Population, Average Monthly SNAP Issuance, Yearly Total SNAP Issuance) is not empty and contains a valid value according to its type. If any required field is missing or invalid, prevent submission and display an error message indicating which fields need to be completed."
+              }
+            ]
+          }
+        },
+        {
+          "id": "STEP_4",
+          "type": "Assignment",
+          "label": "Submit SNAP Data",
+          "description": "On successful validation, the system saves the entered SNAP data, records the submission timestamp, and triggers assignment to the next reviewer.",
+          "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4759",
+          "details": {
+            "assignments": [
+              {
+                "label": "Submit SNAP Data",
+                "logic": "Upon successful validation of all required fields, the system persists the entered SNAP data to the database, records the exact timestamp of submission, and initiates the workflow to assign the record to the next reviewer in the process."
+              }
+            ]
+          }
+        },
+        {
+          "id": "STEP_5",
+          "type": "Assignment",
+          "label": "Assign to State SNAP Supervisor",
+          "description": "System assigns the submitted SNAP data record to the designated State SNAP Supervisor for further review and approval.",
+          "element_id": "4:3fc6fc6c-325e-416f-8130-1fb97d48cea9:4760",
+          "details": {
+            "assignments": [
+              {
+                "label": "Assign to State SNAP Supervisor",
+                "logic": "After successful submission, the system automatically assigns the saved SNAP data record, along with its submission timestamp, to the designated State SNAP Supervisor for review and approval. Assignment is based on predefined supervisor mapping for the selected state."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
